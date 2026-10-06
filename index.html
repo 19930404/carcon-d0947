@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>キャリアコンサルタント試験 過去問アプリ</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    background: linear-gradient(160deg,#2b6cb0 0%,#2c5282 50%,#1a365d 100%);
+    min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:16px; }
+  .wrap { max-width:520px; width:100%; padding-top:12px; padding-bottom:40px; }
+  .title { color:#fff; margin-bottom:16px; text-align:center; }
+  .title h1 { font-size:1.25rem; margin-bottom:6px; }
+  .title p { font-size:.8rem; opacity:.85; }
+  .card { background:#fff; border-radius:16px; padding:18px 16px; box-shadow:0 8px 30px rgba(0,0,0,.25); margin-bottom:12px; }
+
+  .daily {
+    background: linear-gradient(135deg, #fff5f5 0%, #fffaf0 100%);
+    border:2px solid #fbd38d;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:14px;
+    text-align:left;
+    box-shadow:0 4px 12px rgba(237,137,54,.15);
+  }
+  .daily .date {
+    font-size:.78rem;
+    color:#c05621;
+    font-weight:bold;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .daily .days-left {
+    background:#c05621;
+    color:#fff;
+    padding:3px 10px;
+    border-radius:12px;
+    font-size:.72rem;
+  }
+  .daily .days-left.urgent { background:#c53030; animation: pulse 1.5s infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .65; }
+  }
+  .daily .quote {
+    font-size:.92rem;
+    color:#744210;
+    line-height:1.6;
+    margin-bottom:12px;
+    padding-left:10px;
+    border-left:3px solid #f6ad55;
+    font-style: italic;
+  }
+  .daily .tasks-title {
+    font-size:.78rem;
+    color:#c05621;
+    font-weight:bold;
+    margin-top:12px;
+    margin-bottom:6px;
+  }
+  .daily .task {
+    font-size:.82rem;
+    color:#4a5568;
+    padding:6px 0;
+    line-height:1.5;
+    border-bottom:1px dashed #fbd38d;
+  }
+  .daily .task:last-child { border-bottom:none; }
+  .daily .task .label { color:#c05621; font-weight:bold; }
+  .daily .task a {
+    color:#2b6cb0;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:.78rem;
+    margin-left:4px;
+    white-space:nowrap;
+  }
+  .daily .task a:hover { text-decoration: underline; }
+
+  .section-title {
+    font-size:.85rem;
+    color:#2d3748;
+    font-weight:bold;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  .today-menu {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .today-btn {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    padding:18px 20px;
+    border:none;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:1.05rem;
+    transition: transform .15s, box-shadow .15s;
+    cursor:pointer;
+    font-family:inherit;
+    text-align:left;
+  }
+  .today-btn:hover { transform: translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); }
+  .today-btn .label { display:flex; flex-direction:column; gap:2px; }
+  .today-btn .sub { font-size:.72rem; font-weight:normal; opacity:.85; }
+  .today-btn .arrow { font-size:1.4rem; opacity:.7; }
+  .today-btn.recommend {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color:#fff;
+  }
+  .today-btn.review-today {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color:#fff;
+  }
+  .today-btn.stats {
+    background: linear-gradient(135deg, #ed8936, #dd6b20);
+    color:#fff;
+  }
+
+  .weak {
+    background:#fff5f5;
+    border:2px solid #feb2b2;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:14px;
+    text-align:left;
+  }
+  .weak h3 { font-size:.85rem; color:#c53030; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .weak-row { display:flex; justify-content:space-between; align-items:center; font-size:.83rem; padding:6px 0; border-bottom:1px dashed #fed7d7; }
+  .weak-row:last-child { border-bottom:none; }
+  .weak-row .rank { display:inline-block; width:20px; height:20px; line-height:20px; text-align:center; background:#fed7d7; color:#c53030; border-radius:50%; font-size:.7rem; font-weight:bold; margin-right:6px; }
+  .weak-row .name { color:#4a5568; flex:1; }
+  .weak-row .rate { font-weight:bold; color:#c53030; margin-left:8px; }
+  .weak .overall { margin-top:10px; padding-top:10px; border-top:1px solid #fed7d7; font-size:.78rem; color:#718096; }
+
+  details.more {
+    background:#fff;
+    border-radius:12px;
+    padding:0;
+    margin-bottom:12px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+  }
+  details.more summary {
+    padding:14px 18px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:.92rem;
+    color:#2b6cb0;
+    list-style:none;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    user-select:none;
+  }
+  details.more summary::-webkit-details-marker { display:none; }
+  details.more summary::after {
+    content:'▼';
+    font-size:.7rem;
+    color:#a0aec0;
+    transition: transform .2s;
+  }
+  details.more[open] summary::after { transform: rotate(180deg); }
+  details.more summary:hover { background:#f7fafc; }
+  details.more .inner { padding:0 14px 14px; }
+
+  .link-btn { display:flex; align-items:center; justify-content:space-between;
+    width:100%; padding:12px 16px; margin-bottom:8px;
+    background:#f7fafc; border:2px solid #e2e8f0; border-radius:10px;
+    text-decoration:none; color:#2b6cb0; font-weight:bold; font-size:.9rem; transition:.2s; }
+  .link-btn:last-child { margin-bottom:0; }
+  .link-btn:hover { background:#ebf8ff; border-color:#90cdf4; }
+  .link-btn .date { font-size:.68rem; font-weight:normal; color:#718096; display:block; margin-top:1px; }
+  .link-btn .arrow { font-size:1.1rem; color:#a0aec0; }
+  .link-btn.extra { background:#fffaf0; border-color:#f6ad55; color:#c05621; }
+  .link-btn.extra .date { color:#dd6b20; }
+  .link-btn.mix { background:#ebf8ff; border-color:#90cdf4; }
+  .link-btn.shiryo { background:#faf5ff; border-color:#d6bcfa; color:#6b46c1; }
+  .link-btn.shiryo .date { color:#805ad5; }
+
+  .footer { margin-top:18px; font-size:.7rem; color:#fff; opacity:.8; line-height:1.6; text-align:center; }
+  .hidden { display:none; }
+
+  .progress-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:.82rem; }
+  .progress-row .cat-name { width:200px; flex-shrink:0; color:#4a5568; font-size:.75rem; }
+  .progress-row .bar-bg { flex:1; height:18px; background:#edf2f7; border-radius:9px; overflow:hidden; position:relative; }
+  .progress-row .bar-fill { height:100%; background:#38a169; transition:width .3s; }
+  .progress-row .bar-fill.low { background:#e53e3e; }
+  .progress-row .bar-fill.mid { background:#dd6b20; }
+  .progress-row .lap { width:60px; text-align:right; font-weight:bold; color:#2d3748; font-size:.75rem; }
+  .progress-summary { margin-top:14px; padding-top:12px; border-top:1px solid #e2e8f0; font-size:.85rem; font-weight:bold; color:#2b6cb0; text-align:center; }
+  .progress-detail { font-size:.75rem; color:#718096; text-align:center; margin-top:6px; }
+  .progress-empty { font-size:.83rem; color:#718096; text-align:center; padding:10px 0; }
+
+  .auth-input { width:100%; padding:10px; margin-bottom:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:.9rem; font-family:inherit; }
+  .auth-btn { width:100%; padding:12px; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:.9rem; font-family:inherit; margin-bottom:6px; }
+  .auth-btn.primary { background:linear-gradient(135deg,#48bb78,#38a169); color:#fff; }
+  .auth-btn.secondary { background:#718096; color:#fff; }
+  .auth-btn.danger { background:#c53030; color:#fff; }
+  .auth-btn.google {
+    background:#fff;
+    color:#3c4043;
+    border:1px solid #dadce0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .auth-btn.google:hover { background:#f8f9fa; }
+  .auth-user { font-size:.85rem; color:#2d3748; margin-bottom:10px; }
+  .auth-status { font-size:.75rem; color:#718096; text-align:center; margin-top:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="title">
+    <h1>キャリアコンサルタント試験<br>過去問アプリ</h1>
+    <p>学科試験 過去問＋頻出テーマ＋資料問題＋分野別成績</p>
+  </div>
+
+  <!-- ログインパネル -->
+  <div id="authPanel" class="card">
+    <div id="authLoggedOut">
+      <div class="section-title">🔐 ログイン / 新規登録</div>
+      <button id="authGoogleBtn" class="auth-btn google">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+             style="width:18px;height:18px;vertical-align:middle;margin-right:8px;">
+        Googleでログイン
+      </button>
+      <div style="text-align:center;color:#a0aec0;font-size:.75rem;margin:10px 0;">── または ──</div>
+      <input id="authEmail" class="auth-input" type="email" placeholder="メールアドレス" autocomplete="email">
+      <input id="authPassword" class="auth-input" type="password" placeholder="パスワード（6文字以上）" autocomplete="current-password">
+      <button id="authLoginBtn" class="auth-btn primary">メールでログイン</button>
+      <button id="authSignupBtn" class="auth-btn secondary">新規登録</button>
+      <div class="auth-status" id="authStatus">ログインすると、別の端末でも進捗が同期されます。</div>
+    </div>
+    <div id="authLoggedIn" style="display:none;">
+      <div class="section-title">✅ ログイン中</div>
+      <div class="auth-user" id="authUserEmail"></div>
+      <button id="authSyncBtn" class="auth-btn primary">🔄 今すぐ同期</button>
+      <button id="authLogoutBtn" class="auth-btn danger">ログアウト</button>
+      <div class="auth-status" id="authSyncStatus"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="dailyCard" class="daily">
+      <div class="date">
+        <span id="todayDate">—</span>
+        <span id="daysLeft" class="days-left">—</span>
+      </div>
+      <div id="quote" class="quote">—</div>
+      <div id="tasksArea"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">📊 学習進捗（3周目標）</div>
+    <div id="progressPanel">
+      <div class="progress-empty">問題を解くと、ここに進捗が表示されます。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">🎯 今日のメニュー</div>
+    <div class="today-menu">
+      <a class="today-btn recommend" href="app.html?round=all&mode=recommend">
+        <span class="label">
+          <span>おすすめ10問</span>
+          <span class="sub">苦手分野と間違い問題から自動選出</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
+      <a class="today-btn review-today" href="app.html?round=all&mode=reviewToday">
+        <span class="label">
+          <span>今日の復習</span>
+          <span class="sub">忘却曲線に合わせて、忘れかけた問題だけ</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
+      <a class="today-btn stats" href="app.html?view=stats">
+        <span class="label">
+          <span>📊 成績を見る</span>
+          <span class="sub">分野別・レベル別・人物別・ミス上位</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
+    </div>
+  </div>
+
+  <div id="weakPanel" class="weak hidden">
+    <h3>📉 あなたの苦手トップ3</h3>
+    <div id="weakList"></div>
+    <div class="overall" id="overallInfo"></div>
+  </div>
+
+  <details class="more">
+    <summary>📚 もっと問題を解く（資料問題・番外編・過去問）</summary>
+    <div class="inner">
+      <a class="link-btn shiryo" href="app.html?round=shiryo">
+        <span>📑 資料問題編<span class="date">S/A/Bランク別・最新資料対策</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn shiryo" href="app.html?round=shiryo&level=S">
+        <span>📑 資料問題編：Sランクだけ<span class="date">最重点4資料</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn shiryo" href="app.html?round=shiryo&level=A">
+        <span>📑 資料問題編：Aランクだけ<span class="date">重点8資料</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn shiryo" href="app.html?round=shiryo&level=B">
+        <span>📑 資料問題編：Bランクだけ<span class="date">押さえておきたい4資料</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn shiryo" href="app.html?round=shiryo&mode=review">
+        <span>📑 資料問題編：間違えた問題だけ<span class="date">間違い回数の多い順に復習</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn extra" href="app.html?round=extra">
+        <span>番外編：頻出テーマ<span class="date">基礎／標準／応用で絞り込み可</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn extra" href="app.html?round=extra&level=基礎">
+        <span>番外編：基礎だけ<span class="date">まずはここから</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn extra" href="app.html?round=extra&mode=review">
+        <span>番外編：間違えた問題だけ<span class="date">間違い回数の多い順に復習</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn" href="app.html?round=30">
+        <span>第30回<span class="date">2025年11月2日実施</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn" href="app.html?round=31">
+        <span>第31回<span class="date">2026年3月1日実施</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn" href="app.html?round=32">
+        <span>第32回<span class="date">2026年7月5日実施</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn" href="app.html?round=34">
+        <span>第34回<span class="date">技能検定 学科試験</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn" href="app.html?round=35">
+        <span>第35回<span class="date">技能検定 学科試験</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn" href="app.html?round=36">
+        <span>第36回<span class="date">技能検定 学科試験</span></span><span class="arrow">›</span>
+      </a>
+      <a class="link-btn mix" href="app.html?round=all&mode=random">
+        <span>全回ミックス（ランダム）<span class="date">全6回＋番外編＋資料問題編をまとめて</span></span><span class="arrow">›</span>
+      </a>
+    </div>
+  </details>
+
+  <div class="footer">データ出典：みんなで合格☆キャリアコンサルタント試験</div>
+</div>
+
+<script src="data-messages.js?v=2"></script>
+<script type="module" src="firebaseconfig.js?v=2"></script>
+<script>
+(function() {
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function hashString(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h = h & h; }
+    return Math.abs(h);
+  }
+
+  function pickMessage() {
+    const today = new Date().toDateString();
+    const seed = hashString(today);
+    const cats = ['encourage', 'theorist', 'learning'];
+    const cat = cats[seed % 3];
+    const list = window.MESSAGES[cat];
+    return list[seed % list.length];
+  }
+
+  function daysToExam() {
+    if (!window.EXAM_DATE) return null;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const exam = new Date(window.EXAM_DATE); exam.setHours(0,0,0,0);
+    const diff = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
+    return diff;
+  }
+
+  function generateTasks(summary) {
+    const tasks = [];
+    if (!summary || !summary.overallTotal) {
+      tasks.push({
+        html: `<span class="label">まずは10問</span>解いてみよう。あなたの苦手が見えてきます。
+          <a href="app.html?round=extra&level=基礎">基礎だけを開く →</a>`
+      });
+      return tasks;
+    }
+
+    if (summary.top3 && summary.top3.length > 0) {
+      const w = summary.top3[0];
+      const rate = Math.round(w.rate * 100);
+      tasks.push({
+        html: `<span class="label">「${escapeHtml(w.key)}」が苦手です</span>（${rate}%）
+          <br>→ 今日はこの分野を<span class="label">10問</span>だけ解こう
+          <a href="app.html?round=all&field=${encodeURIComponent(w.key)}">開く →</a>`
+      });
+    }
+
+    if (summary.topPerson && summary.topPerson.length > 0) {
+      const p = summary.topPerson[0];
+      const rate = Math.round(p.rate * 100);
+      if (p.total >= 2) {
+        tasks.push({
+          html: `<span class="label">「${escapeHtml(p.key)}」が苦手です</span>（${rate}%）
+            <br>→ 番外編でこの人物の解説を読み返そう`
+        });
+      }
+    }
+
+    if (summary.worst && summary.worst.cnt >= 2) {
+      tasks.push({
+        html: `<span class="label">${summary.worst.cnt}回間違えた問題があります</span>
+          <br>→ 復習モードで最優先に潰そう
+          <a href="app.html?round=all&mode=review">開く →</a>`
+      });
+    }
+
+    if (summary.unattempted > 30) {
+      tasks.push({
+        html: `<span class="label">未解答があと${summary.unattempted}問</span>
+          <br>→ 全回ミックスで少しずつ攻略
+          <a href="app.html?round=all&mode=random">開く →</a>`
+      });
+    }
+
+    if (tasks.length === 0) {
+      tasks.push({
+        html: `<span class="label">いい調子です！</span>今日も10問、続けよう。`
+      });
+    }
+    return tasks.slice(0, 4);
+  }
+
+  function render() {
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = today.getMonth() + 1;
+    const d = today.getDate();
+    document.getElementById('todayDate').textContent = `${y}年${m}月${d}日`;
+
+    const days = daysToExam();
+    const el = document.getElementById('daysLeft');
+    if (days !== null) {
+      if (days > 0) {
+        el.textContent = `あと${days}日`;
+        if (days <= 14) el.classList.add('urgent');
+      } else if (days === 0) {
+        el.textContent = `今日が本番！`;
+        el.classList.add('urgent');
+      } else {
+        el.textContent = `お疲れさまでした`;
+      }
+    } else {
+      el.style.display = 'none';
+    }
+
+    try {
+      document.getElementById('quote').textContent = '「' + pickMessage() + '」';
+    } catch (e) {
+      document.getElementById('quote').style.display = 'none';
+    }
+
+    let summary = null;
+    try { summary = JSON.parse(localStorage.getItem('cc_homeSummary') || 'null'); } catch (e) {}
+    const tasks = generateTasks(summary);
+    document.getElementById('tasksArea').innerHTML =
+      '<div class="tasks-title">🎯 あなたへの今日の課題</div>' +
+      tasks.map(t => `<div class="task">${t.html}</div>`).join('');
+  }
+
+  render();
+
+  try {
+    const s = JSON.parse(localStorage.getItem('cc_homeSummary') || 'null');
+    if (s && s.top3 && s.top3.length > 0) {
+      const panel = document.getElementById('weakPanel');
+      const list = document.getElementById('weakList');
+      const overall = document.getElementById('overallInfo');
+      panel.classList.remove('hidden');
+      list.innerHTML = s.top3.map((e, i) => {
+        const rate = Math.round(e.rate * 100);
+        return `<div class="weak-row">
+          <span class="name"><span class="rank">${i+1}</span>${escapeHtml(e.key)}</span>
+          <span class="rate">${rate}%（${e.correct}/${e.total}）</span>
+        </div>`;
+      }).join('');
+      overall.textContent = `全体の正答率：${s.overallRate}%（${s.overallTotal}問解答済み）`;
+    }
+  } catch (e) {}
+
+  (function renderProgress() {
+    const gidMap = JSON.parse(localStorage.getItem('cc_gidMap') || '{}');
+    const categories = JSON.parse(localStorage.getItem('cc_categories') || '{}');
+    const qHistory = JSON.parse(localStorage.getItem('cc_qHistory') || '{}');
+    const panel = document.getElementById('progressPanel');
+    if (!panel) return;
+
+    if (Object.keys(categories).length === 0) {
+      panel.innerHTML = '<div class="progress-empty">問題を解くと、ここに進捗が表示されます。</div>';
+      return;
+    }
+
+    const catStats = {};
+    Object.keys(categories).forEach(catId => {
+      catStats[catId] = { correct: 0, total: 0, target: (categories[catId].total || 0) * 3 };
+    });
+
+    Object.keys(qHistory).forEach(gid => {
+      const catId = gidMap[gid];
+      if (!catId || !catStats[catId]) return;
+      catStats[catId].total += qHistory[gid].total || 0;
+      catStats[catId].correct += qHistory[gid].correct || 0;
+    });
+
+    const rankOrder = ['S', 'A', 'B', '過去問', '番外編'];
+    const rankLabels = { S:'Sランク', A:'Aランク', B:'Bランク', '過去問':'過去問', '番外編':'番外編' };
+
+    let html = '';
+    let totalTarget = 0, totalDone = 0;
+
+    rankOrder.forEach(rank => {
+      const group = Object.keys(categories).filter(catId => categories[catId].rank === rank);
+      if (group.length === 0) return;
+
+      const gTarget = group.reduce((sum, catId) => sum + catStats[catId].target, 0);
+      const gDone = group.reduce((sum, catId) => sum + Math.min(catStats[catId].total, catStats[catId].target), 0);
+      const gRate = gTarget > 0 ? Math.round(gDone / gTarget * 100) : 0;
+      let cls = 'bar-fill';
+      if (gRate < 40) cls += ' low'; else if (gRate < 80) cls += ' mid';
+
+      html += `<div class="progress-row" style="margin-top:10px;font-weight:bold;">
+        <div class="cat-name" style="color:#2b6cb0;">${rankLabels[rank]}（${group.length}項目）</div>
+        <div class="bar-bg"><div class="${cls}" style="width:${gRate}%"></div></div>
+        <div class="lap">${gRate}%</div>
+      </div>`;
+
+      totalTarget += gTarget;
+      totalDone += gDone;
+    });
+
+    const overallRate = totalTarget > 0 ? Math.round(totalDone / totalTarget * 100) : 0;
+    html += `<div class="progress-summary">全体 ${overallRate}%（${totalDone} / ${totalTarget} 問）</div>`;
+    html += `<div class="progress-detail">各項目を3周することを目標にしています</div>`;
+
+    panel.innerHTML = html;
+  })();
+})();
+
+/* Firebase認証UI */
+window.addEventListener('firebase-ready', function() {
+  const authLoggedOut = document.getElementById('authLoggedOut');
+  const authLoggedIn = document.getElementById('authLoggedIn');
+  const authUserEmail = document.getElementById('authUserEmail');
+  const authStatus = document.getElementById('authStatus');
+  const authSyncStatus = document.getElementById('authSyncStatus');
+
+  // ★ Googleログイン
+  document.getElementById('authGoogleBtn').addEventListener('click', async () => {
+    authStatus.textContent = 'Googleログイン中...';
+    try {
+      await window.fbSignInWithGoogle();
+    } catch (e) {
+      if (e.code === 'auth/popup-closed-by-user') {
+        authStatus.textContent = 'ログインがキャンセルされました';
+      } else if (e.code === 'auth/unauthorized-domain') {
+        authStatus.textContent = 'このドメインは承認されていません。Firebase Consoleで承認済みドメインに追加してください。';
+      } else if (e.code === 'auth/operation-not-allowed') {
+        authStatus.textContent = 'Google認証が有効化されていません。Firebase Consoleで有効にしてください。';
+      } else {
+        authStatus.textContent = 'Googleログイン失敗: ' + e.message;
+      }
+    }
+  });
+
+  document.getElementById('authLoginBtn').addEventListener('click', async () => {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    if (!email || !password) { alert('メールとパスワードを入力してください'); return; }
+    authStatus.textContent = 'ログイン中...';
+    try {
+      await window.fbSignIn(email, password);
+    } catch (e) {
+      authStatus.textContent = 'ログイン失敗: ' + e.message;
+    }
+  });
+
+  document.getElementById('authSignupBtn').addEventListener('click', async () => {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    if (!email || !password) { alert('メールとパスワードを入力してください'); return; }
+    if (password.length < 6) { alert('パスワードは6文字以上にしてください'); return; }
+    authStatus.textContent = '登録中...';
+    try {
+      await window.fbSignUp(email, password);
+    } catch (e) {
+      authStatus.textContent = '登録失敗: ' + e.message;
+    }
+  });
+
+  document.getElementById('authLogoutBtn').addEventListener('click', async () => {
+    await window.fbSignOut();
+  });
+
+  document.getElementById('authSyncBtn').addEventListener('click', async () => {
+    authSyncStatus.textContent = '同期中...';
+    const ok = await window.fbLoadProgress();
+    authSyncStatus.textContent = ok ? '✅ 同期完了' : '同期するデータがありません';
+    setTimeout(() => location.reload(), 800);
+  });
+
+  window.fbOnAuthStateChanged(async (user) => {
+    if (user) {
+      authLoggedOut.style.display = 'none';
+      authLoggedIn.style.display = 'block';
+      const name = user.displayName || user.email;
+      const provider = user.providerData[0]?.providerId === 'google.com' ? ' (Google)' : '';
+      authUserEmail.textContent = '📧 ' + name + provider;
+      // ログイン時にFirestoreから進捗を読み込む
+      const ok = await window.fbLoadProgress();
+      if (ok) {
+        authSyncStatus.textContent = '☁️ クラウドから読み込みました';
+        setTimeout(() => location.reload(), 800);
+      } else {
+        authSyncStatus.textContent = '☁️ クラウドに保存済み';
+      }
+    } else {
+      authLoggedOut.style.display = 'block';
+      authLoggedIn.style.display = 'none';
+    }
+  });
+});
+</script>
+</body>
+</html>

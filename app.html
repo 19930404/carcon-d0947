@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>キャリアコンサルタント試験 過去問</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Hiragino Sans","Yu Gothic","Meiryo",sans-serif; background:#f0f4f8; color:#1a202c; line-height:1.7; padding:16px; }
+  .container { max-width:900px; margin:0 auto; }
+  header { background:linear-gradient(135deg,#2b6cb0,#2c5282); color:#fff; padding:18px; border-radius:12px; margin-bottom:16px; box-shadow:0 4px 12px rgba(0,0,0,.15); }
+  header h1 { font-size:1.1rem; margin-bottom:4px; }
+  header a { color:#bee3f8; font-size:.85rem; text-decoration:none; }
+  .toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; background:#fff; padding:12px 16px; border-radius:10px; margin-bottom:16px; box-shadow:0 2px 6px rgba(0,0,0,.06); }
+  .toolbar .stat { font-size:.85rem; font-weight:bold; }
+  .toolbar .stat span { color:#2b6cb0; }
+  .toolbar select { padding:6px 10px; border:1px solid #cbd5e0; border-radius:6px; font-size:.85rem; font-family:inherit; }
+  .toolbar button { padding:8px 14px; border:none; border-radius:6px; background:#2b6cb0; color:#fff; cursor:pointer; font-size:.85rem; font-weight:bold; }
+  .toolbar button.secondary { background:#718096; }
+  .toolbar button.danger { background:#c53030; }
+  .toolbar .timer { font-family:monospace; font-size:1rem; font-weight:bold; color:#c53030; margin-left:auto; }
+  .question { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+  .q-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; gap:8px; }
+  .q-num { font-weight:bold; color:#2b6cb0; }
+  .q-field { font-size:.7rem; background:#edf2f7; color:#4a5568; padding:3px 7px; border-radius:4px; margin-left:6px; display:inline-block; }
+  .q-diff { font-size:.7rem; font-weight:bold; padding:3px 8px; border-radius:4px; flex-shrink:0; }
+  .diff-A, .diff-基礎 { background:#c6f6d5; color:#22543d; }
+  .diff-B, .diff-標準 { background:#feebc8; color:#744210; }
+  .diff-C, .diff-応用 { background:#fed7d7; color:#742a2a; }
+  .diff-S { background:#faf5ff; color:#553c9a; border:1px solid #d6bcfa; }
+  .diff-none { background:#e2e8f0; color:#4a5568; }
+  .q-text { font-size:.95rem; margin-bottom:14px; white-space:pre-wrap; }
+  .choices { display:flex; flex-direction:column; gap:8px; }
+  .choice { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border:2px solid #e2e8f0; border-radius:8px; cursor:pointer; background:#fff; text-align:left; font-size:.88rem; width:100%; font-family:inherit; line-height:1.5; }
+  .choice:hover:not(.disabled) { border-color:#90cdf4; background:#ebf8ff; }
+  .choice .num { flex-shrink:0; width:24px; height:24px; border-radius:50%; background:#e2e8f0; color:#4a5568; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:.85rem; }
+  .choice.correct { border-color:#38a169; background:#f0fff4; }
+  .choice.correct .num { background:#38a169; color:#fff; }
+  .choice.wrong { border-color:#e53e3e; background:#fff5f5; }
+  .choice.wrong .num { background:#e53e3e; color:#fff; }
+  .choice.disabled { cursor:default; }
+  .basics { margin-top:10px; padding:12px 14px; background:#fffaf0; border-left:4px solid #dd6b20; border-radius:6px; font-size:.85rem; white-space:pre-wrap; }
+  .basics-title { font-weight:bold; color:#dd6b20; margin-bottom:6px; }
+  .explanation { margin-top:10px; padding:14px; background:#f7fafc; border-left:4px solid #2b6cb0; border-radius:6px; font-size:.83rem; white-space:pre-wrap; }
+  .explanation .ans { font-weight:bold; color:#2b6cb0; margin-bottom:8px; }
+  .basics-btn {
+    display:block; width:100%; margin-top:12px;
+    padding:12px 20px; border:none; border-radius:8px;
+    background:#dd6b20; color:#fff; cursor:pointer;
+    font-weight:bold; font-size:.9rem; font-family:inherit;
+    transition:.2s;
+  }
+  .basics-btn:hover { background:#c05621; }
+  .basics-btn.opened { background:#718096; }
+  .basics-btn.opened:hover { background:#4a5568; }
+  .basics-hidden { display:none; }
+  .nav-btns { display:flex; justify-content:space-between; margin-top:20px; gap:8px; }
+  .nav-btns button { flex:1; padding:12px 20px; border:none; border-radius:8px; background:#2b6cb0; color:#fff; cursor:pointer; font-weight:bold; font-size:.9rem; }
+  .nav-btns button:disabled { background:#cbd5e0; cursor:not-allowed; }
+  .empty { background:#fff; border-radius:12px; padding:40px 20px; text-align:center; color:#718096; }
+  .empty p { margin-bottom:16px; }
+  .empty button { padding:10px 20px; border:none; border-radius:8px; background:#2b6cb0; color:#fff; cursor:pointer; font-weight:bold; }
+  .summary { background:#fff; border-radius:12px; padding:24px; text-align:center; }
+  .summary h2 { color:#2b6cb0; margin-bottom:12px; }
+  .summary .score { font-size:2.5rem; font-weight:bold; color:#2b6cb0; margin:12px 0; }
+  .summary .detail { color:#4a5568; font-size:.9rem; margin-bottom:20px; }
+  .summary button { padding:12px 24px; border:none; border-radius:8px; background:#2b6cb0; color:#fff; cursor:pointer; font-weight:bold; margin:4px; }
+  .summary button.secondary { background:#718096; }
+  .summary button.stats-btn { background:#dd6b20; }
+  .stats-panel { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+  .stats-panel h3 { color:#2b6cb0; margin-bottom:14px; font-size:1rem; }
+  .stats-tabs { display:flex; gap:4px; margin-bottom:16px; border-bottom:2px solid #e2e8f0; flex-wrap:wrap; }
+  .stats-tab { padding:8px 16px; border:none; background:transparent; cursor:pointer; font-size:.85rem; font-weight:bold; color:#718096; border-bottom:3px solid transparent; margin-bottom:-2px; font-family:inherit; }
+  .stats-tab.active { color:#2b6cb0; border-bottom-color:#2b6cb0; }
+  .stat-row { display:flex; align-items:center; gap:10px; margin-bottom:6px; font-size:.83rem; }
+  .stat-row .field-name { width:180px; flex-shrink:0; color:#4a5568; }
+  .stat-row .bar-bg { flex:1; height:16px; background:#edf2f7; border-radius:8px; overflow:hidden; }
+  .stat-row .bar-fill { height:100%; background:#38a169; transition:width .3s; }
+  .stat-row .bar-fill.low { background:#e53e3e; }
+  .stat-row .bar-fill.mid { background:#dd6b20; }
+  .stat-row .rate { width:50px; text-align:right; font-weight:bold; color:#2d3748; }
+  .stat-sub { font-size:.72rem; color:#718096; margin:0 0 10px 190px; }
+  .miss-row { display:flex; justify-content:space-between; align-items:center; padding:8px 12px; margin-bottom:6px; background:#fff5f5; border-left:3px solid #e53e3e; border-radius:4px; font-size:.83rem; }
+  .miss-row .miss-count { font-weight:bold; color:#c53030; }
+  .recommend-banner { background:#f0fff4; border-left:4px solid #38a169; padding:10px 14px; border-radius:6px; font-size:.83rem; color:#276749; margin-bottom:16px; }
+  .shiryo-banner { background:#faf5ff; border-left:4px solid #805ad5; padding:10px 14px; border-radius:6px; font-size:.83rem; color:#553c9a; margin-bottom:16px; }
+  .sync-status { position:fixed; bottom:16px; right:16px; background:#2b6cb0; color:#fff; padding:8px 14px; border-radius:8px; font-size:.8rem; font-weight:bold; opacity:0; transition:opacity .3s; pointer-events:none; z-index:1000; }
+  .sync-status.show { opacity:1; }
+  .sync-status.error { background:#c53030; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1 id="pageTitle">キャリアコンサルタント試験 過去問</h1>
+    <a href="index.html">← メニューに戻る</a>
+  </header>
+
+  <div class="toolbar">
+    <span class="stat">問題 <span id="curNum">1</span>/<span id="totalNum">50</span></span>
+    <span class="stat">正答 <span id="correctCount">0</span></span>
+    <select id="modeSelect">
+      <option value="normal">通常</option>
+      <option value="random">ランダム</option>
+      <option value="review">復習（間違いのみ）</option>
+      <option value="recommend">★ 今日のおすすめ10問</option>
+      <option value="reviewToday">🔁 今日の復習</option>
+    </select>
+    <select id="levelSelect">
+      <option value="">全レベル</option>
+      <option value="S">S（最重点）</option>
+      <option value="A">A（重点）</option>
+      <option value="B">B（標準）</option>
+      <option value="基礎">基礎</option>
+      <option value="標準">標準</option>
+      <option value="応用">応用</option>
+    </select>
+    <select id="fieldSelect"><option value="">全分野</option></select>
+    <span class="timer" id="timer">100:00</span>
+    <button id="startBtn">開始</button>
+    <button id="statsBtn" class="secondary">統計</button>
+    <button id="syncBtn" class="secondary">🔄 同期</button>
+    <button id="resetBtn" class="secondary">リセット</button>
+    <button id="clearWrongBtn" class="danger">間違い記録を消す</button>
+  </div>
+
+  <div id="quizArea"></div>
+</div>
+
+<div id="syncStatus" class="sync-status"></div>
+
+<script src="data-progress.js?v=1"></script>
+<script type="module" src="firebaseconfig.js?v=1"></script>
+<script>
+const ROUNDS = {
+  30: { label: '第30回', date: '2025年11月2日' },
+  31: { label: '第31回', date: '2026年3月1日' },
+  32: { label: '第32回', date: '2026年7月5日' },
+  34: { label: '第34回', date: '技能検定' },
+  35: { label: '第35回', date: '技能検定' },
+  36: { label: '第36回', date: '技能検定' },
+  extra: { label: '番外編', date: '頻出テーマ穴埋め' },
+  shiryo: { label: '資料問題編', date: 'S/A/Bランク別' },
+};
+
+const params = new URLSearchParams(location.search);
+const roundParam = params.get('round') || '32';
+const isAllRounds = roundParam === 'all';
+const modeParam = params.get('mode') || 'normal';
+const fieldParam = params.get('field') || '';
+const levelParam = params.get('level') || '';
+const viewParam = params.get('view') || '';
+
+let qData = [];
+let list = [];
+let currentIndex = 0;
+let correctCount = 0;
+let answered = {};
+let timerInterval = null;
+let remaining = 6000;
+let currentUser = null;
+
+const WRONG_COUNT_KEY = 'cc_wrongCount';
+const STATS_KEY = 'cc_stats';
+const BY_LEVEL_KEY = 'cc_stats_byLevel';
+const BY_PERSON_KEY = 'cc_stats_byPerson';
+const HOME_SUMMARY_KEY = 'cc_homeSummary';
+const Q_HISTORY_KEY = 'cc_qHistory';
+
+function showSyncStatus(msg, isError) {
+  const el = document.getElementById('syncStatus');
+  el.textContent = msg;
+  el.className = 'sync-status show' + (isError ? ' error' : '');
+  setTimeout(() => { el.className = 'sync-status'; }, 2000);
+}
+
+function loadData() {
+  return new Promise((resolve, reject) => {
+    const rounds = isAllRounds ? Object.keys(ROUNDS) : [roundParam];
+    let loaded = 0;
+    const collected = [];
+    rounds.forEach(r => {
+      let fname, varName;
+      if (r === 'extra') { fname = 'dataextra'; varName = 'qDataExtra'; }
+      else if (r === 'shiryo') { fname = 'data-shiryo'; varName = 'qDataShiryo'; }
+      else { fname = 'data' + r; varName = 'qData' + r; }
+      const s = document.createElement('script');
+      s.src = fname + '.js?v=9';
+      s.onload = () => {
+        const arr = window[varName] || [];
+        arr.forEach((q, i) => { q._gid = r + '_' + i; q._round = r; });
+        collected.push(...arr);
+        loaded++;
+        if (loaded === rounds.length) { qData = collected; resolve(); }
+      };
+      s.onerror = () => reject(new Error(fname + '.js の読み込みに失敗'));
+      document.head.appendChild(s);
+    });
+  });
+}
+
+function generateGidMap() {
+  const master = window.PROGRESS_MASTER;
+  if (!master) return;
+
+  const gidMap = {};
+  const categories = {};
+
+  qData.forEach(q => {
+    const gid = q._gid;
+    const round = q._round;
+    let catId;
+
+    if (round === 'shiryo') {
+      const match = (q.f || '').match(/資料問題｜(.+)/);
+      const name = match ? match[1] : '不明';
+      const cat = master.shiryoCategories.find(c => c.name === name);
+      catId = cat ? cat.id : 'shiryo_99';
+    } else if (round === 'extra') {
+      const cat = master.extraCategories.find(c => c.name === q.f);
+      catId = cat ? cat.id : 'extra_99';
+    } else {
+      const fieldId = master.fieldMapping[q.f] || 'f09';
+      catId = 'r' + round + '_' + fieldId;
+    }
+
+    gidMap[gid] = catId;
+    if (!categories[catId]) {
+      categories[catId] = { name: catId, rank: '', total: 0 };
+    }
+    categories[catId].total++;
+  });
+
+  Object.keys(categories).forEach(catId => {
+    const m = catId.match(/^r(\d+)_(f\d+)$/);
+    if (m) {
+      const round = m[1];
+      const fieldId = m[2];
+      const fieldName = master.fieldNames[fieldId] || fieldId;
+      categories[catId].name = '第' + round + '回 ' + fieldName;
+      categories[catId].rank = '過去問';
+    } else if (catId.startsWith('shiryo_')) {
+      const cat = master.shiryoCategories.find(c => c.id === catId);
+      if (cat) { categories[catId].name = cat.name; categories[catId].rank = cat.rank; }
+    } else if (catId.startsWith('extra_')) {
+      const cat = master.extraCategories.find(c => c.id === catId);
+      if (cat) { categories[catId].name = cat.name; categories[catId].rank = cat.rank; }
+    }
+  });
+
+  window.GID_MAP = gidMap;
+  window.CATEGORIES = categories;
+  localStorage.setItem('cc_gidMap', JSON.stringify(gidMap));
+  localStorage.setItem('cc_categories', JSON.stringify(categories));
+}
+
+function buildList() {
+  let arr = qData.slice();
+  if (fieldParam) arr = arr.filter(q => q.f === fieldParam);
+  if (levelParam) arr = arr.filter(q => q.level === levelParam);
+
+  if (modeParam === 'review') {
+    const counts = getWrongCounts();
+    arr = arr.filter(q => counts[q._gid] > 0);
+    arr.sort((a, b) => (counts[b._gid] || 0) - (counts[a._gid] || 0));
+  }
+  else if (modeParam === 'recommend') { arr = recommendList(arr); }
+  else if (modeParam === 'reviewToday') { arr = reviewTodayList(arr); }
+  else if (modeParam === 'random') { arr = shuffle(arr); }
+  list = arr;
+}
+
+function shuffle(a) {
+  const arr = a.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function recommendList(arr) {
+  const wrongCounts = getWrongCounts();
+  const fieldStats = getStats();
+  const personStats = getStatsByPerson();
+  const qHistory = getQHistory();
+  const seed = hashString(new Date().toDateString());
+  const today = new Date().toDateString();
+
+  const scored = arr.map(q => {
+    const wc = wrongCounts[q._gid] || 0;
+    const fs = fieldStats[q.f];
+    const fieldRate = fs && fs.total ? (fs.correct / fs.total) * 100 : 50;
+    const ps = q.person ? personStats[q.person] : null;
+    const personRate = ps && ps.total ? (ps.correct / ps.total) * 100 : 50;
+    const h = qHistory[q._gid];
+    const unattempted = (!h || h.total === 0) ? 30 : 0;
+
+    let spacingBonus = 0;
+    if (h && h.lastDate) {
+      const days = daysBetween(h.lastDate, today);
+      if (days === 0) spacingBonus = -30;
+      else if (days === 1) spacingBonus = 20;
+      else if (days <= 3) spacingBonus = 40;
+      else if (days <= 7) spacingBonus = 60;
+      else if (days <= 14) spacingBonus = 40;
+      else spacingBonus = 20;
+    }
+
+    const rnd = seededRandom(seed + hashString(q._gid)) * 15;
+    const score = wc * 20 + (100 - fieldRate) * 0.5
+      + (q.person ? (100 - personRate) * 0.3 : 0)
+      + unattempted + spacingBonus + rnd;
+    return { q, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, 10).map(x => x.q);
+}
+
+function reviewTodayList(arr) {
+  const qHistory = getQHistory();
+  const today = new Date().toDateString();
+
+  const targets = arr.filter(q => {
+    const h = qHistory[q._gid];
+    if (!h || !h.lastDate) return false;
+    const days = daysBetween(h.lastDate, today);
+    return days >= 1 && days <= 14;
+  });
+
+  const scored = targets.map(q => {
+    const h = qHistory[q._gid];
+    const days = daysBetween(h.lastDate, today);
+    let bonus = 0;
+    if (days === 1) bonus = 20;
+    else if (days <= 3) bonus = 40;
+    else if (days <= 7) bonus = 60;
+    else bonus = 40;
+    const rate = h.total ? h.correct / h.total : 0;
+    const lowRateBonus = (1 - rate) * 30;
+    return { q, score: bonus + lowRateBonus + Math.random() * 5 };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, 10).map(x => x.q);
+}
+
+function hashString(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h = h & h; }
+  return Math.abs(h);
+}
+function seededRandom(n) { const x = Math.sin(n) * 10000; return x - Math.floor(x); }
+function daysBetween(dateStr1, dateStr2) {
+  const d1 = new Date(dateStr1);
+  const d2 = new Date(dateStr2);
+  const diff = Math.abs(d2 - d1);
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
+function getWrongCounts() {
+  try { return JSON.parse(localStorage.getItem(WRONG_COUNT_KEY) || '{}'); }
+  catch { return {}; }
+}
+function getWrong() { return Object.keys(getWrongCounts()); }
+function addWrong(gid) {
+  const w = getWrongCounts();
+  w[gid] = (w[gid] || 0) + 1;
+  localStorage.setItem(WRONG_COUNT_KEY, JSON.stringify(w));
+}
+function removeWrong(gid) {
+  const w = getWrongCounts();
+  delete w[gid];
+  localStorage.setItem(WRONG_COUNT_KEY, JSON.stringify(w));
+}
+function getWrongCount(gid) { return getWrongCounts()[gid] || 0; }
+
+function getQHistory() {
+  try { return JSON.parse(localStorage.getItem(Q_HISTORY_KEY) || '{}'); }
+  catch { return {}; }
+}
+function recordQHistory(gid, isCorrect) {
+  const h = getQHistory();
+  if (!h[gid]) h[gid] = { correct: 0, total: 0 };
+  h[gid].total++;
+  if (isCorrect) h[gid].correct++;
+  h[gid].lastDate = new Date().toDateString();
+  localStorage.setItem(Q_HISTORY_KEY, JSON.stringify(h));
+}
+
+function getStats() { return loadJson(STATS_KEY); }
+function getStatsByLevel() { return loadJson(BY_LEVEL_KEY); }
+function getStatsByPerson() { return loadJson(BY_PERSON_KEY); }
+function loadJson(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '{}'); }
+  catch { return {}; }
+}
+function bump(obj, key, isCorrect) {
+  if (!key) return;
+  if (!obj[key]) obj[key] = { correct: 0, total: 0 };
+  obj[key].total++;
+  if (isCorrect) obj[key].correct++;
+}
+function recordStat(q, isCorrect) {
+  const s = getStats(); bump(s, q.f, isCorrect);
+  localStorage.setItem(STATS_KEY, JSON.stringify(s));
+  const lv = getStatsByLevel(); bump(lv, q.level, isCorrect);
+  localStorage.setItem(BY_LEVEL_KEY, JSON.stringify(lv));
+  const pp = getStatsByPerson();
+  if (q.person) bump(pp, q.person, isCorrect);
+  localStorage.setItem(BY_PERSON_KEY, JSON.stringify(pp));
+  recordQHistory(q._gid, isCorrect);
+  updateHomeSummary();
+
+  // Firestoreに自動保存（ログイン時のみ）
+  if (currentUser && window.fbSaveProgress) {
+    window.fbSaveProgress().then(ok => {
+      if (ok) showSyncStatus('☁️ 同期しました');
+    });
+  }
+}
+function resetStats() {
+  localStorage.removeItem(STATS_KEY);
+  localStorage.removeItem(BY_LEVEL_KEY);
+  localStorage.removeItem(BY_PERSON_KEY);
+  localStorage.removeItem(HOME_SUMMARY_KEY);
+}
+
+function updateHomeSummary() {
+  const s = getStats();
+  const arr = Object.entries(s).map(([k, v]) => ({
+    key: k, rate: v.total ? v.correct / v.total : 0, correct: v.correct, total: v.total
+  })).filter(x => x.total >= 3);
+  arr.sort((a, b) => a.rate - b.rate);
+  const top3 = arr.slice(0, 3);
+
+  const totalAll = Object.values(s).reduce((sum, v) => sum + v.total, 0);
+  const correctAll = Object.values(s).reduce((sum, v) => sum + v.correct, 0);
+
+  const personStats = getStatsByPerson();
+  const personArr = Object.entries(personStats).map(([k, v]) => ({
+    key: k, rate: v.total ? v.correct / v.total : 0, correct: v.correct, total: v.total
+  })).filter(x => x.total >= 2);
+  personArr.sort((a, b) => a.rate - b.rate);
+  const topPerson = personArr.slice(0, 3);
+
+  const wrongCounts = getWrongCounts();
+  const worst = Object.entries(wrongCounts)
+    .map(([gid, cnt]) => ({ gid, cnt }))
+    .sort((a, b) => b.cnt - a.cnt)[0] || null;
+
+  const qHistory = getQHistory();
+  const attempted = Object.keys(qHistory).length;
+  const totalQ = qData.length || 0;
+  const unattempted = Math.max(0, totalQ - attempted);
+
+  localStorage.setItem(HOME_SUMMARY_KEY, JSON.stringify({
+    top3, topPerson, worst,
+    overallRate: totalAll ? Math.round(correctAll / totalAll * 100) : 0,
+    overallTotal: totalAll,
+    attempted, unattempted,
+    updatedAt: new Date().toISOString()
+  }));
+}
+
+const storeKey = { wrong: 'cc_wrong_' + roundParam, progress: 'cc_progress_' + roundParam };
+function saveProgress() {
+  localStorage.setItem(storeKey.progress, JSON.stringify({
+    answered, correctCount, currentIndex, listIds: list.map(q => q._gid)
+  }));
+}
+function loadProgress() {
+  try {
+    const p = JSON.parse(localStorage.getItem(storeKey.progress) || 'null');
+    if (!p) return false;
+    const ids = list.map(q => q._gid).join(',');
+    if (p.listIds && p.listIds.join(',') === ids) {
+      answered = p.answered || {};
+      correctCount = p.correctCount || 0;
+      currentIndex = p.currentIndex || 0;
+      return true;
+    }
+  } catch {}
+  return false;
+}
+function clearProgress() { localStorage.removeItem(storeKey.progress); }
+
+function renderQuestion() {
+  if (list.length === 0) {
+    const msg = (modeParam === 'reviewToday')
+      ? 'まだ復習する問題がありません。しばらく解くと、忘却曲線に合わせて出題されます。'
+      : '該当する問題がありません。';
+    document.getElementById('quizArea').innerHTML =
+      `<div class="empty"><p>${msg}</p><button onclick="location.href='index.html'">メニューに戻る</button></div>`;
+    document.getElementById('totalNum').textContent = '0';
+    return;
+  }
+  const q = list[currentIndex];
+  document.getElementById('curNum').textContent = currentIndex + 1;
+  document.getElementById('totalNum').textContent = list.length;
+  document.getElementById('correctCount').textContent = correctCount;
+
+  const isA = answered[currentIndex] !== undefined;
+  let ch = '';
+  q.c.forEach((c, i) => {
+    const n = i + 1;
+    let cls = 'choice';
+    if (isA) {
+      cls += ' disabled';
+      if (n === q.a) cls += ' correct';
+      else if (n === answered[currentIndex]) cls += ' wrong';
+    }
+    ch += `<button class="${cls}" data-c="${n}"><span class="num">${n}</span><span>${esc(c)}</span></button>`;
+  });
+
+  const diffLabel = q.d || q.level || '';
+  const diffClass = q.d ? ('diff-' + q.d) : (q.level ? ('diff-' + q.level) : 'diff-none');
+  const roundLabel = isAllRounds ? '第' + q._round + '回 ' : '';
+
+  const hasBasics = isA && (q.basics || q.exp);
+  const basicsHtml = hasBasics
+    ? `<button id="basicsBtn" class="basics-btn" data-open="0">🧠 覚え方を見る（まず自分で思い出そう）</button>
+       <div id="basicsPanel" class="basics-hidden">
+         ${q.basics ? `<div class="basics"><div class="basics-title">📌 覚えるべき基礎</div>${esc(q.basics)}</div>` : ''}
+         ${q.exp ? `<div class="explanation"><div class="ans">正答：${q.a}</div>${esc(q.exp)}</div>` : ''}
+       </div>`
+    : '';
+
+  const wrongCount = getWrongCount(q._gid);
+  const wrongBadge = wrongCount > 0 ? `<span style="font-size:.7rem;color:#c53030;margin-left:6px;">×${wrongCount}</span>` : '';
+
+  let banner = '';
+  if (modeParam === 'recommend' && currentIndex === 0) {
+    banner = `<div class="recommend-banner">🎯 今日のおすすめ10問です。苦手分野・間違い問題・未解答問題・忘却曲線から自動選出しました。</div>`;
+  } else if (modeParam === 'reviewToday' && currentIndex === 0) {
+    banner = `<div class="recommend-banner" style="background:#ebf8ff;border-left-color:#3182ce;color:#2c5282;">🔁 今日の復習です。1〜14日前に解いた問題から、忘却曲線に合わせて選出しました。</div>`;
+  } else if (roundParam === 'shiryo' && currentIndex === 0) {
+    const lvLabel = levelParam ? `【${levelParam}ランク】` : '【S/A/Bランク全部】';
+    banner = `<div class="shiryo-banner">📑 資料問題編 ${lvLabel} です。出題頻度の高い資料から、試験で問われる数値・定義を厳選しました。</div>`;
+  }
+
+  document.getElementById('quizArea').innerHTML = `
+    ${banner}
+    <div class="question">
+      <div class="q-header">
+        <div><span class="q-num">問${currentIndex+1}</span>
+          <span class="q-field">${roundLabel}${esc(q.f)}</span>${wrongBadge}</div>
+        <span class="q-diff ${diffClass}">${diffLabel || '－'}</span>
+      </div>
+      <div class="q-text">${esc(q.t)}</div>
+      <div class="choices">${ch}</div>${basicsHtml}
+    </div>
+    <div class="nav-btns">
+      <button id="prevBtn" ${currentIndex===0?'disabled':''}>← 前へ</button>
+      <button id="nextBtn" ${currentIndex===list.length-1?'disabled':''}>次へ →</button>
+    </div>`;
+
+  if (!isA) {
+    document.querySelectorAll('.choice').forEach(b =>
+      b.addEventListener('click', () => select(parseInt(b.dataset.c))));
+  }
+
+  const basicsBtn = document.getElementById('basicsBtn');
+  if (basicsBtn) {
+    basicsBtn.addEventListener('click', () => {
+      const panel = document.getElementById('basicsPanel');
+      const open = basicsBtn.dataset.open === '1';
+      if (open) {
+        panel.classList.add('basics-hidden');
+        basicsBtn.dataset.open = '0';
+        basicsBtn.classList.remove('opened');
+        basicsBtn.textContent = '🧠 覚え方を見る（まず自分で思い出そう）';
+      } else {
+        panel.classList.remove('basics-hidden');
+        basicsBtn.dataset.open = '1';
+        basicsBtn.classList.add('opened');
+        basicsBtn.textContent = '📖 覚え方を閉じる';
+      }
+    });
+  }
+
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  if (prevBtn) prevBtn.addEventListener('click', () => { if (currentIndex>0){currentIndex--;saveProgress();renderQuestion();} });
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    if (currentIndex < list.length-1) { currentIndex++; saveProgress(); renderQuestion(); }
+    else showSummary();
+  });
+}
+
+function select(n) {
+  if (answered[currentIndex] !== undefined) return;
+  const q = list[currentIndex];
+  answered[currentIndex] = n;
+  const isCorrect = (n === q.a);
+  if (isCorrect) { correctCount++; removeWrong(q._gid); }
+  else { addWrong(q._gid); }
+  recordStat(q, isCorrect);
+  saveProgress();
+  renderQuestion();
+}
+
+function showSummary() {
+  const total = list.length;
+  const rate = total ? Math.round(correctCount / total * 100) : 0;
+  const wrong = getWrong().length;
+  let h2 = 'お疲れさまでした';
+  if (modeParam === 'recommend') h2 = '今日のおすすめ、完了！';
+  else if (modeParam === 'reviewToday') h2 = '今日の復習、完了！';
+  else if (roundParam === 'shiryo') h2 = '資料問題編、完了！';
+  document.getElementById('quizArea').innerHTML = `
+    <div class="summary">
+      <h2>${h2}</h2>
+      <div class="score">${correctCount} / ${total}</div>
+      <div class="detail">正答率 ${rate}％<br>間違い記録：${wrong}問</div>
+      <button onclick="location.reload()">もう一度</button>
+      <button class="stats-btn" onclick="showStats()">成績を見る</button>
+      <button class="secondary" onclick="location.href='index.html'">メニュー</button>
+    </div>`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let statsTab = 'field';
+function showStats() { renderStatsPanel(); }
+function renderStatsPanel() {
+  const area = document.getElementById('quizArea');
+  area._backup = area._backup || area.innerHTML;
+  let data = {}, label = '';
+  if (statsTab === 'field') { data = getStats(); label = '分野'; }
+  else if (statsTab === 'level') { data = getStatsByLevel(); label = 'レベル'; }
+  else if (statsTab === 'person') { data = getStatsByPerson(); label = '人物'; }
+  else if (statsTab === 'miss') { data = null; label = 'ミス上位'; }
+  const entries = data ? Object.entries(data).map(([k, v]) => ({
+    key: k, rate: v.total ? v.correct / v.total : 0, correct: v.correct, total: v.total
+  })) : [];
+  entries.sort((a, b) => a.rate - b.rate);
+  let bodyHtml = '';
+  if (statsTab === 'miss') {
+    const counts = getWrongCounts();
+    const misses = Object.entries(counts)
+      .map(([gid, cnt]) => { const q = qData.find(x => x._gid === gid); return { gid, cnt, q }; })
+      .sort((a, b) => b.cnt - a.cnt).slice(0, 20);
+    if (misses.length === 0) bodyHtml = '<p style="color:#718096;">まだ間違い記録がありません。</p>';
+    else bodyHtml = misses.map(m => {
+      const title = m.q ? m.q.t.substring(0, 60) + (m.q.t.length > 60 ? '…' : '') : m.gid;
+      const field = m.q ? m.q.f : '';
+      return `<div class="miss-row"><div><div style="font-size:.78rem;color:#718096;">${esc(field)}</div><div>${esc(title)}</div></div><div class="miss-count">×${m.cnt}</div></div>`;
+    }).join('');
+  } else if (entries.length === 0) {
+    bodyHtml = '<p style="color:#718096;">まだデータがありません。問題を解くと記録されます。</p>';
+  } else {
+    bodyHtml = entries.map(e => {
+      const rate = Math.round(e.rate * 100);
+      let cls = 'bar-fill';
+      if (rate < 60) cls += ' low'; else if (rate < 80) cls += ' mid';
+      return `<div class="stat-row"><div class="field-name">${esc(e.key)}</div><div class="bar-bg"><div class="${cls}" style="width:${rate}%"></div></div><div class="rate">${rate}%</div></div><div class="stat-sub">${e.correct} / ${e.total} 問</div>`;
+    }).join('');
+  }
+
+  area.innerHTML = `
+    <div class="stats-panel">
+      <h3>📊 成績（${label}・苦手な順）</h3>
+      <div class="stats-tabs">
+        <button class="stats-tab ${statsTab==='field'?'active':''}" data-tab="field">分野別</button>
+        <button class="stats-tab ${statsTab==='level'?'active':''}" data-tab="level">レベル別</button>
+        <button class="stats-tab ${statsTab==='person'?'active':''}" data-tab="person">人物別</button>
+        <button class="stats-tab ${statsTab==='miss'?'active':''}" data-tab="miss">ミス上位</button>
+      </div>
+      ${bodyHtml}
+      <div style="margin-top:16px;text-align:center;">
+        <button onclick="hideStats()" style="padding:10px 20px;border:none;border-radius:8px;background:#2b6cb0;color:#fff;cursor:pointer;font-weight:bold;">閉じる</button>
+        <button onclick="resetStatsConfirm()" style="padding:10px 20px;border:none;border-radius:8px;background:#c53030;color:#fff;cursor:pointer;font-weight:bold;margin-left:8px;">統計をリセット</button>
+      </div>
+    </div>`;
+
+  document.querySelectorAll('.stats-tab').forEach(b => {
+    b.addEventListener('click', () => { statsTab = b.dataset.tab; renderStatsPanel(); });
+  });
+}
+function hideStats() {
+  const area = document.getElementById('quizArea');
+  if (area._backup) { area.innerHTML = area._backup; area._backup = null; }
+  else location.reload();
+}
+function resetStatsConfirm() {
+  if (!confirm('統計をリセットしますか？（間違い記録は残ります）')) return;
+  resetStats();
+  alert('リセットしました');
+  location.reload();
+}
+
+function updTimer() {
+  const m = Math.floor(remaining/60), s = remaining%60;
+  document.getElementById('timer').textContent =
+    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+function startTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval); timerInterval = null;
+    document.getElementById('startBtn').textContent = '開始';
+  } else {
+    document.getElementById('startBtn').textContent = '停止';
+    timerInterval = setInterval(() => {
+      if (remaining > 0) { remaining--; updTimer(); }
+      else { clearInterval(timerInterval); timerInterval = null; alert('時間終了です！'); }
+    }, 1000);
+  }
+}
+
+function setupSelectors() {
+  const ms = document.getElementById('modeSelect');
+  ms.value = modeParam;
+  ms.addEventListener('change', () => {
+    const p = new URLSearchParams(location.search);
+    p.set('mode', ms.value);
+    location.search = p.toString();
+  });
+
+  const ls = document.getElementById('levelSelect');
+  ls.value = levelParam;
+  ls.addEventListener('change', () => {
+    const p = new URLSearchParams(location.search);
+    if (ls.value) p.set('level', ls.value); else p.delete('level');
+    p.set('mode', 'normal');
+    location.search = p.toString();
+  });
+
+  const fs = document.getElementById('fieldSelect');
+  const fields = [...new Set(qData.map(q => q.f))];
+  fields.forEach(f => {
+    const o = document.createElement('option');
+    o.value = f; o.textContent = f;
+    fs.appendChild(o);
+  });
+  fs.value = fieldParam;
+  fs.addEventListener('change', () => {
+    const p = new URLSearchParams(location.search);
+    if (fs.value) p.set('field', fs.value); else p.delete('field');
+    p.set('mode', 'normal');
+    location.search = p.toString();
+  });
+}
+
+async function init() {
+  document.getElementById('pageTitle').textContent =
+    isAllRounds ? '全回ミックス' : (ROUNDS[roundParam]?.label || '第' + roundParam + '回');
+
+  try { await loadData(); }
+  catch (e) {
+    document.getElementById('quizArea').innerHTML =
+      '<div class="empty"><p>' + esc(e.message) + '</p></div>';
+    return;
+  }
+
+  generateGidMap();
+  setupSelectors();
+  buildList();
+  if (modeParam === 'normal') loadProgress();
+  updTimer();
+  renderQuestion();
+
+  document.getElementById('startBtn').addEventListener('click', startTimer);
+  document.getElementById('statsBtn').addEventListener('click', showStats);
+  document.getElementById('syncBtn').addEventListener('click', async () => {
+    if (!currentUser) {
+      alert('ログインしていません。index.html からログインしてください。');
+      return;
+    }
+    showSyncStatus('☁️ 同期中...');
+    const ok = await window.fbLoadProgress();
+    showSyncStatus(ok ? '☁️ 同期完了' : '同期するデータがありませんn');
+    setTimeout(() => location.reload(), 800);
+  });
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!confirm('進捗をリセットしますか？（間違い記録は残ります）')) return;
+    currentIndex = 0; correctCount = 0; answered = {};
+    remaining = 6000; clearProgress(); updTimer(); renderQuestion();
+  });
+  document.getElementById('clearWrongBtn').addEventListener('click', () => {
+    if (!confirm('間違い記録（回数）を全部消しますか？')) return;
+    localStorage.removeItem(WRONG_COUNT_KEY);
+    alert('消しました');
+  });
+
+  if (viewParam === 'stats') {
+    showStats();
+  }
+}
+
+// Firebase認証状態を監視（ログインユーザーを記録）
+window.addEventListener('firebase-ready', function() {
+  window.fbOnAuthStateChanged(function(user) {
+    currentUser = user;
+    if (user) {
+      console.log('ログイン中:', user.email);
+    } else {
+      console.log('未ログイン');
+    }
+  });
+});
+
+init();
+</script>
+</body>
+</html>

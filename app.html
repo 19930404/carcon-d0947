@@ -200,7 +200,7 @@
 <script src="data-game.js?v=1"></script>
 <script src="game.js?v=1"></script>
 <script src="dataprogress.js?v=1"></script>
-<script type="module" src="firebase-config.js?v=2"></script>
+<script type="module" src="firebaseconfig.js?v=4"></script>
 <script>
 const ROUNDS = {
   30: { label: '第30回', date: '2025年11月2日' },
@@ -952,8 +952,7 @@ async function init() {
     showSyncStatus('☁️ 同期中...');
     const ok = await window.fbLoadProgress();
     showSyncStatus(ok ? '☁️ 同期完了' : '同期するデータがありません');
-    setTimeout(() => location.reload(), 800);
-  });
+    });
   document.getElementById('resetBtn').addEventListener('click', () => {
     if (!confirm('進捗をリセットしますか？（間違い記録は残ります）')) return;
     currentIndex = 0; correctCount = 0; answered = {};
@@ -970,14 +969,25 @@ async function init() {
   }
 }
 
-// Firebase認証状態を監視
-window.addEventListener('firebase-ready', function() {
-  window.fbOnAuthStateChanged(function(user) {
-    currentUser = user;
-    if (user) console.log('ログイン中:', user.email);
-    else console.log('未ログイン');
-  });
-});
+/* ★★★ Firebase 認証：ポーリング方式で1回だけ登録 ★★★ */
+(function waitForFirebase() {
+  let tries = 0;
+  const iv = setInterval(() => {
+    tries++;
+    if (window.fbReady && typeof window.fbOnAuthStateChanged === 'function') {
+      clearInterval(iv);
+      console.log('[auth/app] Firebase ready. Setting up listener...');
+
+      window.fbOnAuthStateChanged(function(user) {
+        currentUser = user;
+        console.log('[auth/app] state changed:', user ? user.email : 'null');
+      });
+    } else if (tries > 75) {
+      clearInterval(iv);
+      console.warn('[auth/app] Firebase の読み込みがタイムアウトしました');
+    }
+  }, 200);
+})();
 
 init();
 </script>

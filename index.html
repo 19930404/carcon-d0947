@@ -2,403 +2,207 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>キャリアコンサルタント試験 過去問アプリ</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: "Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
     background: linear-gradient(160deg,#2b6cb0 0%,#2c5282 50%,#1a365d 100%);
-    min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:12px; }
-  .wrap { max-width:520px; width:100%; padding-top:8px; padding-bottom:30px; }
-  .title { color:#fff; margin-bottom:10px; text-align:center; }
-  .title h1 { font-size:1.1rem; margin-bottom:2px; }
-  .title p { font-size:.7rem; opacity:.85; }
-  .card { background:#fff; border-radius:16px; padding:14px 16px; box-shadow:0 8px 30px rgba(0,0,0,.25); margin-bottom:10px; }
+    min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:10px; }
+  .wrap { max-width:520px; width:100%; padding-bottom:20px; }
 
-  /* キャラクター */
-  .char-card { text-align:center; padding:16px; }
-  .char-stage {
-    font-size: 6rem;
-    line-height: 1;
-    margin: 4px 0;
-    animation: float 3s ease-in-out infinite;
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,.15));
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
-  .char-name {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #2d3748;
-    margin-bottom: 2px;
-    cursor: pointer;
-    display: inline-block;
-  }
-  .char-name:hover { color: #2b6cb0; }
-  .char-level { font-size: .8rem; color: #718096; margin-bottom: 6px; }
-  .exp-bar {
-    background: #edf2f7;
-    height: 16px;
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 6px 0;
-    position: relative;
-  }
-  .exp-fill {
-    background: linear-gradient(90deg, #48bb78, #38a169);
-    height: 100%;
-    transition: width .5s;
-    border-radius: 8px;
-  }
-  .exp-text {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: .68rem;
-    font-weight: bold;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,.4);
-  }
-  .char-info {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    font-size: .75rem;
-    color: #4a5568;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
-  .char-info span { display: flex; align-items: center; gap: 3px; }
+  /* ===== ヘッダー（ハンバーガー付き） ===== */
+  .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding:0 4px; }
+  .hamburger { width:44px; height:44px; border:none; border-radius:10px; background:rgba(255,255,255,.15); color:#fff; cursor:pointer; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4px; padding:0; }
+  .hamburger span { display:block; width:20px; height:2px; background:#fff; border-radius:2px; transition:.2s; }
+  .hamburger:hover { background:rgba(255,255,255,.25); }
+  .top-bar .title-mini { color:#fff; font-size:.9rem; font-weight:bold; text-align:center; flex:1; }
+  .top-bar .spacer { width:44px; }
 
-  /* 称号・バッジ */
-  .title-badge-display {
-    background: linear-gradient(135deg, #fffaf0, #feebc8);
-    border: 2px solid #f6ad55;
-    border-radius: 10px;
-    padding: 8px 10px;
-    margin-top: 10px;
-    text-align: center;
-  }
-  .current-title {
-    font-size: .9rem;
-    font-weight: bold;
-    color: #c05621;
-  }
-  .badge-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    justify-content: center;
-    margin-top: 6px;
-  }
-  .badge-item {
-    font-size: 1.2rem;
-    padding: 2px;
-    cursor: pointer;
-    transition: transform .2s;
-  }
-  .badge-item:hover { transform: scale(1.2); }
-  .badge-empty {
-    font-size: .72rem;
-    color: #a0aec0;
-    padding: 4px 0;
-  }
+  .card { background:#fff; border-radius:16px; padding:14px; box-shadow:0 8px 30px rgba(0,0,0,.2); margin-bottom:10px; }
 
-  /* デイリー */
-  .daily {
-    background: linear-gradient(135deg, #fff5f5 0%, #fffaf0 100%);
-    border:2px solid #fbd38d;
-    border-radius:12px;
-    padding:12px;
-    margin-bottom:10px;
-    text-align:left;
-  }
-  .daily .date {
-    font-size:.72rem;
-    color:#c05621;
-    font-weight:bold;
-    margin-bottom:8px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-  .daily .days-left {
-    background:#c05621;
-    color:#fff;
-    padding:2px 8px;
-    border-radius:10px;
-    font-size:.68rem;
-  }
+  /* ===== キャラクター（コンパクト） ===== */
+  .char-card { padding:12px; }
+  .char-main { display:flex; align-items:center; gap:12px; }
+  .char-stage { font-size:3rem; line-height:1; flex-shrink:0; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 4px 8px rgba(0,0,0,.12)); }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  .char-info-block { flex:1; min-width:0; }
+  .char-name { font-size:1rem; font-weight:bold; color:#2d3748; cursor:pointer; display:inline-block; }
+  .char-name:hover { color:#2b6cb0; }
+  .char-level { font-size:.72rem; color:#718096; }
+  .exp-bar { background:#edf2f7; height:12px; border-radius:6px; overflow:hidden; margin:4px 0 0; position:relative; }
+  .exp-fill { background:linear-gradient(90deg, #48bb78, #38a169); height:100%; transition:width .5s; }
+  .exp-text { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.62rem; font-weight:bold; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.4); }
+
+  .char-stats { display:flex; justify-content:space-between; gap:6px; margin-top:8px; font-size:.72rem; color:#4a5568; }
+  .char-stats > div { flex:1; text-align:center; background:#f7fafc; border-radius:6px; padding:4px 2px; }
+  .char-stats .num { font-weight:bold; color:#2b6cb0; font-size:.85rem; display:block; }
+
+  /* ===== 称号・バッジ ===== */
+  .title-badge-display { background: linear-gradient(135deg, #fffaf0, #feebc8); border:2px solid #f6ad55; border-radius:10px; padding:6px 10px; margin-top:10px; text-align:center; }
+  .current-title { font-size:.82rem; font-weight:bold; color:#c05621; }
+  .badge-row { display:flex; flex-wrap:wrap; gap:3px; justify-content:center; margin-top:4px; }
+  .badge-item { font-size:1rem; cursor:pointer; }
+  .badge-empty { font-size:.68rem; color:#a0aec0; }
+
+  /* ===== イベントカード ===== */
+  .event-card { background:linear-gradient(135deg, #fed7d7 0%, #feebc8 100%); border:2px solid #f6ad55; border-radius:14px; padding:14px; margin-bottom:10px; cursor:pointer; transition: transform .15s, box-shadow .15s; text-decoration:none; display:block; color:inherit; }
+  .event-card:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(246,173,85,.4); }
+  .event-header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .event-emoji { font-size:1.8rem; }
+  .event-name { font-size:.92rem; font-weight:bold; color:#744210; }
+  .event-desc { font-size:.75rem; color:#975a16; }
+  .event-cta { display:inline-block; margin-top:8px; font-size:.78rem; font-weight:bold; color:#c05621; }
+
+  /* ===== デイリー ===== */
+  .daily { background: linear-gradient(135deg, #fff5f5 0%, #fffaf0 100%); border:2px solid #fbd38d; border-radius:12px; padding:12px; }
+  .daily .date { font-size:.7rem; color:#c05621; font-weight:bold; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+  .daily .days-left { background:#c05621; color:#fff; padding:2px 8px; border-radius:10px; font-size:.65rem; }
   .daily .days-left.urgent { background:#c53030; animation: pulse 1.5s infinite; }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .65; }
-  }
-  .daily .quote {
-    font-size:.85rem;
-    color:#744210;
-    line-height:1.5;
-    margin-bottom:8px;
-    padding-left:8px;
-    border-left:3px solid #f6ad55;
-    font-style: italic;
-  }
-  .daily .tasks-title {
-    font-size:.72rem;
-    color:#c05621;
-    font-weight:bold;
-    margin-top:8px;
-    margin-bottom:4px;
-  }
-  .daily .task {
-    font-size:.78rem;
-    color:#4a5568;
-    padding:4px 0;
-    line-height:1.4;
-    border-bottom:1px dashed #fbd38d;
-  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .65; } }
+  .daily .quote { font-size:.8rem; color:#744210; line-height:1.5; padding-left:8px; border-left:3px solid #f6ad55; font-style: italic; }
+  .daily .tasks-title { font-size:.7rem; color:#c05621; font-weight:bold; margin-top:8px; margin-bottom:4px; }
+  .daily .task { font-size:.76rem; color:#4a5568; padding:4px 0; line-height:1.4; border-bottom:1px dashed #fbd38d; }
   .daily .task:last-child { border-bottom:none; }
   .daily .task .label { color:#c05621; font-weight:bold; }
-  .daily .task a {
-    color:#2b6cb0;
-    text-decoration:none;
-    font-weight:bold;
-    font-size:.72rem;
-    margin-left:4px;
-    white-space:nowrap;
-  }
+  .daily .task a { color:#2b6cb0; text-decoration:none; font-weight:bold; font-size:.72rem; margin-left:4px; }
 
-  .section-title {
-    font-size:.8rem;
-    color:#2d3748;
-    font-weight:bold;
-    margin-bottom:8px;
-    display:flex;
-    align-items:center;
-    gap:6px;
-  }
+  /* ===== セクション ===== */
+  .section-title { font-size:.82rem; color:#2d3748; font-weight:bold; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
 
+  /* ===== メニューボタン ===== */
   .today-menu { display:flex; flex-direction:column; gap:8px; }
-  .today-btn {
-    display:flex; align-items:center; justify-content:space-between;
-    width:100%; padding:14px 16px; border:none; border-radius:10px;
-    text-decoration:none; font-weight:bold; font-size:.95rem;
-    transition: transform .15s, box-shadow .15s; cursor:pointer;
-    font-family:inherit; text-align:left;
-  }
+  .today-btn { display:flex; align-items:center; justify-content:space-between; width:100%; padding:12px 14px; border:none; border-radius:10px; text-decoration:none; font-weight:bold; font-size:.9rem; transition: transform .15s, box-shadow .15s; cursor:pointer; font-family:inherit; text-align:left; }
   .today-btn:hover { transform: translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); }
   .today-btn .label { display:flex; flex-direction:column; gap:2px; }
-  .today-btn .sub { font-size:.68rem; font-weight:normal; opacity:.85; }
-  .today-btn .arrow { font-size:1.3rem; opacity:.7; }
+  .today-btn .sub { font-size:.65rem; font-weight:normal; opacity:.85; }
+  .today-btn .arrow { font-size:1.2rem; opacity:.7; }
   .today-btn.recommend { background: linear-gradient(135deg, #48bb78, #38a169); color:#fff; }
   .today-btn.review-today { background: linear-gradient(135deg, #4299e1, #3182ce); color:#fff; }
   .today-btn.stats { background: linear-gradient(135deg, #ed8936, #dd6b20); color:#fff; }
 
-  .weak {
-    background:#fff5f5; border:2px solid #feb2b2;
-    border-radius:12px; padding:12px; margin-bottom:10px; text-align:left;
-  }
-  .weak h3 { font-size:.8rem; color:#c53030; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
-  .weak-row { display:flex; justify-content:space-between; align-items:center; font-size:.78rem; padding:4px 0; border-bottom:1px dashed #fed7d7; }
+  /* ===== 苦手パネル ===== */
+  .weak { background:#fff5f5; border:2px solid #feb2b2; border-radius:12px; padding:12px; margin-bottom:10px; }
+  .weak h3 { font-size:.78rem; color:#c53030; margin-bottom:6px; }
+  .weak-row { display:flex; justify-content:space-between; align-items:center; font-size:.76rem; padding:3px 0; border-bottom:1px dashed #fed7d7; }
   .weak-row:last-child { border-bottom:none; }
-  .weak-row .rank { display:inline-block; width:18px; height:18px; line-height:18px; text-align:center; background:#fed7d7; color:#c53030; border-radius:50%; font-size:.68rem; font-weight:bold; margin-right:4px; }
+  .weak-row .rank { display:inline-block; width:16px; height:16px; line-height:16px; text-align:center; background:#fed7d7; color:#c53030; border-radius:50%; font-size:.65rem; font-weight:bold; margin-right:4px; }
   .weak-row .name { color:#4a5568; flex:1; }
   .weak-row .rate { font-weight:bold; color:#c53030; margin-left:8px; }
-  .weak .overall { margin-top:8px; padding-top:8px; border-top:1px solid #fed7d7; font-size:.72rem; color:#718096; }
+  .weak .overall { margin-top:6px; padding-top:6px; border-top:1px solid #fed7d7; font-size:.7rem; color:#718096; }
 
-  details.more {
-    background:#fff; border-radius:12px; padding:0; margin-bottom:10px;
-    overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.06);
-  }
-  details.more summary {
-    padding:12px 14px; cursor:pointer; font-weight:bold; font-size:.85rem;
-    color:#2b6cb0; list-style:none; display:flex; justify-content:space-between;
-    align-items:center; user-select:none;
-  }
+  /* ===== 折りたたみ ===== */
+  details.more { background:#fff; border-radius:12px; padding:0; margin-bottom:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+  details.more summary { padding:12px 14px; cursor:pointer; font-weight:bold; font-size:.82rem; color:#2b6cb0; list-style:none; display:flex; justify-content:space-between; align-items:center; user-select:none; }
   details.more summary::-webkit-details-marker { display:none; }
-  details.more summary::after {
-    content:'▼'; font-size:.65rem; color:#a0aec0; transition: transform .2s;
-  }
+  details.more summary::after { content:'▼'; font-size:.6rem; color:#a0aec0; transition: transform .2s; }
   details.more[open] summary::after { transform: rotate(180deg); }
-  details.more summary:hover { background:#f7fafc; }
   details.more .inner { padding:0 12px 12px; }
-
-  .link-btn { display:flex; align-items:center; justify-content:space-between;
-    width:100%; padding:10px 14px; margin-bottom:6px;
-    background:#f7fafc; border:2px solid #e2e8f0; border-radius:8px;
-    text-decoration:none; color:#2b6cb0; font-weight:bold; font-size:.85rem; transition:.2s; }
+  .link-btn { display:flex; align-items:center; justify-content:space-between; width:100%; padding:9px 12px; margin-bottom:5px; background:#f7fafc; border:2px solid #e2e8f0; border-radius:8px; text-decoration:none; color:#2b6cb0; font-weight:bold; font-size:.8rem; transition:.2s; }
   .link-btn:last-child { margin-bottom:0; }
   .link-btn:hover { background:#ebf8ff; border-color:#90cdf4; }
-  .link-btn .date { font-size:.65rem; font-weight:normal; color:#718096; display:block; margin-top:1px; }
-  .link-btn .arrow { font-size:1rem; color:#a0aec0; }
+  .link-btn .date { font-size:.62rem; font-weight:normal; color:#718096; display:block; margin-top:1px; }
   .link-btn.extra { background:#fffaf0; border-color:#f6ad55; color:#c05621; }
-  .link-btn.extra .date { color:#dd6b20; }
   .link-btn.mix { background:#ebf8ff; border-color:#90cdf4; }
   .link-btn.shiryo { background:#faf5ff; border-color:#d6bcfa; color:#6b46c1; }
-  .link-btn.shiryo .date { color:#805ad5; }
 
-  .footer { margin-top:14px; font-size:.65rem; color:#fff; opacity:.8; line-height:1.5; text-align:center; }
+  .footer { margin-top:10px; font-size:.62rem; color:#fff; opacity:.8; text-align:center; }
   .hidden { display:none; }
 
-  .progress-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; font-size:.78rem; }
-  .progress-row .cat-name { width:160px; flex-shrink:0; color:#4a5568; font-size:.72rem; }
-  .progress-row .bar-bg { flex:1; height:16px; background:#edf2f7; border-radius:8px; overflow:hidden; position:relative; }
-  .progress-row .bar-fill { height:100%; background:#38a169; transition:width .3s; }
-  .progress-row .bar-fill.low { background:#e53e3e; }
-  .progress-row .bar-fill.mid { background:#dd6b20; }
-  .progress-row .lap { width:50px; text-align:right; font-weight:bold; color:#2d3748; font-size:.72rem; }
-  .progress-summary { margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0; font-size:.8rem; font-weight:bold; color:#2b6cb0; text-align:center; }
-  .progress-detail { font-size:.7rem; color:#718096; text-align:center; margin-top:4px; }
-  .progress-empty { font-size:.78rem; color:#718096; text-align:center; padding:8px 0; }
+  /* ===== モーダル ===== */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; padding:16px; z-index:2000; animation: fadeIn .2s; }
+  .modal-overlay.hidden { display:none; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal-content { background:#fff; border-radius:16px; padding:20px; max-width:460px; width:100%; max-height:80vh; overflow-y:auto; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.3); animation: slideUp .3s; }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-close { position:absolute; top:10px; right:10px; width:28px; height:28px; border:none; border-radius:50%; background:#edf2f7; color:#4a5568; cursor:pointer; font-weight:bold; font-size:.9rem; }
+  .modal-close:hover { background:#cbd5e0; }
 
-  .stats-tabs { display:flex; gap:4px; margin-bottom:10px; border-bottom:2px solid #e2e8f0; }
-  .stats-tab { padding:6px 12px; border:none; background:transparent; cursor:pointer;
-    font-size:.78rem; font-weight:bold; color:#718096; border-bottom:3px solid transparent;
-    margin-bottom:-2px; font-family:inherit; }
-  .stats-tab.active { color:#2b6cb0; border-bottom-color:#2b6cb0; }
+  /* ===== ハンバーガーメニュー内容 ===== */
+  .menu-item { display:flex; align-items:center; gap:10px; padding:12px 14px; margin-bottom:6px; background:#f7fafc; border-radius:10px; cursor:pointer; text-decoration:none; color:#2d3748; font-weight:bold; font-size:.88rem; border:none; width:100%; font-family:inherit; text-align:left; transition:.15s; }
+  .menu-item:hover { background:#ebf8ff; }
+  .menu-item .icon { font-size:1.3rem; width:28px; text-align:center; }
+  .menu-item.danger { color:#c53030; }
+  .menu-item.danger:hover { background:#fff5f5; }
+  .menu-item .sub { font-size:.68rem; font-weight:normal; color:#718096; display:block; }
 
-  .prediction-card { text-align:center; padding:14px; }
-  .prediction-emoji { font-size:2.5rem; margin:4px 0; }
-  .prediction-score { font-size:2rem; font-weight:bold; margin:2px 0; }
-  .prediction-bar { background:#edf2f7; height:12px; border-radius:6px; overflow:hidden; margin:8px 0; }
-  .prediction-bar-fill { height:100%; transition:width .8s; border-radius:6px; }
-  .prediction-msg { font-size:.78rem; color:#4a5568; margin-top:6px; }
+  .info-btn { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#4299e1; color:#fff; border:none; cursor:pointer; font-weight:bold; font-size:.65rem; margin-left:4px; vertical-align:middle; }
+  .info-btn:hover { background:#3182ce; }
+  .modal-formula { background:#f7fafc; border-left:4px solid #4299e1; padding:10px 12px; border-radius:6px; font-family:monospace; font-size:.78rem; line-height:1.6; margin:8px 0; }
+  .modal-highlight { background:#fffaf0; border-left:4px solid #dd6b20; padding:10px 12px; border-radius:6px; font-size:.78rem; margin:8px 0; }
+  .modal-highlight .label { color:#c05621; font-weight:bold; }
 
-  .auth-mini {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:8px 12px; font-size:.75rem; color:#4a5568;
-    background:#f7fafc; border-radius:8px; margin-top:10px;
-  }
+  .name-input { width:100%; padding:10px; font-size:1rem; font-family:inherit; border:2px solid #cbd5e0; border-radius:8px; margin-bottom:10px; text-align:center; }
+  .name-input:focus { border-color:#4299e1; outline:none; }
+  .name-submit { width:100%; padding:10px; background:#48bb78; color:#fff; border:none; border-radius:8px; font-weight:bold; font-size:.9rem; cursor:pointer; font-family:inherit; }
+
+  .auth-mini { display:flex; align-items:center; justify-content:space-between; padding:6px 10px; font-size:.72rem; color:#4a5568; background:#f7fafc; border-radius:8px; margin-top:8px; }
   .auth-mini .user-info { display:flex; align-items:center; gap:6px; }
-  .auth-mini .user-info .dot {
-    width:8px; height:8px; border-radius:50%; background:#38a169;
-  }
-  .auth-mini button {
-    padding:5px 10px; border:none; border-radius:6px;
-    font-size:.72rem; font-weight:bold; cursor:pointer; font-family:inherit;
-  }
+  .auth-mini .dot { width:8px; height:8px; border-radius:50%; background:#cbd5e0; }
+  .auth-mini button { padding:4px 10px; border:none; border-radius:6px; font-size:.7rem; font-weight:bold; cursor:pointer; font-family:inherit; }
   .auth-mini button.login { background:#4299e1; color:#fff; }
   .auth-mini button.logout { background:#cbd5e0; color:#4a5568; }
-
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.6);
-    display: flex; align-items: center; justify-content: center;
-    padding: 16px; z-index: 2000; animation: fadeIn .2s;
-  }
-  .modal-overlay.hidden { display: none; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .modal-content {
-    background: #fff; border-radius: 16px; padding: 20px;
-    max-width: 460px; width: 100%; max-height: 80vh; overflow-y: auto;
-    position: relative; box-shadow: 0 20px 60px rgba(0,0,0,.3);
-    animation: slideUp .3s;
-  }
-  @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  .modal-close {
-    position: absolute; top: 10px; right: 10px; width: 28px; height: 28px;
-    border: none; border-radius: 50%; background: #edf2f7; color: #4a5568;
-    cursor: pointer; font-weight: bold; font-size: .9rem;
-  }
-  .modal-close:hover { background: #cbd5e0; }
-  .info-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: #4299e1; color: #fff; border: none; cursor: pointer;
-    font-weight: bold; font-size: .7rem; margin-left: 6px; vertical-align: middle;
-  }
-  .info-btn:hover { background: #3182ce; }
-  .modal-formula {
-    background: #f7fafc; border-left: 4px solid #4299e1;
-    padding: 10px 12px; border-radius: 6px;
-    font-family: monospace; font-size: .8rem; line-height: 1.6; margin: 8px 0;
-  }
-  .modal-highlight {
-    background: #fffaf0; border-left: 4px solid #dd6b20;
-    padding: 10px 12px; border-radius: 6px; font-size: .8rem; margin: 8px 0;
-  }
-  .modal-highlight .label { color: #c05621; font-weight: bold; }
-
-  .name-input {
-    width: 100%; padding: 10px; font-size: 1rem; font-family: inherit;
-    border: 2px solid #cbd5e0; border-radius: 8px; margin-bottom: 10px;
-    text-align: center;
-  }
-  .name-input:focus { border-color: #4299e1; outline: none; }
-  .name-submit {
-    width: 100%; padding: 10px; background: #48bb78; color: #fff;
-    border: none; border-radius: 8px; font-weight: bold; font-size: .9rem;
-    cursor: pointer; font-family: inherit;
-  }
-  .name-submit:hover { background: #38a169; }
-
-  .levelup-toast {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    background: linear-gradient(135deg, #f6e05e, #ed8936);
-    color: #744210; padding: 30px 50px; border-radius: 20px;
-    font-size: 1.5rem; font-weight: bold; text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,.3);
-    z-index: 3000; opacity: 0; transition: all .5s;
-    pointer-events: none;
-  }
-  .levelup-toast.show {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="title">
-    <h1>キャリアコンサルタント試験 過去問</h1>
-    <p>学科試験＋資料問題＋ゲーム要素</p>
+  <!-- トップバー（ハンバーガーメニュー） -->
+  <div class="top-bar">
+    <button class="hamburger" onclick="openMenu()" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="title-mini">キャリアコンサルタント試験</div>
+    <div class="spacer"></div>
   </div>
 
+  <!-- キャラクターカード（コンパクト＋合格予測統合） -->
   <div class="card char-card">
-    <div class="char-stage" id="charStage">🥚</div>
-    <div class="char-name" id="charName" onclick="openNameModal()">ぴよすけ ✏️</div>
-    <div class="char-level" id="charLevel">Lv.1</div>
-    <div class="exp-bar">
-      <div class="exp-fill" id="expFill" style="width:0%"></div>
-      <div class="exp-text" id="expText">0 / 100</div>
+    <div class="char-main">
+      <div class="char-stage" id="charStage">🥚</div>
+      <div class="char-info-block">
+        <div class="char-name" id="charName" onclick="openNameModal()">ぴよすけ ✏️</div>
+        <div class="char-level" id="charLevel">Lv.1</div>
+        <div class="exp-bar">
+          <div class="exp-fill" id="expFill" style="width:0%"></div>
+          <div class="exp-text" id="expText">0 / 100</div>
+        </div>
+      </div>
     </div>
-    <div class="char-info">
-      <span>🔥 <span id="streakDays">0</span>日</span>
-      <span>⭐ <span id="totalPoints">0</span>pt</span>
-      <span>📚 <span id="totalSolved">0</span>問</span>
-      <span id="expInfoBtn" class="info-btn" onclick="showExpDetail()" style="margin-left:2px;">?</span>
+    <div class="char-stats">
+      <div>連続<span class="num" id="streakDays">0</span>日</div>
+      <div>解答<span class="num" id="totalSolved">0</span>問</div>
+      <div>予測<span class="num" id="passPredNum">-</span>%</div>
     </div>
-
-    <div class="title-badge-display" id="titleBadgeDisplay">
+    <div class="title-badge-display">
       <div class="current-title" id="currentTitle">🎓 ビギナー</div>
-      <div style="font-size:.65rem;color:#718096;margin-top:2px;">現在の称号</div>
       <div id="badgeRowContainer">
         <div class="badge-empty" id="badgeEmpty">バッジを集めよう！</div>
         <div class="badge-row" id="badgeRow" style="display:none;"></div>
       </div>
-      <div style="font-size:.65rem;color:#718096;margin-top:4px;" id="badgeCountLine" style="display:none;">
-        バッジ <span id="badgeCount">0</span> / <span id="badgeTotal">14</span>
-        <span class="info-btn" onclick="showBadgesDetail()">?</span>
-      </div>
     </div>
-
-    <div class="auth-mini" id="authMini">
+    <div class="auth-mini">
       <div class="user-info" id="authUserInfo">
-        <span class="dot" style="background:#cbd5e0;"></span>
+        <span class="dot"></span>
         <span id="authUserName">未ログイン</span>
       </div>
       <button id="authActionBtn" class="login" onclick="handleAuthAction()">ログイン</button>
     </div>
   </div>
 
+  <!-- 今日のイベント -->
+  <a class="event-card" id="eventCard" href="app.html?round=all&mode=event">
+    <div class="event-header">
+      <span class="event-emoji" id="eventEmoji">🎉</span>
+      <div>
+        <div class="event-name" id="eventName">今日のイベント</div>
+        <div class="event-desc" id="eventDesc">読み込み中...</div>
+      </div>
+    </div>
+    <span class="event-cta">挑戦する →</span>
+  </a>
+
+  <!-- デイリー（名言＋課題） -->
   <div class="card">
     <div class="daily">
       <div class="date">
@@ -410,27 +214,7 @@
     </div>
   </div>
 
-  <div class="card prediction-card">
-    <div class="section-title" style="justify-content:center;">
-      🎯 合格予測
-      <button class="info-btn" onclick="showPassPredictionDetail()">?</button>
-    </div>
-    <div id="passPredictionPanel">
-      <div class="progress-empty">問題を解くと、予測が表示されます。</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="section-title">📊 学習進捗（3周目標）</div>
-    <div class="stats-tabs">
-      <button class="stats-tab active" data-tab="rank" onclick="switchProgressTab('rank')">ランク別</button>
-      <button class="stats-tab" data-tab="field" onclick="switchProgressTab('field')">分野別</button>
-    </div>
-    <div id="progressPanel">
-      <div class="progress-empty">問題を解くと、ここに進捗が表示されます。</div>
-    </div>
-  </div>
-
+  <!-- 今日のメニュー -->
   <div class="card">
     <div class="section-title">🎯 今日のメニュー</div>
     <div class="today-menu">
@@ -444,11 +228,11 @@
       <a class="today-btn review-today" href="app.html?round=all&mode=reviewToday">
         <span class="label">
           <span>今日の復習</span>
-          <span class="sub">忘却曲線に合わせて、忘れかけた問題だけ</span>
+          <span class="sub">忘却曲線に合わせて復習</span>
         </span>
         <span class="arrow">›</span>
       </a>
-      <a class="today-btn stats" href="app.html?view=stats">
+      <a class="today-btn stats" href="app.html?round=all&view=stats">
         <span class="label">
           <span>📊 成績を見る</span>
           <span class="sub">分野別・レベル別・人物別・ミス上位</span>
@@ -458,66 +242,36 @@
     </div>
   </div>
 
+  <!-- 苦手パネル -->
   <div id="weakPanel" class="weak hidden">
     <h3>📉 あなたの苦手トップ3</h3>
     <div id="weakList"></div>
     <div class="overall" id="overallInfo"></div>
   </div>
 
+  <!-- もっと問題 -->
   <details class="more">
-    <summary>📚 もっと問題を解く（資料問題・人物編・過去問）</summary>
+    <summary>📚 もっと問題を解く（過去問・資料・人物編）</summary>
     <div class="inner">
-      <a class="link-btn shiryo" href="app.html?round=shiryo">
-        <span>📑 資料問題編<span class="date">S/A/Bランク別・最新資料対策</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn shiryo" href="app.html?round=shiryo&level=S">
-        <span>📑 資料問題編：Sランクだけ<span class="date">最重点4資料</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn shiryo" href="app.html?round=shiryo&level=A">
-        <span>📑 資料問題編：Aランクだけ<span class="date">重点8資料</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn shiryo" href="app.html?round=shiryo&level=B">
-        <span>📑 資料問題編：Bランクだけ<span class="date">押さえておきたい4資料</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn shiryo" href="app.html?round=shiryo&mode=review">
-        <span>📑 資料問題編：間違えた問題だけ<span class="date">間違い回数の多い順に復習</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn extra" href="app.html?round=extra">
-        <span>👤 人物編：頻出テーマ<span class="date">基礎／標準／応用で絞り込み可</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn extra" href="app.html?round=extra&level=基礎">
-        <span>👤 人物編：基礎だけ<span class="date">まずはここから</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn extra" href="app.html?round=extra&mode=review">
-        <span>👤 人物編：間違えた問題だけ<span class="date">間違い回数の多い順に復習</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn" href="app.html?round=30">
-        <span>第30回<span class="date">2025年11月2日実施</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn" href="app.html?round=31">
-        <span>第31回<span class="date">2026年3月1日実施</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn" href="app.html?round=32">
-        <span>第32回<span class="date">2026年7月5日実施</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn" href="app.html?round=34">
-        <span>第34回<span class="date">技能検定 学科試験</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn" href="app.html?round=35">
-        <span>第35回<span class="date">技能検定 学科試験</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn" href="app.html?round=36">
-        <span>第36回<span class="date">技能検定 学科試験</span></span><span class="arrow">›</span>
-      </a>
-      <a class="link-btn mix" href="app.html?round=all&mode=random">
-        <span>全回ミックス（ランダム）<span class="date">全6回＋人物編＋資料問題編をまとめて</span></span><span class="arrow">›</span>
-      </a>
+      <a class="link-btn shiryo" href="app.html?round=shiryo"><span>📑 資料問題編<span class="date">S/A/Bランク別</span></span><span>›</span></a>
+      <a class="link-btn shiryo" href="app.html?round=shiryo&level=S"><span>📑 Sランクだけ<span class="date">最重点</span></span><span>›</span></a>
+      <a class="link-btn shiryo" href="app.html?round=shiryo&mode=review"><span>📑 資料の間違いだけ<span class="date">復習</span></span><span>›</span></a>
+      <a class="link-btn extra" href="app.html?round=extra"><span>👤 人物編<span class="date">頻出テーマ</span></span><span>›</span></a>
+      <a class="link-btn extra" href="app.html?round=extra&mode=review"><span>👤 人物編の間違いだけ<span class="date">復習</span></span><span>›</span></a>
+      <a class="link-btn" href="app.html?round=30"><span>第30回<span class="date">2025年11月2日</span></span><span>›</span></a>
+      <a class="link-btn" href="app.html?round=31"><span>第31回<span class="date">2026年3月1日</span></span><span>›</span></a>
+      <a class="link-btn" href="app.html?round=32"><span>第32回<span class="date">2026年7月5日</span></span><span>›</span></a>
+      <a class="link-btn" href="app.html?round=34"><span>第34回<span class="date">技能検定</span></span><span>›</span></a>
+      <a class="link-btn" href="app.html?round=35"><span>第35回<span class="date">技能検定</span></span><span>›</span></a>
+      <a class="link-btn" href="app.html?round=36"><span>第36回<span class="date">技能検定</span></span><span>›</span></a>
+      <a class="link-btn mix" href="app.html?round=all&mode=random"><span>全回ミックス<span class="date">ランダム</span></span><span>›</span></a>
     </div>
   </details>
 
   <div class="footer">データ出典：みんなで合格☆キャリアコンサルタント試験</div>
 </div>
 
+<!-- モーダル -->
 <div id="infoModal" class="modal-overlay hidden">
   <div class="modal-content">
     <button class="modal-close" onclick="closeInfoModal()">✕</button>
@@ -533,106 +287,123 @@
   </div>
 </div>
 
-<div id="levelupToast" class="levelup-toast"></div>
-
 <script src="datamessages.js?v=2"></script>
 <script src="data-game.js?v=1"></script>
 <script src="game.js?v=1"></script>
 <script type="module" src="firebaseconfig.js?v=4"></script>
 <script>
-function escapeHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function hashString(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h = h & h; }
-  return Math.abs(h);
-}
-function pickMessage() {
-  const today = new Date().toDateString();
-  const seed = hashString(today);
-  const cats = ['encourage', 'theorist', 'learning', 'shiryo'];
-  const cat = cats[seed % 4];
-  const list = window.MESSAGES[cat] || window.MESSAGES.encourage;
-  return list[seed % list.length];
-}
-function daysToExam() {
-  if (!window.EXAM_DATE) return null;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const exam = new Date(window.EXAM_DATE); exam.setHours(0,0,0,0);
-  return Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
-}
-
-/* モーダル */
-window.showInfoModal = function(html) {
-  document.getElementById('infoModalBody').innerHTML = html;
-  document.getElementById('infoModal').classList.remove('hidden');
+/* ===== イベント定義 ===== */
+const WEEKLY_EVENTS = {
+  0: { id:'sun', emoji:'🌅', name:'日曜：弱点克服の日', desc:'苦手分野トップ3から集中的に出題' },
+  1: { id:'mon', emoji:'📚', name:'月曜：キャリア理論の日', desc:'シャイン・ホランド・サビカスなど理論を固める' },
+  2: { id:'tue', emoji:'💬', name:'火曜：カウンセリングの日', desc:'カウンセリング理論・技能を集中攻略' },
+  3: { id:'wed', emoji:'📊', name:'水曜：労働市場の日', desc:'労働市場・労働経済を固める日' },
+  4: { id:'thu', emoji:'⚖️', name:'木曜：法令・制度の日', desc:'法令・倫理・制度を一気に攻略' },
+  5: { id:'fri', emoji:'📑', name:'金曜：資料問題の日', desc:'S/A/Bランクの資料問題を集中攻略' },
+  6: { id:'sat', emoji:'🎯', name:'土曜：全分野ミックスの日', desc:'全分野からランダムに10問' },
 };
-window.closeInfoModal = function() {
-  document.getElementById('infoModal').classList.add('hidden');
-};
-document.getElementById('infoModal').addEventListener('click', (e) => {
-  if (e.target.id === 'infoModal') closeInfoModal();
-});
+function getTodayEvent() { return WEEKLY_EVENTS[new Date().getDay()]; }
 
-/* キャラクター表示 */
+function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function hashString(str) { let h = 0; for (let i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h = h & h; } return Math.abs(h); }
+function pickMessage() { const today = new Date().toDateString(); const seed = hashString(today); const cats = ['encourage', 'theorist', 'learning', 'shiryo']; const cat = cats[seed % 4]; const list = window.MESSAGES[cat] || window.MESSAGES.encourage; return list[seed % list.length]; }
+function daysToExam() { if (!window.EXAM_DATE) return null; const today = new Date(); today.setHours(0,0,0,0); const exam = new Date(window.EXAM_DATE); exam.setHours(0,0,0,0); return Math.ceil((exam - today) / (1000 * 60 * 60 * 24)); }
+
+/* ===== モーダル ===== */
+window.showInfoModal = function(html) { document.getElementById('infoModalBody').innerHTML = html; document.getElementById('infoModal').classList.remove('hidden'); };
+window.closeInfoModal = function() { document.getElementById('infoModal').classList.add('hidden'); };
+document.getElementById('infoModal').addEventListener('click', (e) => { if (e.target.id === 'infoModal') closeInfoModal(); });
+
+/* ===== ハンバーガーメニュー ===== */
+window.openMenu = function() {
+  const html = `
+    <h3 style="color:#2b6cb0;margin-bottom:14px;text-align:center;">⚙️ メニュー</h3>
+    <a href="app.html?round=all&view=stats" class="menu-item"><span class="icon">📊</span><div>成績を見る<span class="sub">分野別・レベル別・人物別・ミス上位</span></div></a>
+    <button class="menu-item" onclick="syncNow()"><span class="icon">🔄</span><div>今すぐ同期<span class="sub">クラウドとデータを同期</span></div></button>
+    <button class="menu-item" onclick="openNameModal()"><span class="icon">✏️</span><div>名前を変更<span class="sub">キャラクター名を変更</span></div></button>
+    <button class="menu-item" onclick="showStatsDetail()"><span class="icon">📈</span><div>EXP詳細<span class="sub">経験値の内訳を見る</span></div></button>
+    <button class="menu-item" onclick="showBadgesDetail()"><span class="icon">🎖️</span><div>バッジ一覧<span class="sub">獲得済み・未獲得を確認</span></div></button>
+    <button class="menu-item danger" onclick="resetAll()"><span class="icon">🗑️</span><div>進捗をリセット<span class="sub">ローカルデータを全削除</span></div></button>
+    <div class="auth-mini" style="margin-top:12px;">
+      <div class="user-info" id="menuAuthInfo">
+        <span class="dot"></span>
+        <span id="menuAuthName">未ログイン</span>
+      </div>
+      <button id="menuAuthBtn" onclick="handleAuthAction()" class="login">ログイン</button>
+    </div>
+  `;
+  showInfoModal(html);
+  // 認証状態を反映
+  setTimeout(() => {
+    const info = document.getElementById('menuAuthInfo');
+    const btn = document.getElementById('menuAuthBtn');
+    const name = document.getElementById('menuAuthName');
+    if (!info || !currentUser) return;
+    info.querySelector('.dot').style.background = '#38a169';
+    name.textContent = currentUser.displayName || currentUser.email;
+    btn.textContent = 'ログアウト';
+    btn.className = 'logout';
+  }, 50);
+};
+
+window.syncNow = async function() {
+  if (!currentUser) { alert('ログインしていません'); return; }
+  closeInfoModal();
+  const ok = await window.fbLoadProgress();
+  if (ok) { renderAll(); alert('同期完了！'); }
+  else alert('同期するデータがありません');
+};
+
+window.resetAll = function() {
+  if (!confirm('本当にすべての進捗をリセットしますか？')) return;
+  localStorage.clear();
+  location.reload();
+};
+
+/* ===== キャラクター表示 ===== */
 function renderCharacter() {
   if (!window.gameLoad) return;
   const data = window.gameLoad();
   document.getElementById('charStage').textContent = data.characterStage || '🥚';
   document.getElementById('charName').textContent = (data.characterName || 'ぴよすけ') + ' ✏️';
   document.getElementById('charLevel').textContent = 'Lv.' + data.level;
-
   const { currentExp, required } = window.gameCalcLevel(data.totalExp);
   const pct = Math.min(100, (currentExp / required) * 100);
   document.getElementById('expFill').style.width = pct + '%';
   document.getElementById('expText').textContent = `${currentExp.toLocaleString()} / ${required.toLocaleString()}`;
   document.getElementById('streakDays').textContent = data.loginStreak || 0;
-  document.getElementById('totalPoints').textContent = data.totalPoints || 0;
-
   const qHistory = JSON.parse(localStorage.getItem('cc_qHistory') || '{}');
   const totalSolved = Object.values(qHistory).reduce((s, h) => s + (h.total || 0), 0);
   document.getElementById('totalSolved').textContent = totalSolved;
-
   renderTitlesAndBadges();
+  renderPassPrediction();
+}
+
+function renderPassPrediction() {
+  if (!window.gameCalcPassPrediction) return;
+  const p = window.gameCalcPassPrediction();
+  const el = document.getElementById('passPredNum');
+  if (p.totalSolved === 0) { el.textContent = '-'; return; }
+  el.textContent = p.score;
+  el.style.color = p.score >= 80 ? '#38a169' : p.score >= 70 ? '#dd6b20' : '#c53030';
 }
 
 function renderTitlesAndBadges() {
   const ownedTitles = JSON.parse(localStorage.getItem('cc_titles') || '[]');
   const ownedBadges = JSON.parse(localStorage.getItem('cc_badges') || '[]');
-
   let current = null;
-  window.GAME_DATA.titles.forEach(t => {
-    if (ownedTitles.includes(t.id)) {
-      if (!current || t.rank > current.rank) current = t;
-    }
-  });
+  window.GAME_DATA.titles.forEach(t => { if (ownedTitles.includes(t.id)) { if (!current || t.rank > current.rank) current = t; } });
   document.getElementById('currentTitle').textContent = current ? current.name : '🎓 ビギナー';
-
   const badgeRow = document.getElementById('badgeRow');
   const badgeEmpty = document.getElementById('badgeEmpty');
-  const badgeCountLine = document.getElementById('badgeCountLine');
-
   const ownedList = window.GAME_DATA.badges.filter(b => ownedBadges.includes(b.id));
-
-  if (ownedList.length === 0) {
-    badgeRow.style.display = 'none';
-    badgeEmpty.style.display = 'block';
-    badgeCountLine.style.display = 'none';
-  } else {
-    badgeEmpty.style.display = 'none';
-    badgeRow.style.display = 'flex';
-    badgeRow.innerHTML = ownedList.map(b => {
-      return `<span class="badge-item" title="${escapeHtml(b.name)}：${escapeHtml(b.desc)}">${b.name.split(' ')[0]}</span>`;
-    }).join('');
-    badgeCountLine.style.display = 'block';
-    document.getElementById('badgeCount').textContent = ownedBadges.length;
-    document.getElementById('badgeTotal').textContent = window.GAME_DATA.badges.length;
-  }
+  if (ownedList.length === 0) { badgeRow.style.display = 'none'; badgeEmpty.style.display = 'block'; }
+  else { badgeEmpty.style.display = 'none'; badgeRow.style.display = 'flex'; badgeRow.innerHTML = ownedList.map(b => `<span class="badge-item" title="${escapeHtml(b.name)}">${b.name.split(' ')[0]}</span>`).join(''); }
 }
 
-/* 名前変更 */
+/* ===== 名前変更 ===== */
 window.openNameModal = function() {
+  closeInfoModal();
   const data = window.gameLoad();
   document.getElementById('nameInput').value = data.characterName || 'ぴよすけ';
   document.getElementById('nameModal').classList.remove('hidden');
@@ -645,433 +416,160 @@ window.submitName = function() {
   document.getElementById('nameModal').classList.add('hidden');
   renderCharacter();
 };
-document.getElementById('nameModal').addEventListener('click', (e) => {
-  if (e.target.id === 'nameModal') document.getElementById('nameModal').classList.add('hidden');
-});
+document.getElementById('nameModal').addEventListener('click', (e) => { if (e.target.id === 'nameModal') document.getElementById('nameModal').classList.add('hidden'); });
 
-/* EXP詳細 */
-window.showExpDetail = function() {
+/* ===== EXP詳細 ===== */
+window.showStatsDetail = function() {
+  closeInfoModal();
   const data = window.gameLoad();
   const log = window.gameGetExpLog();
   const { currentExp, required, level } = window.gameCalcLevel(data.totalExp);
-
   const rows = [
-    { key:'solve',        label:'問題を解いた',    unit:'問', rate:5 },
-    { key:'correct',      label:'正解ボーナス',    unit:'問', rate:10 },
-    { key:'dailyLogin',   label:'毎日ログイン',    unit:'日', rate:20 },
-    { key:'streakBonus',  label:'連続ログイン',    unit:'日', rate:10 },
-    { key:'materialBonus',label:'資料問題',        unit:'問', rate:15 }
+    { key:'solve', label:'問題を解いた', unit:'問', rate:5 },
+    { key:'correct', label:'正解ボーナス', unit:'問', rate:10 },
+    { key:'dailyLogin', label:'毎日ログイン', unit:'日', rate:20 },
+    { key:'streakBonus', label:'連続ログイン', unit:'日', rate:10 },
+    { key:'materialBonus', label:'資料問題', unit:'問', rate:15 }
   ];
-
   const html = `
     <h3 style="color:#2b6cb0;margin-bottom:12px;">📐 経験値の内訳</h3>
-    <div class="modal-formula">
-      合計EXP：<strong>${(data.totalExp || 0).toLocaleString()}</strong>
-    </div>
-    <div class="modal-highlight">
-      <div class="label">【内訳】</div>
-      ${rows.map(r => {
-        const count = log[r.key] ? Math.round(log[r.key] / r.rate) : 0;
-        const exp = log[r.key] || 0;
-        return `${r.label}：${count}${r.unit} × ${r.rate} = ${exp.toLocaleString()} EXP`;
-      }).join('<br>')}
+    <div class="modal-formula">合計EXP：<strong>${(data.totalExp || 0).toLocaleString()}</strong></div>
+    <div class="modal-highlight"><div class="label">【内訳】</div>
+      ${rows.map(r => { const count = log[r.key] ? Math.round(log[r.key] / r.rate) : 0; const exp = log[r.key] || 0; return `${r.label}：${count}${r.unit} × ${r.rate} = ${exp.toLocaleString()} EXP`; }).join('<br>')}
     </div>
     <div class="modal-highlight" style="border-left-color:#38a169;">
       <div class="label" style="color:#276749;">【次のレベルまで】</div>
       あと <strong>${(required - currentExp).toLocaleString()} EXP</strong>（Lv.${level + 1}まで）<br>
       目安：あと <strong>${Math.ceil((required - currentExp) / 5)}</strong> 問解く
-    </div>
-  `;
+    </div>`;
   showInfoModal(html);
 };
 
-/* バッジ詳細 */
 window.showBadgesDetail = function() {
+  closeInfoModal();
   const owned = JSON.parse(localStorage.getItem('cc_badges') || '[]');
   const html = `
     <h3 style="color:#2b6cb0;margin-bottom:12px;">🎖️ バッジ一覧（${owned.length} / ${window.GAME_DATA.badges.length}）</h3>
-    ${window.GAME_DATA.badges.map(b => {
-      const has = owned.includes(b.id);
-      return `<div style="padding:6px 10px;margin-bottom:5px;border-radius:6px;
-        background:${has ? '#f0fff4' : '#f7fafc'};
-        border-left:3px solid ${has ? '#38a169' : '#cbd5e0'};
-        opacity:${has ? '1' : '0.5'};">
-        <div style="font-weight:bold;font-size:.85rem;">${b.name} ${has ? '✅' : '🔒'}</div>
-        <div style="font-size:.72rem;color:#718096;">${b.desc}</div>
-      </div>`;
-    }).join('')}
-  `;
+    ${window.GAME_DATA.badges.map(b => { const has = owned.includes(b.id); return `<div style="padding:6px 10px;margin-bottom:5px;border-radius:6px;background:${has ? '#f0fff4' : '#f7fafc'};border-left:3px solid ${has ? '#38a169' : '#cbd5e0'};opacity:${has ? '1' : '0.5'};"><div style="font-weight:bold;font-size:.85rem;">${b.name} ${has ? '✅' : '🔒'}</div><div style="font-size:.72rem;color:#718096;">${b.desc}</div></div>`; }).join('')}`;
   showInfoModal(html);
 };
 
-/* 合格予測 */
-function renderPassPrediction() {
-  if (!window.gameCalcPassPrediction) return;
-  const p = window.gameCalcPassPrediction();
-  const panel = document.getElementById('passPredictionPanel');
-
-  if (p.totalSolved === 0) {
-    panel.innerHTML = '<div class="progress-empty">問題を解くと、予測が表示されます。</div>';
-    return;
-  }
-
-  let emoji = '🔥', msg = '基礎から見直そう', color = '#c53030';
-  if (p.score >= 90) { emoji = '🏆'; msg = '合格確実！この調子で維持しよう'; color = '#38a169'; }
-  else if (p.score >= 80) { emoji = '✅'; msg = '合格圏内！あと少しで盤石'; color = '#38a169'; }
-  else if (p.score >= 70) { emoji = '⚠️'; msg = '合格ライン。苦手分野を潰そう'; color = '#dd6b20'; }
-  else if (p.score >= 60) { emoji = '💪'; msg = '要努力。学習量を増やそう'; color = '#dd6b20'; }
-
-  panel.innerHTML = `
-    <div class="prediction-emoji">${emoji}</div>
-    <div class="prediction-score" style="color:${color};">${p.score}%</div>
-    <div class="prediction-bar">
-      <div class="prediction-bar-fill" style="width:${p.score}%;background:${color};"></div>
-    </div>
-    <div class="prediction-msg">${msg}</div>
-  `;
+/* ===== イベント表示 ===== */
+function renderEvent() {
+  const ev = getTodayEvent();
+  document.getElementById('eventEmoji').textContent = ev.emoji;
+  document.getElementById('eventName').textContent = ev.name;
+  document.getElementById('eventDesc').textContent = ev.desc;
 }
 
-window.showPassPredictionDetail = function() {
-  const p = window.gameCalcPassPrediction();
-  const html = `
-    <h3 style="color:#2b6cb0;margin-bottom:12px;">📐 合格予測の計算式</h3>
-    <p style="font-size:.8rem;color:#4a5568;margin-bottom:10px;">
-      総合スコアは、以下の4つの要素を組み合わせて算出しています。
-    </p>
-    <div class="modal-formula">
-      総合スコア =<br>
-      　全体正答率　　　× 40%<br>
-      + 直近10問正答率　× 30%<br>
-      + 解答率（カバー率）× 20%<br>
-      + 継続ボーナス　　× 10%
-    </div>
-    <div class="modal-highlight">
-      <div class="label">【あなたの数値】</div>
-      全体正答率：　　${p.overallAccuracy}% × 40% = ${(p.overallAccuracy * 0.4).toFixed(1)}<br>
-      直近10問正答率：${p.recentAccuracy}% × 30% = ${(p.recentAccuracy * 0.3).toFixed(1)}<br>
-      解答率：　　　　${p.coverage}% × 20% = ${(p.coverage * 0.2).toFixed(1)}<br>
-      継続ボーナス：　${p.streakBonus}% × 10% = ${(p.streakBonus * 0.1).toFixed(1)}<br>
-      ────────────────────<br>
-      <strong>合計：${p.score}%</strong>
-    </div>
-    <div class="modal-highlight" style="border-left-color:#38a169;">
-      <div class="label" style="color:#276749;">【ワンポイント】</div>
-      ${p.coverage < 70 ? '📌 解答率が低めです。未解答の問題を解くと、予測が上がりやすくなります。<br>' : ''}
-      ${p.recentAccuracy < p.overallAccuracy ? '📌 直近の正答率が下がっています。復習モードで立て直しましょう。<br>' : ''}
-      ${p.streakBonus < 50 ? '📌 連続ログインでボーナスが増えます。毎日少しずつでも続けましょう。<br>' : ''}
-      ${p.score >= 80 ? '📌 この調子！本番まで維持しましょう。' : ''}
-    </div>
-  `;
-  showInfoModal(html);
-};
-
-/* 進捗 */
-let currentProgressTab = 'rank';
-
-window.switchProgressTab = function(tab) {
-  currentProgressTab = tab;
-  document.querySelectorAll('.stats-tab').forEach(b => {
-    b.classList.toggle('active', b.dataset.tab === tab);
-  });
-  renderProgress();
-};
-
-function renderProgress() {
-  const gidMap = JSON.parse(localStorage.getItem('cc_gidMap') || '{}');
-  const categories = JSON.parse(localStorage.getItem('cc_categories') || '{}');
-  const qHistory = JSON.parse(localStorage.getItem('cc_qHistory') || '{}');
-  const panel = document.getElementById('progressPanel');
-  if (!panel) return;
-
-  if (Object.keys(categories).length === 0) {
-    panel.innerHTML = '<div class="progress-empty">問題を解くと、ここに進捗が表示されます。</div>';
-    return;
-  }
-
-  if (currentProgressTab === 'rank') {
-    renderProgressByRank(gidMap, categories, qHistory, panel);
-  } else {
-    renderProgressByField(gidMap, categories, qHistory, panel);
-  }
-}
-
-function renderProgressByRank(gidMap, categories, qHistory, panel) {
-  const catStats = {};
-  Object.keys(categories).forEach(catId => {
-    catStats[catId] = { correct: 0, total: 0, target: (categories[catId].total || 0) * 3 };
-  });
-  Object.keys(qHistory).forEach(gid => {
-    const catId = gidMap[gid];
-    if (!catId || !catStats[catId]) return;
-    catStats[catId].total += qHistory[gid].total || 0;
-    catStats[catId].correct += qHistory[gid].correct || 0;
-  });
-
-  const rankOrder = ['S', 'A', 'B', '過去問', '番外編'];
-  const rankLabels = { S:'Sランク', A:'Aランク', B:'Bランク', '過去問':'過去問', '番外編':'人物編' };
-
-  let html = '';
-  let totalTarget = 0, totalDone = 0;
-
-  rankOrder.forEach(rank => {
-    const group = Object.keys(categories).filter(catId => categories[catId].rank === rank);
-    if (group.length === 0) return;
-    const gTarget = group.reduce((sum, catId) => sum + catStats[catId].target, 0);
-    const gDone = group.reduce((sum, catId) => sum + Math.min(catStats[catId].total, catStats[catId].target), 0);
-    const gRate = gTarget > 0 ? Math.round(gDone / gTarget * 100) : 0;
-    let cls = 'bar-fill';
-    if (gRate < 40) cls += ' low'; else if (gRate < 80) cls += ' mid';
-
-    html += `<div class="progress-row" style="margin-top:8px;font-weight:bold;">
-      <div class="cat-name" style="color:#2b6cb0;">${rankLabels[rank]}（${group.length}項目）</div>
-      <div class="bar-bg"><div class="${cls}" style="width:${gRate}%"></div></div>
-      <div class="lap">${gRate}%</div>
-    </div>`;
-    totalTarget += gTarget;
-    totalDone += gDone;
-  });
-
-  const overallRate = totalTarget > 0 ? Math.round(totalDone / totalTarget * 100) : 0;
-  html += `<div class="progress-summary">全体 ${overallRate}%（${totalDone} / ${totalTarget} 問）</div>`;
-  html += `<div class="progress-detail">各項目を3周することを目標にしています</div>`;
-  panel.innerHTML = html;
-}
-
-function renderProgressByField(gidMap, categories, qHistory, panel) {
-  const fields = {};
-  Object.keys(categories).forEach(catId => {
-    const cat = categories[catId];
-    if (cat.rank !== '過去問') return;
-    const name = cat.name.replace(/^第\d+回\s*/, '');
-    if (!fields[name]) fields[name] = { solved: 0, correct: 0, total: 0 };
-    fields[name].total += cat.total || 0;
-  });
-
-  Object.keys(qHistory).forEach(gid => {
-    const catId = gidMap[gid];
-    if (!catId) return;
-    const cat = categories[catId];
-    if (!cat || cat.rank !== '過去問') return;
-    const name = cat.name.replace(/^第\d+回\s*/, '');
-    if (fields[name]) {
-      fields[name].solved += qHistory[gid].total || 0;
-      fields[name].correct += qHistory[gid].correct || 0;
-    }
-  });
-
-  const entries = Object.entries(fields).sort((a, b) => {
-    const aRate = a[1].solved > 0 ? a[1].correct / a[1].solved : 0;
-    const bRate = b[1].solved > 0 ? b[1].correct / b[1].solved : 0;
-    return aRate - bRate;
-  });
-
-  if (entries.length === 0) {
-    panel.innerHTML = '<div class="progress-empty">問題を解くと、ここに表示されます。</div>';
-    return;
-  }
-
-  let html = '';
-  entries.forEach(([name, f]) => {
-    if (f.total === 0) return;
-    const solveRate = Math.min(100, Math.round((f.solved / f.total) * 100));
-    const accuracy = f.solved > 0 ? Math.round((f.correct / f.solved) * 100) : 0;
-    let cls = 'bar-fill';
-    if (accuracy < 60) cls += ' low'; else if (accuracy < 80) cls += ' mid';
-
-    html += `
-      <div class="progress-row">
-        <div class="cat-name">${escapeHtml(name)}</div>
-        <div class="bar-bg"><div class="${cls}" style="width:${accuracy}%"></div></div>
-        <div class="lap">${accuracy}%</div>
-      </div>
-      <div style="font-size:.65rem;color:#718096;margin-left:160px;margin-bottom:4px;">
-        解答率 ${solveRate}% ／ 正答率 ${accuracy}%
-      </div>`;
-  });
-
-  panel.innerHTML = html;
-}
-
-/* デイリー・課題 */
+/* ===== デイリー ===== */
 function generateTasks(summary) {
   const tasks = [];
   if (!summary || !summary.overallTotal) {
-    tasks.push({
-      html: `<span class="label">まずは10問</span>解いてみよう。あなたの苦手が見えてきます。
-        <a href="app.html?round=extra&level=基礎">基礎だけを開く →</a>`
-    });
+    tasks.push({ html: `<span class="label">まずは10問</span>解いてみよう。<a href="app.html?round=extra&level=基礎">基礎だけを開く →</a>` });
     return tasks;
   }
-
   if (summary.top3 && summary.top3.length > 0) {
     const w = summary.top3[0];
     const rate = Math.round(w.rate * 100);
-    tasks.push({
-      html: `<span class="label">「${escapeHtml(w.key)}」が苦手です</span>（${rate}%）
-        <br>→ 今日はこの分野を<span class="label">10問</span>だけ解こう
-        <a href="app.html?round=all&field=${encodeURIComponent(w.key)}">開く →</a>`
-    });
+    tasks.push({ html: `<span class="label">「${escapeHtml(w.key)}」が苦手です</span>（${rate}%）<br>→ 今日は10問だけ解こう<a href="app.html?round=all&field=${encodeURIComponent(w.key)}">開く →</a>` });
   }
-
   if (summary.worst && summary.worst.cnt >= 2) {
-    tasks.push({
-      html: `<span class="label">${summary.worst.cnt}回間違えた問題があります</span>
-        <br>→ 復習モードで最優先に潰そう
-        <a href="app.html?round=all&mode=review">開く →</a>`
-    });
+    tasks.push({ html: `<span class="label">${summary.worst.cnt}回間違えた問題があります</span><br>→ 復習モードで潰そう<a href="app.html?round=all&mode=review">開く →</a>` });
   }
-
   if (summary.unattempted > 30) {
-    tasks.push({
-      html: `<span class="label">未解答があと${summary.unattempted}問</span>
-        <br>→ 全回ミックスで少しずつ攻略
-        <a href="app.html?round=all&mode=random">開く →</a>`
-    });
+    tasks.push({ html: `<span class="label">未解答があと${summary.unattempted}問</span><br>→ 全回ミックスで攻略<a href="app.html?round=all&mode=random">開く →</a>` });
   }
-
-  if (tasks.length === 0) {
-    tasks.push({ html: `<span class="label">いい調子です！</span>今日も10問、続けよう。` });
-  }
+  if (tasks.length === 0) tasks.push({ html: `<span class="label">いい調子です！</span>今日も10問、続けよう。` });
   return tasks.slice(0, 4);
 }
 
 function renderDaily() {
   const today = new Date();
-  const y = today.getFullYear(), m = today.getMonth() + 1, d = today.getDate();
-  document.getElementById('todayDate').textContent = `${y}年${m}月${d}日`;
-
+  document.getElementById('todayDate').textContent = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
   const days = daysToExam();
   const el = document.getElementById('daysLeft');
   if (days !== null) {
-    if (days > 0) {
-      el.textContent = `あと${days}日`;
-      if (days <= 14) el.classList.add('urgent');
-    } else if (days === 0) {
-      el.textContent = `今日が本番！`;
-      el.classList.add('urgent');
-    } else {
-      el.textContent = `お疲れさまでした`;
-    }
+    if (days > 0) { el.textContent = `あと${days}日`; if (days <= 14) el.classList.add('urgent'); }
+    else if (days === 0) { el.textContent = `今日が本番！`; el.classList.add('urgent'); }
+    else { el.textContent = `お疲れさまでした`; }
   }
-
-  try {
-    document.getElementById('quote').textContent = '「' + pickMessage() + '」';
-  } catch (e) { document.getElementById('quote').style.display = 'none'; }
-
+  try { document.getElementById('quote').textContent = '「' + pickMessage() + '」'; } catch (e) { document.getElementById('quote').style.display = 'none'; }
   let summary = null;
   try { summary = JSON.parse(localStorage.getItem('cc_homeSummary') || 'null'); } catch (e) {}
   const tasks = generateTasks(summary);
-  document.getElementById('tasksArea').innerHTML =
-    '<div class="tasks-title">🎯 あなたへの今日の課題</div>' +
-    tasks.map(t => `<div class="task">${t.html}</div>`).join('');
+  document.getElementById('tasksArea').innerHTML = '<div class="tasks-title">🎯 あなたへの今日の課題</div>' + tasks.map(t => `<div class="task">${t.html}</div>`).join('');
 }
 
 function renderWeak() {
   try {
     const s = JSON.parse(localStorage.getItem('cc_homeSummary') || 'null');
     if (s && s.top3 && s.top3.length > 0) {
-      const panel = document.getElementById('weakPanel');
-      const list = document.getElementById('weakList');
-      const overall = document.getElementById('overallInfo');
-      panel.classList.remove('hidden');
-      list.innerHTML = s.top3.map((e, i) => {
-        const rate = Math.round(e.rate * 100);
-        return `<div class="weak-row">
-          <span class="name"><span class="rank">${i+1}</span>${escapeHtml(e.key)}</span>
-          <span class="rate">${rate}%（${e.correct}/${e.total}）</span>
-        </div>`;
-      }).join('');
-      overall.textContent = `全体の正答率：${s.overallRate}%（${s.overallTotal}問解答済み）`;
+      document.getElementById('weakPanel').classList.remove('hidden');
+      document.getElementById('weakList').innerHTML = s.top3.map((e, i) => { const rate = Math.round(e.rate * 100); return `<div class="weak-row"><span class="name"><span class="rank">${i+1}</span>${escapeHtml(e.key)}</span><span class="rate">${rate}%（${e.correct}/${e.total}）</span></div>`; }).join('');
+      document.getElementById('overallInfo').textContent = `全体の正答率：${s.overallRate}%（${s.overallTotal}問解答済み）`;
     }
   } catch (e) {}
 }
 
-/* 認証 */
+/* ===== 認証 ===== */
 let currentUser = null;
-
 window.handleAuthAction = function() {
-  if (currentUser) {
-    if (confirm('ログアウトしますか？')) {
-      window.fbSignOut();
-    }
-  } else {
-    showLoginModal();
-  }
+  if (currentUser) { if (confirm('ログアウトしますか？')) window.fbSignOut(); }
+  else showLoginModal();
 };
-
 window.showLoginModal = function() {
+  closeInfoModal();
   const html = `
     <h3 style="color:#2b6cb0;margin-bottom:12px;text-align:center;">🔐 ログイン</h3>
     <button id="modalGoogleBtn" style="display:flex;align-items:center;justify-content:center;width:100%;padding:10px;background:#fff;border:1px solid #dadce0;border-radius:8px;font-weight:bold;cursor:pointer;margin-bottom:8px;">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:18px;height:18px;margin-right:8px;">
-      Googleでログイン
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:18px;height:18px;margin-right:8px;">Googleでログイン
     </button>
     <div style="text-align:center;color:#a0aec0;font-size:.7rem;margin:8px 0;">── または ──</div>
     <input id="modalEmail" type="email" placeholder="メールアドレス" style="width:100%;padding:9px;margin-bottom:6px;border:1px solid #cbd5e0;border-radius:6px;font-size:.85rem;font-family:inherit;">
     <input id="modalPassword" type="password" placeholder="パスワード（6文字以上）" style="width:100%;padding:9px;margin-bottom:6px;border:1px solid #cbd5e0;border-radius:6px;font-size:.85rem;font-family:inherit;">
     <button id="modalLoginBtn" style="width:100%;padding:10px;background:#48bb78;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-bottom:5px;font-size:.85rem;">メールでログイン</button>
     <button id="modalSignupBtn" style="width:100%;padding:10px;background:#718096;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:.85rem;">新規登録</button>
-    <div id="modalAuthStatus" style="font-size:.72rem;color:#718096;text-align:center;margin-top:8px;"></div>
-  `;
+    <div id="modalAuthStatus" style="font-size:.72rem;color:#718096;text-align:center;margin-top:8px;"></div>`;
   showInfoModal(html);
-
   setTimeout(() => {
-    document.getElementById('modalGoogleBtn').addEventListener('click', async () => {
-      try { await window.fbSignInWithGoogle(); closeInfoModal(); }
-      catch (e) { document.getElementById('modalAuthStatus').textContent = 'エラー: ' + e.message; }
-    });
+    document.getElementById('modalGoogleBtn').addEventListener('click', async () => { try { await window.fbSignInWithGoogle(); closeInfoModal(); } catch (e) { document.getElementById('modalAuthStatus').textContent = 'エラー: ' + e.message; } });
     document.getElementById('modalLoginBtn').addEventListener('click', async () => {
       const email = document.getElementById('modalEmail').value.trim();
       const password = document.getElementById('modalPassword').value;
       if (!email || !password) { document.getElementById('modalAuthStatus').textContent = '入力してください'; return; }
-      try { await window.fbSignIn(email, password); closeInfoModal(); }
-      catch (e) { document.getElementById('modalAuthStatus').textContent = '失敗: ' + e.message; }
+      try { await window.fbSignIn(email, password); closeInfoModal(); } catch (e) { document.getElementById('modalAuthStatus').textContent = '失敗: ' + e.message; }
     });
     document.getElementById('modalSignupBtn').addEventListener('click', async () => {
       const email = document.getElementById('modalEmail').value.trim();
       const password = document.getElementById('modalPassword').value;
       if (!email || !password) { document.getElementById('modalAuthStatus').textContent = '入力してください'; return; }
       if (password.length < 6) { document.getElementById('modalAuthStatus').textContent = 'パスワードは6文字以上'; return; }
-      try { await window.fbSignUp(email, password); closeInfoModal(); }
-      catch (e) { document.getElementById('modalAuthStatus').textContent = '失敗: ' + e.message; }
+      try { await window.fbSignUp(email, password); closeInfoModal(); } catch (e) { document.getElementById('modalAuthStatus').textContent = '失敗: ' + e.message; }
     });
   }, 100);
 };
 
-/* ★★★ Firebase 認証：ポーリング方式で1回だけ登録 ★★★ */
+/* ===== Firebase 待機 ===== */
 (function waitForFirebase() {
   let tries = 0;
   const iv = setInterval(() => {
     tries++;
     if (window.fbReady && typeof window.fbOnAuthStateChanged === 'function') {
       clearInterval(iv);
-      console.log('[auth] Firebase ready. Setting up listener...');
-
       window.fbOnAuthStateChanged(function(user) {
         currentUser = user;
-        console.log('[auth] state changed:', user ? user.email : 'null');
-
         const info = document.getElementById('authUserInfo');
         const btn = document.getElementById('authActionBtn');
         const nameSpan = document.getElementById('authUserName');
         if (!info || !btn || !nameSpan) return;
-
         if (user) {
           const name = user.displayName || user.email;
-          const isGoogle = user.providerData[0]?.providerId === 'google.com';
           info.querySelector('.dot').style.background = '#38a169';
-          nameSpan.textContent = name + (isGoogle ? ' (G)' : '');
+          nameSpan.textContent = name;
           btn.textContent = 'ログアウト';
           btn.className = 'logout';
-
-          window.fbLoadProgress().then(ok => {
-            if (ok) {
-              renderCharacter();
-              renderPassPrediction();
-              renderProgress();
-              renderWeak();
-            }
-          });
+          window.fbLoadProgress().then(ok => { if (ok) renderAll(); });
         } else {
           info.querySelector('.dot').style.background = '#cbd5e0';
           nameSpan.textContent = '未ログイン';
@@ -1079,43 +577,26 @@ window.showLoginModal = function() {
           btn.className = 'login';
         }
       });
-    } else if (tries > 75) {
-      clearInterval(iv);
-      console.warn('[auth] Firebase の読み込みがタイムアウトしました');
-    }
+    } else if (tries > 75) { clearInterval(iv); }
   }, 200);
 })();
 
-/* 初期化 */
+/* ===== 全描画 ===== */
+function renderAll() { renderCharacter(); renderDaily(); renderWeak(); renderEvent(); }
+
+/* ===== 初期化 ===== */
 function initGame() {
   const login = window.gameCheckDailyLogin();
   if (login.isNew && login.streak > 1) {
-    setTimeout(() => {
-      showInfoModal(`
-        <h3 style="color:#2b6cb0;text-align:center;">🔥 ${login.streak}日連続ログイン！</h3>
-        <div style="text-align:center;font-size:2rem;margin:12px 0;">🎉</div>
-        <p style="text-align:center;color:#4a5568;">+${login.dailyExp + login.bonus} EXP 獲得！</p>
-      `);
-    }, 500);
+    setTimeout(() => { showInfoModal(`<h3 style="color:#2b6cb0;text-align:center;">🔥 ${login.streak}日連続ログイン！</h3><div style="text-align:center;font-size:2rem;margin:12px 0;">🎉</div><p style="text-align:center;color:#4a5568;">+${login.dailyExp + login.bonus} EXP 獲得！</p>`); }, 500);
   }
-
-  if (window.gameIsFirstLaunch()) {
-    setTimeout(() => openNameModal(), 800);
-  }
-
+  if (window.gameIsFirstLaunch()) setTimeout(() => openNameModal(), 800);
   window.gameCheckTitles();
   window.gameCheckBadges();
-
-  renderCharacter();
-  renderDaily();
-  renderPassPrediction();
-  renderProgress();
-  renderWeak();
+  renderAll();
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(initGame, 300);
-});
+window.addEventListener('DOMContentLoaded', () => { setTimeout(initGame, 300); });
 </script>
 </body>
 </html>

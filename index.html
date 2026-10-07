@@ -125,6 +125,8 @@
   .menu-item.danger { color:#c53030; }
   .menu-item.danger:hover { background:#fff5f5; }
   .menu-item .sub { font-size:.68rem; font-weight:normal; color:#718096; display:block; }
+  .menu-item.import { background:#faf5ff; color:#6b46c1; }
+  .menu-item.import:hover { background:#f3e8ff; }
 
   .info-btn { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#4299e1; color:#fff; border:none; cursor:pointer; font-weight:bold; font-size:.65rem; margin-left:4px; vertical-align:middle; }
   .info-btn:hover { background:#3182ce; }
@@ -320,6 +322,7 @@ window.openMenu = function() {
     <h3 style="color:#2b6cb0;margin-bottom:14px;text-align:center;">⚙️ メニュー</h3>
     <a href="app.html?round=all&view=stats" class="menu-item"><span class="icon">📊</span><div>成績を見る<span class="sub">分野別・レベル別・人物別・ミス上位</span></div></a>
     <button class="menu-item" onclick="syncNow()"><span class="icon">🔄</span><div>今すぐ同期<span class="sub">クラウドとデータを同期</span></div></button>
+    <button class="menu-item import" onclick="importDataPrompt()"><span class="icon">📥</span><div>データをインポート<span class="sub">他サイトから移行</span></div></button>
     <button class="menu-item" onclick="openNameModal()"><span class="icon">✏️</span><div>名前を変更<span class="sub">キャラクター名を変更</span></div></button>
     <button class="menu-item" onclick="showStatsDetail()"><span class="icon">📈</span><div>EXP詳細<span class="sub">経験値の内訳を見る</span></div></button>
     <button class="menu-item" onclick="showBadgesDetail()"><span class="icon">🎖️</span><div>バッジ一覧<span class="sub">獲得済み・未獲得を確認</span></div></button>
@@ -352,6 +355,58 @@ window.syncNow = async function() {
   const ok = await window.fbLoadProgress();
   if (ok) { renderAll(); alert('同期完了！'); }
   else alert('同期するデータがありません');
+};
+
+/* =========================================================
+   ★★★ データインポート機能（移行先用） ★★★
+   ========================================================= */
+window.importDataPrompt = function() {
+  closeInfoModal();
+  // ファイル選択用のinputを生成
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        const keys = Object.keys(data);
+        if (keys.length === 0) { alert('データが空です'); return; }
+        if (!confirm(`${keys.length}件のデータをインポートします。\n現在のデータは上書きされます。\nよろしいですか？`)) return;
+
+        // localStorageに書き込み
+        keys.forEach(k => {
+          if (k.startsWith('cc_')) {
+            localStorage.setItem(k, data[k]);
+          }
+        });
+
+        // Firebase ログイン中なら自動でクラウドにも保存
+        const saveCloud = currentUser && window.fbSaveProgress;
+
+        alert('✅ インポート完了！\n\n' +
+          (saveCloud ? 'ログイン中なので、クラウドにも自動保存します...' : 'ログインしていないため、ローカルにのみ保存されました。\n（後でログイン→「今すぐ同期」でクラウド保存できます）') +
+          '\n\nページを再読み込みします。');
+
+        if (saveCloud) {
+          window.fbSaveProgress().then(() => {
+            location.reload();
+          }).catch(() => {
+            location.reload();
+          });
+        } else {
+          location.reload();
+        }
+      } catch (err) {
+        alert('インポート失敗: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 };
 
 window.resetAll = function() {

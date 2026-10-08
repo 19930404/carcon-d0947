@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>暗記カード（全種類） - キャリアコンサルタント試験</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: "Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    background: linear-gradient(160deg,#2b6cb0 0%,#2c5282 50%,#1a365d 100%);
+    min-height:100vh; color:#1a202c; padding:12px; padding-bottom:60px; }
+  .container { max-width:600px; margin:0 auto; }
+
+  /* ヘッダー */
+  header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:8px; }
+  header h1 { color:#fff; font-size:1rem; font-weight:bold; flex:1; text-align:center; }
+  .home-btn { display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; background:rgba(255,255,255,.2); color:#fff; text-decoration:none; font-size:1.2rem; flex-shrink:0; }
+  .home-btn:hover { background:rgba(255,255,255,.35); }
+  .spacer { width:40px; flex-shrink:0; }
+
+  /* 進捗 */
+  .progress-info { display:flex; justify-content:space-between; align-items:center; color:#bee3f8; font-size:.78rem; font-weight:bold; margin-bottom:8px; padding:0 4px; }
+  .progress-bar-outer { height:6px; background:rgba(255,255,255,.2); border-radius:3px; overflow:hidden; margin-bottom:12px; }
+  .progress-bar-inner { height:100%; background:linear-gradient(90deg, #48bb78, #38a169); transition:width .3s; }
+
+  /* カテゴリタブ */
+  .cat-tabs { display:flex; gap:4px; margin-bottom:8px; flex-wrap:wrap; }
+  .cat-tab { flex:1; min-width:52px; padding:6px 8px; border:none; border-radius:8px; background:rgba(255,255,255,.12); color:#fff; font-weight:bold; font-size:.72rem; cursor:pointer; font-family:inherit; transition:.15s; }
+  .cat-tab.active { background:#fff; color:#2b6cb0; }
+
+  /* モードタブ */
+  .mode-tabs { display:flex; gap:4px; margin-bottom:12px; flex-wrap:wrap; }
+  .mode-tab { flex:1; min-width:60px; padding:6px 8px; border:none; border-radius:8px; background:rgba(255,255,255,.08); color:#fff; font-weight:bold; font-size:.7rem; cursor:pointer; font-family:inherit; transition:.15s; }
+  .mode-tab.active { background:#48bb78; color:#fff; }
+
+  /* 統計 */
+  .stats-mini { display:flex; gap:8px; margin-bottom:12px; font-size:.72rem; color:#fff; }
+  .stats-mini > div { flex:1; background:rgba(255,255,255,.1); border-radius:8px; padding:6px 8px; text-align:center; }
+  .stats-mini .num { display:block; font-weight:bold; font-size:1rem; color:#bee3f8; }
+
+  /* カード */
+  .card-area { perspective:1200px; margin-bottom:16px; }
+  .card { width:100%; min-height:340px; position:relative; transform-style:preserve-3d; transition:transform .5s; cursor:pointer; }
+  .card.flipped { transform:rotateY(180deg); }
+  .card-face { position:absolute; inset:0; backface-visibility:hidden; background:#fff; border-radius:20px; padding:24px 20px; box-shadow:0 12px 32px rgba(0,0,0,.25); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:340px; }
+  .card-back { transform:rotateY(180deg); background:linear-gradient(135deg, #fffaf0, #feebc8); align-items:flex-start; justify-content:flex-start; text-align:left; overflow-y:auto; padding:20px; }
+  .card-category { position:absolute; top:12px; left:16px; font-size:.68rem; color:#a0aec0; font-weight:bold; letter-spacing:.05em; }
+  .card-index { position:absolute; top:12px; right:16px; font-size:.68rem; color:#a0aec0; font-weight:bold; }
+  .card-cat-badge { position:absolute; top:12px; left:16px; font-size:.65rem; padding:2px 8px; border-radius:8px; font-weight:bold; }
+  .badge-person { background:#bee3f8; color:#2c5282; }
+  .badge-term { background:#c6f6d5; color:#22543d; }
+  .badge-num { background:#fed7d7; color:#742a2a; }
+  .badge-goro { background:#fefcbf; color:#744210; }
+  .badge-taio { background:#e9d8fd; color:#44337a; }
+
+  .card-front-text { font-size:1.5rem; font-weight:bold; color:#2b6cb0; margin-bottom:8px; line-height:1.3; padding:0 8px; }
+  .card-front-sub { font-size:.78rem; color:#718096; margin-top:4px; }
+  .card-front-hint { font-size:.75rem; color:#a0aec0; margin-top:16px; }
+
+  .card-back-title { font-size:.72rem; color:#c05621; font-weight:bold; margin-bottom:6px; }
+  .card-back-main { font-size:1rem; font-weight:bold; color:#2d3748; margin-bottom:12px; line-height:1.5; }
+  .card-back-section { width:100%; padding:10px 12px; margin-bottom:8px; border-radius:8px; font-size:.82rem; line-height:1.6; white-space:pre-wrap; }
+  .card-back-section .section-label { font-weight:bold; font-size:.68rem; display:block; margin-bottom:4px; letter-spacing:.05em; }
+  .sec-goro { background:#e6fffa; border-left:3px solid #38b2ac; color:#234e52; }
+  .sec-goro .section-label { color:#2c7a7b; }
+  .sec-taio { background:#faf5ff; border-left:3px solid #805ad5; color:#44337a; }
+  .sec-taio .section-label { color:#6b46c1; }
+  .sec-num { background:#fff5f5; border-left:3px solid #e53e3e; color:#742a2a; }
+  .sec-num .section-label { color:#c53030; }
+  .sec-riyu { background:#ebf8ff; border-left:3px solid #4299e1; color:#2c5282; }
+  .sec-riyu .section-label { color:#2b6cb0; }
+
+  /* 判定 */
+  .judge-btns { display:flex; gap:10px; margin-bottom:12px; }
+  .judge-btn { flex:1; padding:16px 20px; border:none; border-radius:12px; color:#fff; font-weight:bold; font-size:.95rem; cursor:pointer; font-family:inherit; transition:transform .15s; min-height:60px; }
+  .judge-btn:active { transform:scale(.96); }
+  .judge-btn.no { background:linear-gradient(135deg, #e53e3e, #c53030); }
+  .judge-btn.yes { background:linear-gradient(135deg, #48bb78, #38a169); }
+  .judge-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+  /* ナビ */
+  .nav-btns { display:flex; gap:8px; }
+  .nav-btn { flex:1; padding:10px 16px; border:none; border-radius:8px; background:rgba(255,255,255,.15); color:#fff; font-weight:bold; font-size:.82rem; cursor:pointer; font-family:inherit; }
+  .nav-btn:disabled { opacity:.3; cursor:not-allowed; }
+
+  /* 完了・空 */
+  .complete { background:#fff; border-radius:20px; padding:32px 24px; text-align:center; box-shadow:0 12px 32px rgba(0,0,0,.25); }
+  .complete-emoji { font-size:4rem; margin-bottom:12px; }
+  .complete h2 { color:#2b6cb0; margin-bottom:8px; }
+  .complete .score { font-size:2rem; font-weight:bold; color:#38a169; margin:12px 0; }
+  .complete p { color:#4a5568; font-size:.88rem; margin-bottom:20px; }
+  .complete button { padding:12px 24px; border:none; border-radius:10px; background:#2b6cb0; color:#fff; font-weight:bold; cursor:pointer; margin:4px; font-family:inherit; }
+  .complete button.secondary { background:#718096; }
+  .empty { background:#fff; border-radius:20px; padding:40px 20px; text-align:center; }
+  .empty p { color:#718096; margin-bottom:16px; }
+  .empty button { padding:12px 24px; border:none; border-radius:10px; background:#2b6cb0; color:#fff; font-weight:bold; cursor:pointer; font-family:inherit; margin:4px; }
+
+  @media (max-width: 400px) {
+    .card-front-text { font-size:1.3rem; }
+    .card-back-main { font-size:.92rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <a href="index.html" class="home-btn" title="メニューに戻る">🏠</a>
+    <h1>🃏 暗記カード（全種類）</h1>
+    <div class="spacer"></div>
+  </header>
+
+  <div id="app">
+    <div class="empty"><p>読み込み中...</p></div>
+  </div>
+</div>
+
+<script src="dataextra.js?v=10"></script>
+<script src="data36.js?v=10"></script>
+<script src="data35.js?v=10"></script>
+<script src="data34.js?v=10"></script>
+<script src="data31.js?v=10"></script>
+<script src="data30.js?v=10"></script>
+<script src="datashiryo.js?v=10"></script>
+<script>
+/* =========================================================
+   全種類カード - 生成ロジック
+   ========================================================= */
+const CARD_STORE_KEY = 'cc_flashAllProgress';
+const SESSION_SIZE = 10;
+
+let allCards = [];
+let session = [];
+let currentIdx = 0;
+let currentFlipped = false;
+let sessionCorrect = 0;
+let sessionWrong = 0;
+let currentCat = 'all';
+let currentMode = 'due';
+
+/* =========================================================
+   ユーティリティ
+   ========================================================= */
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function shuffle(a) {
+  const arr = a.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* =========================================================
+   全問題を取得
+   ========================================================= */
+function getAllQuestions() {
+  const all = [];
+  if (window.qDataExtra) all.push(...window.qDataExtra);
+  if (window.qData36) all.push(...window.qData36);
+  if (window.qData35) all.push(...window.qData35);
+  if (window.qData34) all.push(...window.qData34);
+  if (window.qData31) all.push(...window.qData31);
+  if (window.qData30) all.push(...window.qData30);
+  if (window.qDataShiryo) all.push(...window.qDataShiryo);
+  return all;
+}
+
+/* =========================================================
+   basics から各セクションを抽出
+   ========================================================= */
+function extractSection(basics, label) {
+  if (!basics) return '';
+  const re = new RegExp('【' + label + '】([\\s\\S]+?)(?=【|$)');
+  const m = basics.match(re);
+  return m ? m[1].trim() : '';
+}
+
+function extractDefine(basics) {
+  // 【定義】シャイン（Schein, E. H.）＝キャリア・アンカー。
+  if (!basics) return { person: '', term: '', full: '' };
+  const m = basics.match(/【定義】([^。\n]+)。?/);
+  if (!m) return { person: '', term: '', full: '' };
+  const line = m[1];
+  const eqMatch = line.match(/＝(.+)$/);
+  const leftMatch = line.match(/^([^（(＝]+)/);
+  return {
+    person: leftMatch ? leftMatch[1].trim() : '',
+    term: eqMatch ? eqMatch[1].trim().replace(/。$/, '') : '',
+    full: line
+  };
+}
+
+/* =========================================================
+   カード生成（5種類）
+   ========================================================= */
+function buildCards() {
+  const all = getAllQuestions();
+  const cards = [];
+  const seenPerson = new Set();
+  const seenTerm = new Set();
+
+  all.forEach((q, idx) => {
+    const gid = q._gid || ('q' + idx);
+    const basics = q.basics || '';
+    const person = q.person || '';
+    const def = extractDefine(basics);
+    const goro = extractSection(basics, '語呂');
+    const taio = extractSection(basics, '対比');
+    const nums = extractSection(basics, '数字');
+    const riyu = extractSection(basics, '理由');
+    const taisei = extractSection(basics, '体制化');
+
+    // ===== ① 人物カード =====
+    if (person && !seenPerson.has(person)) {
+      seenPerson.add(person);
+      const main = def.term || (q.c ? q.c[q.a - 1] : '') || '';
+      cards.push({
+        id: 'person_' + person,
+        cat: 'person',
+        catLabel: '👤 人物',
+        front: person,
+        frontSub: '提唱した理論は？',
+        main: main,
+        goro: goro,
+        taio: taio,
+        taisei: taisei,
+      });
+    }
+
+    // ===== ② 用語カード（理論名→提唱者）=====
+    if (def.term && !seenTerm.has(def.term) && def.term.length > 1 && def.term.length < 40) {
+      seenTerm.add(def.term);
+      cards.push({
+        id: 'term_' + def.term,
+        cat: 'term',
+        catLabel: '📖 用語',
+        front: def.term,
+        frontSub: '誰が提唱？ どんな意味？',
+        main: (def.person ? def.person + ' が提唱' : ''),
+        goro: goro,
+        taio: taio,
+        taisei: taisei,
+      });
+    }
+
+    // ===== ③ 数字カード =====
+    if (nums) {
+      // 【数字】を「／」で分割して、各々をカード化
+      const numItems = nums.split(/[／\/]/).map(s => s.trim()).filter(s => s.length > 3);
+      numItems.forEach((item, i) => {
+        // 先頭の数字部分を抽出
+        const m = item.match(/^(.+?)(\d[\d,.]*[%倍万人件年月日]*)/);
+        if (!m) return;
+        const kw = m[1].trim();
+        const num = m[2].trim();
+        if (!kw || !num) return;
+        cards.push({
+          id: 'num_' + gid + '_' + i,
+          cat: 'num',
+          catLabel: '📊 数字',
+          front: num,
+          frontSub: 'これ、何の数字？',
+          main: kw,
+          riyu: riyu,
+          nums: nums,
+        });
+      });
+    }
+
+    // ===== ④ 語呂カード =====
+    if (goro && goro.length > 5 && goro.length < 100) {
+      const main = def.term || person || '';
+      if (main) {
+        cards.push({
+          id: 'goro_' + gid,
+          cat: 'goro',
+          catLabel: '📝 語呂',
+          front: goro,
+          frontSub: 'この語呂、何の？',
+          main: main,
+          goro: '',
+          taio: taio,
+        });
+      }
+    }
+
+    // ===== ⑤ 対比カード =====
+    if (taio && taio.length > 10 && taio.length < 200) {
+      const firstLine = taio.split('\n')[0].trim();
+      if (firstLine.length > 5) {
+        cards.push({
+          id: 'taio_' + gid,
+          cat: 'taio',
+          catLabel: '⚖️ 対比',
+          front: firstLine,
+          frontSub: 'これ、何の対比？',
+          main: def.term || person || '',
+          taio: taio,
+        });
+      }
+    }
+  });
+
+  return cards;
+}
+
+/* =========================================================
+   間隔反復
+   ========================================================= */
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(CARD_STORE_KEY) || '{}'); } catch { return {}; }
+}
+function saveProgress(p) { localStorage.setItem(CARD_STORE_KEY, JSON.stringify(p)); }
+function getCardProgress(cardId) {
+  const p = loadProgress();
+  return p[cardId] || { level: 0, lastShown: null, nextShow: null, correct: 0, wrong: 0 };
+}
+function updateCardProgress(cardId, isCorrect) {
+  const p = loadProgress();
+  const cur = p[cardId] || { level: 0, lastShown: null, nextShow: null, correct: 0, wrong: 0 };
+  if (isCorrect) { cur.level = Math.min(5, cur.level + 1); cur.correct++; }
+  else { cur.level = 0; cur.wrong++; }
+  cur.lastShown = new Date().toISOString();
+  cur.nextShow = calcNextShow(cur.level);
+  p[cardId] = cur;
+  saveProgress(p);
+}
+function calcNextShow(level) {
+  const days = [0, 1, 3, 7, 14, 30][level];
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString();
+}
+function isDueToday(cardId) {
+  const p = getCardProgress(cardId);
+  if (!p.nextShow) return true;
+  return new Date(p.nextShow) <= new Date();
+}
+
+/* =========================================================
+   セッション構築
+   ========================================================= */
+function filterByCat(cards, cat) {
+  if (cat === 'all') return cards;
+  return cards.filter(c => c.cat === cat);
+}
+
+function buildSession(cards, mode) {
+  let pool = cards.slice();
+  if (mode === 'all') { pool = shuffle(pool); }
+  else if (mode === 'due') { pool = shuffle(pool.filter(c => isDueToday(c.id))); }
+  else if (mode === 'weak') {
+    pool = pool.map(c => ({ c, p: getCardProgress(c.id) }))
+      .sort((a, b) => (a.p.level - b.p.level) || (b.p.wrong - a.p.wrong))
+      .map(x => x.c);
+  }
+  else if (mode === 'new') { pool = shuffle(pool.filter(c => !getCardProgress(c.id).lastShown)); }
+  return pool.slice(0, SESSION_SIZE);
+}
+
+/* =========================================================
+   レンダリング
+   ========================================================= */
+function render() {
+  const app = document.getElementById('app');
+  const progress = loadProgress();
+
+  // 完了
+  if (session.length > 0 && currentIdx >= session.length) { renderComplete(); return; }
+
+  // トップ画面
+  if (session.length === 0) {
+    const total = allCards.length;
+    const filtered = filterByCat(allCards, currentCat);
+    const catCount = filtered.length;
+    const mastered = filtered.filter(c => (progress[c.id]?.level || 0) >= 5).length;
+
+    // カテゴリごとの枚数
+    const counts = { all: allCards.length, person: 0, term: 0, num: 0, goro: 0, taio: 0 };
+    allCards.forEach(c => { if (counts[c.cat] !== undefined) counts[c.cat]++; });
+
+    app.innerHTML = `
+      <div class="cat-tabs">
+        <button class="cat-tab ${currentCat==='all'?'active':''}" data-cat="all">🎲 全部<span style="font-size:.65rem;">(${counts.all})</span></button>
+        <button class="cat-tab ${currentCat==='person'?'active':''}" data-cat="person">👤 人物<span style="font-size:.65rem;">(${counts.person})</span></button>
+        <button class="cat-tab ${currentCat==='term'?'active':''}" data-cat="term">📖 用語<span style="font-size:.65rem;">(${counts.term})</span></button>
+        <button class="cat-tab ${currentCat==='num'?'active':''}" data-cat="num">📊 数字<span style="font-size:.65rem;">(${counts.num})</span></button>
+        <button class="cat-tab ${currentCat==='goro'?'active':''}" data-cat="goro">📝 語呂<span style="font-size:.65rem;">(${counts.goro})</span></button>
+        <button class="cat-tab ${currentCat==='taio'?'active':''}" data-cat="taio">⚖️ 対比<span style="font-size:.65rem;">(${counts.taio})</span></button>
+      </div>
+
+      <div class="mode-tabs">
+        <button class="mode-tab ${currentMode==='due'?'active':''}" data-mode="due">📅 今日</button>
+        <button class="mode-tab ${currentMode==='weak'?'active':''}" data-mode="weak">💪 苦手</button>
+        <button class="mode-tab ${currentMode==='new'?'active':''}" data-mode="new">✨ 未学習</button>
+        <button class="mode-tab ${currentMode==='all'?'active':''}" data-mode="all">🎲 ランダム</button>
+      </div>
+
+      <div class="stats-mini">
+        <div><span class="num">${catCount}</span>カード</div>
+        <div><span class="num">${mastered}</span>卒業</div>
+      </div>
+
+      <div class="empty">
+        <p>「${catLabel(currentCat)}」のカードを始めます</p>
+        <button onclick="startSession()">▶ 開始（最大${SESSION_SIZE}枚）</button>
+      </div>
+      <div style="margin-top:12px;">
+        <button onclick="resetAll()" style="width:100%;padding:8px;border:none;border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-size:.75rem;cursor:pointer;font-family:inherit;">学習記録をリセット</button>
+      </div>
+    `;
+    document.querySelectorAll('.cat-tab').forEach(b => {
+      b.addEventListener('click', () => { currentCat = b.dataset.cat; render(); });
+    });
+    document.querySelectorAll('.mode-tab').forEach(b => {
+      b.addEventListener('click', () => { currentMode = b.dataset.mode; render(); });
+    });
+    return;
+  }
+
+  // カード表示
+  const card = session[currentIdx];
+
+  const goroHtml = card.goro ? `<div class="card-back-section sec-goro"><span class="section-label">📝 語呂</span>${escapeHtml(card.goro)}</div>` : '';
+  const taioHtml = card.taio ? `<div class="card-back-section sec-taio"><span class="section-label">⚖️ 対比</span>${escapeHtml(card.taio)}</div>` : '';
+  const numHtml = card.nums ? `<div class="card-back-section sec-num"><span class="section-label">📊 数字（詳細）</span>${escapeHtml(card.nums)}</div>` : '';
+  const riyuHtml = card.riyu ? `<div class="card-back-section sec-riyu"><span class="section-label">🤔 なぜ？</span>${escapeHtml(card.riyu)}</div>` : '';
+  const taiseiHtml = card.taisei ? `<div class="card-back-section sec-riyu"><span class="section-label">📚 体制化</span>${escapeHtml(card.taisei)}</div>` : '';
+
+  // カテゴリバッジの色
+  const badgeClass = 'badge-' + card.cat;
+
+  app.innerHTML = `
+    <div class="progress-info">
+      <span>${currentIdx + 1} / ${session.length}</span>
+      <span>✅ ${sessionCorrect} ／ ❌ ${sessionWrong}</span>
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" style="width:${(currentIdx / session.length) * 100}%"></div>
+    </div>
+
+    <div class="card-area">
+      <div class="card ${currentFlipped?'flipped':''}" id="cardEl" onclick="toggleFlip()">
+        <div class="card-face card-front">
+          <span class="card-cat-badge ${badgeClass}">${card.catLabel}</span>
+          <span class="card-index">${currentIdx + 1}</span>
+          <div class="card-front-text">${escapeHtml(card.front)}</div>
+          ${card.frontSub ? `<div class="card-front-sub">${escapeHtml(card.frontSub)}</div>` : ''}
+          <div class="card-front-hint">👆 タップで裏返す</div>
+        </div>
+        <div class="card-face card-back">
+          <span class="card-cat-badge ${badgeClass}">${card.catLabel}</span>
+          <span class="card-index">${currentIdx + 1}</span>
+          <div class="card-back-title">💡 答え</div>
+          <div class="card-back-main">${escapeHtml(card.main || '（未登録）')}</div>
+          ${goroHtml}
+          ${taioHtml}
+          ${numHtml}
+          ${riyuHtml}
+          ${taiseiHtml}
+        </div>
+      </div>
+    </div>
+
+    <div class="judge-btns">
+      <button class="judge-btn no" onclick="judge(false)" ${!currentFlipped?'disabled':''}>😰 覚えてない</button>
+      <button class="judge-btn yes" onclick="judge(true)" ${!currentFlipped?'disabled':''}>😊 覚えた</button>
+    </div>
+
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="prevCard()" ${currentIdx===0?'disabled':''}>← 前へ</button>
+      <button class="nav-btn" onclick="skipCard()">スキップ</button>
+    </div>
+  `;
+
+  const cardEl = document.getElementById('cardEl');
+  if (currentFlipped) cardEl.classList.add('flipped');
+}
+
+function catLabel(cat) {
+  const map = { all: '全部', person: '👤 人物', term: '📖 用語', num: '📊 数字', goro: '📝 語呂', taio: '⚖️ 対比' };
+  return map[cat] || cat;
+}
+
+function renderComplete() {
+  const app = document.getElementById('app');
+  const rate = session.length > 0 ? Math.round(sessionCorrect / session.length * 100) : 0;
+  let emoji = '🎉', msg = 'お疲れさまでした';
+  if (rate >= 90) { emoji = '🏆'; msg = '完璧！この調子！'; }
+  else if (rate >= 70) { emoji = '✅'; msg = 'いい調子です！'; }
+  else if (rate >= 50) { emoji = '💪'; msg = 'もう少し！'; }
+  else { emoji = '📚'; msg = '復習しましょう'; }
+
+  app.innerHTML = `
+    <div class="complete">
+      <div class="complete-emoji">${emoji}</div>
+      <h2>${msg}</h2>
+      <div class="score">${sessionCorrect} / ${session.length}</div>
+      <p>正答率 ${rate}%</p>
+      <button onclick="restartSession()">🔄 もう一度</button>
+      <button class="secondary" onclick="backToTop()">🏠 トップへ</button>
+    </div>
+  `;
+}
+
+/* =========================================================
+   操作
+   ========================================================= */
+function toggleFlip() {
+  currentFlipped = !currentFlipped;
+  const cardEl = document.getElementById('cardEl');
+  if (cardEl) cardEl.classList.toggle('flipped', currentFlipped);
+  document.querySelectorAll('.judge-btn').forEach(b => b.disabled = !currentFlipped);
+}
+
+function judge(isCorrect) {
+  if (!currentFlipped) return;
+  const card = session[currentIdx];
+  updateCardProgress(card.id, isCorrect);
+  if (isCorrect) sessionCorrect++; else sessionWrong++;
+  currentIdx++;
+  currentFlipped = false;
+  render();
+}
+
+function skipCard() { currentIdx++; currentFlipped = false; render(); }
+function prevCard() { if (currentIdx > 0) { currentIdx--; currentFlipped = false; render(); } }
+
+function startSession() {
+  const filtered = filterByCat(allCards, currentCat);
+  session = buildSession(filtered, currentMode);
+  currentIdx = 0;
+  currentFlipped = false;
+  sessionCorrect = 0;
+  sessionWrong = 0;
+  if (session.length === 0) {
+    alert('該当するカードがありません。\n別のモードを試してください。');
+    session = [];
+    render();
+    return;
+  }
+  render();
+}
+
+function restartSession() { startSession(); }
+function backToTop() { session = []; currentIdx = 0; render(); }
+function resetAll() {
+  if (!confirm('すべての学習記録をリセットしますか？')) return;
+  localStorage.removeItem(CARD_STORE_KEY);
+  render();
+}
+
+/* =========================================================
+   初期化
+   ========================================================= */
+function init() {
+  allCards = buildCards();
+  console.log('[flashcard-all] 生成されたカード:', allCards.length);
+  const counts = {};
+  allCards.forEach(c => { counts[c.cat] = (counts[c.cat] || 0) + 1; });
+  console.log('[flashcard-all] 内訳:', counts);
+  render();
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

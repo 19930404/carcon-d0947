@@ -81,6 +81,7 @@
   .today-btn.review-today { background: linear-gradient(135deg, #4299e1, #3182ce); color:#fff; }
   .today-btn.stats { background: linear-gradient(135deg, #ed8936, #dd6b20); color:#fff; }
   .today-btn.flashcard { background: linear-gradient(135deg, #9f7aea, #805ad5); color:#fff; }
+  .today-btn.flashcard-all { background: linear-gradient(135deg, #ed64a6, #b83280); color:#fff; }
   .today-btn.shiryo-card { background: linear-gradient(135deg, #b794f4, #6b46c1); color:#fff; }
 
   /* ===== 苦手パネル ===== */
@@ -129,6 +130,8 @@
   .menu-item .sub { font-size:.68rem; font-weight:normal; color:#718096; display:block; }
   .menu-item.import { background:#faf5ff; color:#6b46c1; }
   .menu-item.import:hover { background:#f3e8ff; }
+  .menu-item.flashcard-all { background:#fdf2f8; color:#b83280; }
+  .menu-item.flashcard-all:hover { background:#fce7f3; }
 
   .info-btn { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#4299e1; color:#fff; border:none; cursor:pointer; font-weight:bold; font-size:.65rem; margin-left:4px; vertical-align:middle; }
   .info-btn:hover { background:#3182ce; }
@@ -160,7 +163,7 @@
     <div class="spacer"></div>
   </div>
 
-  <!-- キャラクターカード（コンパクト＋合格予測統合） -->
+  <!-- キャラクターカード -->
   <div class="card char-card">
     <div class="char-main">
       <div class="char-stage" id="charStage">🥚</div>
@@ -236,9 +239,16 @@
         </span>
         <span class="arrow">›</span>
       </a>
+      <a class="today-btn flashcard-all" href="flashcard-all.html">
+        <span class="label">
+          <span>🃏 暗記カード（全種類）</span>
+          <span class="sub">人物・用語・数字・語呂・対比</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
       <a class="today-btn flashcard" href="flashcard.html">
         <span class="label">
-          <span>🃏 暗記カード（人物編）</span>
+          <span>👤 暗記カード（人物編）</span>
           <span class="sub">人物と理論をサクサク覚える</span>
         </span>
         <span class="arrow">›</span>
@@ -253,7 +263,7 @@
       <a class="today-btn stats" href="app.html?round=all&view=stats">
         <span class="label">
           <span>📊 成績を見る</span>
-          <span class="sub">分野別・レベル別・人物別・ミス上位</span>
+          <span class="sub">分野別・回別・ランク別・ミス上位</span>
         </span>
         <span class="arrow">›</span>
       </a>
@@ -336,8 +346,9 @@ document.getElementById('infoModal').addEventListener('click', (e) => { if (e.ta
 window.openMenu = function() {
   const html = `
     <h3 style="color:#2b6cb0;margin-bottom:14px;text-align:center;">⚙️ メニュー</h3>
-    <a href="app.html?round=all&view=stats" class="menu-item"><span class="icon">📊</span><div>成績を見る<span class="sub">分野別・レベル別・人物別・ミス上位</span></div></a>
-    <a href="flashcard.html" class="menu-item"><span class="icon">🃏</span><div>暗記カード（人物編）<span class="sub">人物と理論をサクサク覚える</span></div></a>
+    <a href="app.html?round=all&view=stats" class="menu-item"><span class="icon">📊</span><div>成績を見る<span class="sub">分野別・回別・ランク別・ミス上位</span></div></a>
+    <a href="flashcard-all.html" class="menu-item flashcard-all"><span class="icon">🃏</span><div>暗記カード（全種類）<span class="sub">人物・用語・数字・語呂・対比</span></div></a>
+    <a href="flashcard.html" class="menu-item"><span class="icon">👤</span><div>暗記カード（人物編）<span class="sub">人物と理論をサクサク覚える</span></div></a>
     <a href="flashcard-shiryo.html" class="menu-item"><span class="icon">📑</span><div>資料問題カード<span class="sub">数字・語呂・対比を暗記</span></div></a>
     <button class="menu-item" onclick="syncNow()"><span class="icon">🔄</span><div>今すぐ同期<span class="sub">クラウドとデータを同期</span></div></button>
     <button class="menu-item import" onclick="importDataPrompt()"><span class="icon">📥</span><div>データをインポート<span class="sub">他サイトから移行</span></div></button>

@@ -11,9 +11,23 @@
 
   /* ===== ヘッダー（コンパクト） ===== */
   header { background:linear-gradient(135deg,#2b6cb0,#2c5282); color:#fff; padding:10px 14px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:8px; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,.15); }
+  header > div:first-child { display:flex; align-items:center; gap:8px; min-width:0; flex:1; }
   header h1 { font-size:.9rem; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   header a { color:#bee3f8; font-size:.75rem; text-decoration:none; white-space:nowrap; }
-  .header-char { display:flex; align-items:center; gap:6px; font-size:.8rem; }
+  .home-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.2);
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: background .15s;
+  }
+  .home-btn:hover { background: rgba(255,255,255,.35); }
+  .home-btn:active { transform: scale(.95); }
+  .header-char { display:flex; align-items:center; gap:6px; font-size:.8rem; flex-shrink:0; }
   .header-char .stage { font-size:1.6rem; line-height:1; }
   .header-char .lvl { font-size:.7rem; color:#bee3f8; font-weight:bold; }
 
@@ -95,7 +109,6 @@
   .fixed-footer button.next-btn:disabled { background:#cbd5e0; }
   .fixed-footer button.finish-btn { background:#dd6b20; }
   .fixed-footer button.finish-btn:active:not(:disabled) { background:#c05621; }
-  /* 固定フッターの上にシークバー追加 */
   .fixed-footer .nav-info {
     position: absolute;
     top: -22px;
@@ -108,6 +121,35 @@
     padding-top: 4px;
     pointer-events: none;
   }
+
+  /* ===== トップに戻るボタン（右下固定） ===== */
+  .scroll-top-btn {
+    position: fixed;
+    bottom: 100px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2b6cb0, #2c5282);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,.3);
+    z-index: 150;
+    transition: transform .15s, opacity .3s;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .scroll-top-btn.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .scroll-top-btn:active { transform: scale(.92); }
 
   /* ===== その他 ===== */
   .empty { background:#fff; border-radius:12px; padding:40px 20px; text-align:center; color:#718096; }
@@ -176,6 +218,14 @@
     .q-text { font-size:.88rem; }
     .choice { padding:12px 12px; font-size:.85rem; }
     header h1 { font-size:.82rem; }
+    .home-btn { width: 32px; height: 32px; font-size: 1rem; }
+    .scroll-top-btn {
+      bottom: 90px;
+      right: 12px;
+      width: 44px;
+      height: 44px;
+      font-size: 1.2rem;
+    }
   }
 </style>
 </head>
@@ -183,6 +233,7 @@
 <div class="container">
   <header>
     <div>
+      <a href="index.html" class="home-btn" title="メニューに戻る">🏠</a>
       <h1 id="pageTitle">キャリアコンサルタント試験 過去問</h1>
     </div>
     <div class="header-char" id="headerChar">
@@ -236,6 +287,9 @@
   <button id="prevBtn">← 前へ</button>
   <button id="nextBtn" class="next-btn">次へ →</button>
 </div>
+
+<!-- トップに戻るボタン（右下固定・スクロール時のみ表示） -->
+<button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップに戻る">⬆</button>
 
 <div id="syncStatus" class="sync-status"></div>
 <div id="expToast" class="exp-toast"></div>
@@ -392,7 +446,6 @@ function buildEventList(all) {
   const ev = getTodayEvent();
   let pool = all.slice();
 
-  // 曜日テーマでフィルタ
   if (ev.fields && ev.fields.length > 0) {
     pool = pool.filter(q => ev.fields.some(f => (q.f || '').includes(f) || f.includes(q.f)));
   }
@@ -400,7 +453,6 @@ function buildEventList(all) {
     pool = pool.filter(q => ev.rounds.includes(q._round));
   }
   if (ev.mode === 'weakness') {
-    // 苦手分野優先
     const stats = getStats();
     pool.sort((a, b) => {
       const aS = stats[a.f] || { correct: 0, total: 0 };
@@ -412,7 +464,6 @@ function buildEventList(all) {
   }
   if (pool.length < 10) pool = all.slice();
 
-  // 間違い回数優先でソート
   const wrongCounts = getWrongCounts();
   const seed = hashString(new Date().toDateString() + '_' + ev.id);
   const scored = pool.map(q => {
@@ -763,6 +814,17 @@ async function init() {
 
   if (viewParam === 'stats') showStats();
 }
+
+/* ===== トップに戻るボタンの表示制御 ===== */
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTopBtn');
+  if (!btn) return;
+  if (window.scrollY > 300) {
+    btn.classList.add('show');
+  } else {
+    btn.classList.remove('show');
+  }
+});
 
 /* ★★★ Firebase 認証：ポーリング方式 ★★★ */
 (function waitForFirebase() {

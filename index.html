@@ -80,6 +80,8 @@
   .today-btn.recommend { background: linear-gradient(135deg, #48bb78, #38a169); color:#fff; }
   .today-btn.review-today { background: linear-gradient(135deg, #4299e1, #3182ce); color:#fff; }
   .today-btn.stats { background: linear-gradient(135deg, #ed8936, #dd6b20); color:#fff; }
+  .today-btn.flashcard { background: linear-gradient(135deg, #9f7aea, #805ad5); color:#fff; }
+  .today-btn.shiryo-card { background: linear-gradient(135deg, #b794f4, #6b46c1); color:#fff; }
 
   /* ===== 苦手パネル ===== */
   .weak { background:#fff5f5; border:2px solid #feb2b2; border-radius:12px; padding:12px; margin-bottom:10px; }
@@ -234,6 +236,20 @@
         </span>
         <span class="arrow">›</span>
       </a>
+      <a class="today-btn flashcard" href="flashcard.html">
+        <span class="label">
+          <span>🃏 暗記カード（人物編）</span>
+          <span class="sub">人物と理論をサクサク覚える</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
+      <a class="today-btn shiryo-card" href="flashcard-shiryo.html">
+        <span class="label">
+          <span>📑 資料問題カード</span>
+          <span class="sub">数字・語呂・対比を暗記</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
       <a class="today-btn stats" href="app.html?round=all&view=stats">
         <span class="label">
           <span>📊 成績を見る</span>
@@ -321,6 +337,8 @@ window.openMenu = function() {
   const html = `
     <h3 style="color:#2b6cb0;margin-bottom:14px;text-align:center;">⚙️ メニュー</h3>
     <a href="app.html?round=all&view=stats" class="menu-item"><span class="icon">📊</span><div>成績を見る<span class="sub">分野別・レベル別・人物別・ミス上位</span></div></a>
+    <a href="flashcard.html" class="menu-item"><span class="icon">🃏</span><div>暗記カード（人物編）<span class="sub">人物と理論をサクサク覚える</span></div></a>
+    <a href="flashcard-shiryo.html" class="menu-item"><span class="icon">📑</span><div>資料問題カード<span class="sub">数字・語呂・対比を暗記</span></div></a>
     <button class="menu-item" onclick="syncNow()"><span class="icon">🔄</span><div>今すぐ同期<span class="sub">クラウドとデータを同期</span></div></button>
     <button class="menu-item import" onclick="importDataPrompt()"><span class="icon">📥</span><div>データをインポート<span class="sub">他サイトから移行</span></div></button>
     <button class="menu-item" onclick="openNameModal()"><span class="icon">✏️</span><div>名前を変更<span class="sub">キャラクター名を変更</span></div></button>
@@ -336,7 +354,6 @@ window.openMenu = function() {
     </div>
   `;
   showInfoModal(html);
-  // 認証状態を反映
   setTimeout(() => {
     const info = document.getElementById('menuAuthInfo');
     const btn = document.getElementById('menuAuthBtn');
@@ -358,11 +375,10 @@ window.syncNow = async function() {
 };
 
 /* =========================================================
-   ★★★ データインポート機能（移行先用） ★★★
+   データインポート機能
    ========================================================= */
 window.importDataPrompt = function() {
   closeInfoModal();
-  // ファイル選択用のinputを生成
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.json,application/json';
@@ -376,33 +392,12 @@ window.importDataPrompt = function() {
         const keys = Object.keys(data);
         if (keys.length === 0) { alert('データが空です'); return; }
         if (!confirm(`${keys.length}件のデータをインポートします。\n現在のデータは上書きされます。\nよろしいですか？`)) return;
-
-        // localStorageに書き込み
-        keys.forEach(k => {
-          if (k.startsWith('cc_')) {
-            localStorage.setItem(k, data[k]);
-          }
-        });
-
-        // Firebase ログイン中なら自動でクラウドにも保存
+        keys.forEach(k => { if (k.startsWith('cc_')) localStorage.setItem(k, data[k]); });
         const saveCloud = currentUser && window.fbSaveProgress;
-
-        alert('✅ インポート完了！\n\n' +
-          (saveCloud ? 'ログイン中なので、クラウドにも自動保存します...' : 'ログインしていないため、ローカルにのみ保存されました。\n（後でログイン→「今すぐ同期」でクラウド保存できます）') +
-          '\n\nページを再読み込みします。');
-
-        if (saveCloud) {
-          window.fbSaveProgress().then(() => {
-            location.reload();
-          }).catch(() => {
-            location.reload();
-          });
-        } else {
-          location.reload();
-        }
-      } catch (err) {
-        alert('インポート失敗: ' + err.message);
-      }
+        alert('✅ インポート完了！\n\n' + (saveCloud ? 'ログイン中なので、クラウドにも自動保存します...' : 'ログインしていないため、ローカルにのみ保存されました。') + '\n\nページを再読み込みします。');
+        if (saveCloud) { window.fbSaveProgress().then(() => location.reload()).catch(() => location.reload()); }
+        else { location.reload(); }
+      } catch (err) { alert('インポート失敗: ' + err.message); }
     };
     reader.readAsText(file);
   };

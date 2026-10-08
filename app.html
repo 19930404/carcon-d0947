@@ -9,22 +9,12 @@
   body { font-family: "Hiragino Sans","Yu Gothic","Meiryo",sans-serif; background:#f0f4f8; color:#1a202c; line-height:1.7; padding:12px; padding-bottom: 160px; }
   .container { max-width:900px; margin:0 auto; }
 
-  /* ===== ヘッダー（コンパクト） ===== */
+  /* ===== ヘッダー ===== */
   header { background:linear-gradient(135deg,#2b6cb0,#2c5282); color:#fff; padding:10px 14px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:8px; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,.15); }
   header > div:first-child { display:flex; align-items:center; gap:8px; min-width:0; flex:1; }
   header h1 { font-size:.9rem; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   header a { color:#bee3f8; font-size:.75rem; text-decoration:none; white-space:nowrap; }
-  .home-btn {
-    display: flex; align-items: center; justify-content: center;
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    background: rgba(255,255,255,.2);
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-    transition: background .15s;
-  }
+  .home-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,.2); color: #fff; text-decoration: none; font-size: 1.1rem; flex-shrink: 0; transition: background .15s; }
   .home-btn:hover { background: rgba(255,255,255,.35); }
   .home-btn:active { transform: scale(.95); }
   .header-char { display:flex; align-items:center; gap:6px; font-size:.8rem; flex-shrink:0; }
@@ -53,84 +43,20 @@
   .q-text { font-size:.92rem; margin-bottom:14px; white-space:pre-wrap; }
 
   /* ===== 読み上げバー ===== */
-  .speak-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    padding: 8px 12px;
-    background: linear-gradient(135deg, #ebf8ff, #bee3f8);
-    border-radius: 10px;
-    border: 1px solid #90cdf4;
-    flex-wrap: wrap;
-  }
-  .speak-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #4299e1, #3182ce);
-    color: #fff;
-    font-weight: bold;
-    font-size: .82rem;
-    cursor: pointer;
-    font-family: inherit;
-    transition: transform .15s, background .15s;
-    flex-shrink: 0;
-  }
+  .speak-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 12px; background: linear-gradient(135deg, #ebf8ff, #bee3f8); border-radius: 10px; border: 1px solid #90cdf4; flex-wrap: wrap; }
+  .speak-btn { display: inline-flex; align-items: center; gap: 4px; padding: 8px 14px; border: none; border-radius: 8px; background: linear-gradient(135deg, #4299e1, #3182ce); color: #fff; font-weight: bold; font-size: .82rem; cursor: pointer; font-family: inherit; transition: transform .15s, background .15s; flex-shrink: 0; }
   .speak-btn:hover { background: linear-gradient(135deg, #3182ce, #2c5282); }
   .speak-btn:active { transform: scale(.95); }
-  .speak-btn.speaking {
-    background: linear-gradient(135deg, #e53e3e, #c53030);
-    animation: pulse-speak 1.5s infinite;
-  }
-  .speak-btn.explain {
-    background: linear-gradient(135deg, #dd6b20, #c05621);
-  }
+  .speak-btn.speaking { background: linear-gradient(135deg, #e53e3e, #c53030); animation: pulse-speak 1.5s infinite; }
+  .speak-btn.explain { background: linear-gradient(135deg, #dd6b20, #c05621); }
   .speak-btn.explain:hover { background: linear-gradient(135deg, #c05621, #9c4221); }
-  @keyframes pulse-speak {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .7; }
-  }
-  .speak-rate {
-    padding: 6px 8px;
-    border: 1px solid #90cdf4;
-    border-radius: 6px;
-    font-size: .75rem;
-    font-family: inherit;
-    background: #fff;
-    color: #2c5282;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .auto-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: #fff;
-    border: 1px solid #90cdf4;
-    font-size: .72rem;
-    font-weight: bold;
-    color: #2c5282;
-    cursor: pointer;
-    user-select: none;
-  }
-  .auto-toggle input {
-    margin: 0;
-    cursor: pointer;
-  }
-  .speak-hint {
-    font-size: .68rem;
-    color: #2c5282;
-    flex: 1;
-    text-align: right;
-  }
+  @keyframes pulse-speak { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
+  .speak-rate { padding: 6px 8px; border: 1px solid #90cdf4; border-radius: 6px; font-size: .75rem; font-family: inherit; background: #fff; color: #2c5282; font-weight: bold; cursor: pointer; }
+  .auto-toggle { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 6px; background: #fff; border: 1px solid #90cdf4; font-size: .72rem; font-weight: bold; color: #2c5282; cursor: pointer; user-select: none; }
+  .auto-toggle input { margin: 0; cursor: pointer; }
+  .speak-hint { font-size: .68rem; color: #2c5282; flex: 1; text-align: right; }
 
-  /* ===== 選択肢（タップしやすく） ===== */
+  /* ===== 選択肢 ===== */
   .choices { display:flex; flex-direction:column; gap:8px; }
   .choice { display:flex; align-items:flex-start; gap:10px; padding:14px 14px; border:2px solid #e2e8f0; border-radius:10px; cursor:pointer; background:#fff; text-align:left; font-size:.88rem; width:100%; font-family:inherit; line-height:1.5; min-height:56px; }
   .choice:active:not(.disabled) { transform:scale(.98); }
@@ -152,58 +78,14 @@
   .basics-btn.opened { background:#718096; }
   .basics-btn.opened:hover { background:#4a5568; }
   .basics-hidden { display:none; }
-
-  /* ===== パネル内読み上げボタン ===== */
-  .speak-explain-btn {
-    display: block;
-    width: 100%;
-    margin-top: 12px;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #4299e1, #3182ce);
-    color: #fff;
-    font-weight: bold;
-    font-size: .85rem;
-    cursor: pointer;
-    font-family: inherit;
-    transition: transform .15s, background .15s;
-  }
+  .speak-explain-btn { display: block; width: 100%; margin-top: 12px; padding: 10px 16px; border: none; border-radius: 8px; background: linear-gradient(135deg, #4299e1, #3182ce); color: #fff; font-weight: bold; font-size: .85rem; cursor: pointer; font-family: inherit; transition: transform .15s, background .15s; }
   .speak-explain-btn:hover { background: linear-gradient(135deg, #3182ce, #2c5282); }
   .speak-explain-btn:active { transform: scale(.98); }
-  .speak-explain-btn.speaking {
-    background: linear-gradient(135deg, #e53e3e, #c53030);
-    animation: pulse-speak 1.5s infinite;
-  }
+  .speak-explain-btn.speaking { background: linear-gradient(135deg, #e53e3e, #c53030); animation: pulse-speak 1.5s infinite; }
 
-  /* ===== 固定フッター（次へ/前へ） ===== */
-  .fixed-footer {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    background: #fff;
-    border-top: 2px solid #e2e8f0;
-    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
-    display: flex;
-    gap: 10px;
-    z-index: 200;
-    box-shadow: 0 -2px 12px rgba(0,0,0,.08);
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .fixed-footer button {
-    flex: 1;
-    padding: 14px 20px;
-    border: none;
-    border-radius: 10px;
-    background: #2b6cb0;
-    color: #fff;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    font-family: inherit;
-    min-height: 52px;
-    transition: background .15s;
-  }
+  /* ===== 固定フッター ===== */
+  .fixed-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 2px solid #e2e8f0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 10px; z-index: 200; box-shadow: 0 -2px 12px rgba(0,0,0,.08); max-width: 900px; margin: 0 auto; }
+  .fixed-footer button { flex: 1; padding: 14px 20px; border: none; border-radius: 10px; background: #2b6cb0; color: #fff; cursor: pointer; font-weight: bold; font-size: 1rem; font-family: inherit; min-height: 52px; transition: background .15s; }
   .fixed-footer button:active:not(:disabled) { background:#2c5282; transform:scale(.98); }
   .fixed-footer button:disabled { background:#cbd5e0; cursor:not-allowed; }
   .fixed-footer button.next-btn { background:#38a169; }
@@ -211,46 +93,11 @@
   .fixed-footer button.next-btn:disabled { background:#cbd5e0; }
   .fixed-footer button.finish-btn { background:#dd6b20; }
   .fixed-footer button.finish-btn:active:not(:disabled) { background:#c05621; }
-  .fixed-footer .nav-info {
-    position: absolute;
-    top: -22px;
-    left: 0; right: 0;
-    text-align: center;
-    font-size: .7rem;
-    color: #718096;
-    font-weight: bold;
-    background: linear-gradient(transparent, #fff 40%);
-    padding-top: 4px;
-    pointer-events: none;
-  }
+  .fixed-footer .nav-info { position: absolute; top: -22px; left: 0; right: 0; text-align: center; font-size: .7rem; color: #718096; font-weight: bold; background: linear-gradient(transparent, #fff 40%); padding-top: 4px; pointer-events: none; }
 
-  /* ===== トップに戻るボタン（右下固定） ===== */
-  .scroll-top-btn {
-    position: fixed;
-    bottom: 100px;
-    right: 16px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #2b6cb0, #2c5282);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    text-decoration: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,.3);
-    z-index: 150;
-    transition: transform .15s, opacity .3s;
-    border: none;
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .scroll-top-btn.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  /* ===== トップに戻るボタン ===== */
+  .scroll-top-btn { position: fixed; bottom: 100px; right: 16px; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #2b6cb0, #2c5282); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,.3); z-index: 150; transition: transform .15s, opacity .3s; border: none; cursor: pointer; opacity: 0; pointer-events: none; }
+  .scroll-top-btn.show { opacity: 1; pointer-events: auto; }
   .scroll-top-btn:active { transform: scale(.92); }
 
   /* ===== その他 ===== */
@@ -266,22 +113,45 @@
   .summary button.secondary { background:#718096; }
   .summary button.stats-btn { background:#dd6b20; }
 
+  /* ===== 統計パネル ===== */
   .stats-panel { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
   .stats-panel h3 { color:#2b6cb0; margin-bottom:14px; font-size:1rem; }
   .stats-tabs { display:flex; gap:4px; margin-bottom:16px; border-bottom:2px solid #e2e8f0; flex-wrap:wrap; }
   .stats-tab { padding:8px 14px; border:none; background:transparent; cursor:pointer; font-size:.82rem; font-weight:bold; color:#718096; border-bottom:3px solid transparent; margin-bottom:-2px; font-family:inherit; }
   .stats-tab.active { color:#2b6cb0; border-bottom-color:#2b6cb0; }
-  .stat-row { display:flex; align-items:center; gap:10px; margin-bottom:6px; font-size:.82rem; }
-  .stat-row .field-name { width:150px; flex-shrink:0; color:#4a5568; font-size:.75rem; }
-  .stat-row .bar-bg { flex:1; height:16px; background:#edf2f7; border-radius:8px; overflow:hidden; }
-  .stat-row .bar-fill { height:100%; background:#38a169; transition:width .3s; }
-  .stat-row .bar-fill.low { background:#e53e3e; }
-  .stat-row .bar-fill.mid { background:#dd6b20; }
-  .stat-row .rate { width:50px; text-align:right; font-weight:bold; color:#2d3748; font-size:.8rem; }
-  .stat-sub { font-size:.7rem; color:#718096; margin:0 0 10px 160px; }
+
+  /* ===== 進捗ブロック（新規） ===== */
+  .progress-block { padding:12px 0; border-bottom:1px dashed #e2e8f0; }
+  .progress-block:last-child { border-bottom:none; }
+  .progress-block-title { font-size:.88rem; font-weight:bold; color:#2d3748; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
+  .progress-block-title .badge { font-size:.68rem; background:#e2e8f0; color:#4a5568; padding:2px 8px; border-radius:10px; font-weight:normal; }
+  .progress-block-title .badge.done { background:#c6f6d5; color:#22543d; }
+  .progress-block-title .badge.todo { background:#fed7d7; color:#742a2a; }
+
+  .round-line { display:flex; align-items:center; gap:8px; margin-bottom:4px; font-size:.78rem; }
+  .round-label { width:52px; flex-shrink:0; font-weight:bold; color:#4a5568; font-size:.72rem; }
+  .round-label.r1 { color:#3182ce; }
+  .round-label.r2 { color:#38a169; }
+  .round-label.r3 { color:#805ad5; }
+  .round-bar-bg { flex:1; height:14px; background:#edf2f7; border-radius:7px; overflow:hidden; }
+  .round-bar-fill { height:100%; transition:width .3s; }
+  .round-bar-fill.r1 { background:linear-gradient(90deg, #63b3ed, #3182ce); }
+  .round-bar-fill.r2 { background:linear-gradient(90deg, #68d391, #38a169); }
+  .round-bar-fill.r3 { background:linear-gradient(90deg, #b794f4, #805ad5); }
+  .round-pct { width:44px; text-align:right; font-weight:bold; font-size:.72rem; color:#2d3748; }
+  .round-count { width:70px; text-align:right; font-size:.68rem; color:#718096; }
+
+  .progress-summary-line { margin-top:8px; padding-top:6px; border-top:1px solid #edf2f7; display:flex; justify-content:space-between; font-size:.75rem; color:#4a5568; }
+  .progress-summary-line .total { font-weight:bold; color:#2b6cb0; }
+  .progress-summary-line .acc { font-weight:bold; color:#38a169; }
+  .progress-summary-line .acc.warn { color:#dd6b20; }
+  .progress-summary-line .acc.bad { color:#c53030; }
+
+  /* ===== ミス行 ===== */
   .miss-row { display:flex; justify-content:space-between; align-items:center; padding:8px 12px; margin-bottom:6px; background:#fff5f5; border-left:3px solid #e53e3e; border-radius:4px; font-size:.82rem; }
   .miss-row .miss-count { font-weight:bold; color:#c53030; }
 
+  /* ===== バナー ===== */
   .recommend-banner { background:#f0fff4; border-left:4px solid #38a169; padding:10px 14px; border-radius:6px; font-size:.8rem; color:#276749; margin-bottom:12px; }
   .shiryo-banner { background:#faf5ff; border-left:4px solid #805ad5; padding:10px 14px; border-radius:6px; font-size:.8rem; color:#553c9a; margin-bottom:12px; }
   .event-banner { background:linear-gradient(135deg, #fed7d7, #feebc8); border-left:4px solid #dd6b20; padding:10px 14px; border-radius:6px; font-size:.8rem; color:#744210; margin-bottom:12px; font-weight:bold; }
@@ -303,7 +173,7 @@
   .levelup-box .lv-char { font-size:4rem; margin:8px 0; }
   .levelup-box .lv-num { font-size:1.6rem; font-weight:bold; }
 
-  /* ===== ツールバー（コンパクト化） ===== */
+  /* ===== ツールバー ===== */
   .toolbar { display:flex; gap:6px; flex-wrap:wrap; align-items:center; background:#fff; padding:8px 12px; border-radius:10px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,.06); font-size:.78rem; }
   .toolbar .stat { font-size:.78rem; font-weight:bold; }
   .toolbar .stat span { color:#2b6cb0; }
@@ -313,7 +183,6 @@
   .toolbar button.danger { background:#c53030; }
   .toolbar .timer { font-family:monospace; font-size:.88rem; font-weight:bold; color:#c53030; margin-left:auto; }
 
-  /* スマホ調整 */
   @media (max-width: 600px) {
     body { padding:8px; padding-bottom:150px; }
     .question { padding:12px; }
@@ -321,17 +190,13 @@
     .choice { padding:12px 12px; font-size:.85rem; }
     header h1 { font-size:.82rem; }
     .home-btn { width: 32px; height: 32px; font-size: 1rem; }
-    .scroll-top-btn {
-      bottom: 90px;
-      right: 12px;
-      width: 44px;
-      height: 44px;
-      font-size: 1.2rem;
-    }
+    .scroll-top-btn { bottom: 90px; right: 12px; width: 44px; height: 44px; font-size: 1.2rem; }
     .speak-bar { padding: 6px 10px; gap: 6px; }
     .speak-btn { padding: 6px 10px; font-size: .78rem; }
     .speak-hint { display: none; }
     .auto-toggle { font-size: .68rem; padding: 5px 8px; }
+    .round-label { width:44px; font-size:.65rem; }
+    .round-count { width:60px; font-size:.62rem; }
   }
 </style>
 </head>
@@ -348,7 +213,6 @@
     </div>
   </header>
 
-  <!-- 進捗バー -->
   <div class="progress-strip" id="progressStrip">
     <div class="progress-bar-outer">
       <div class="progress-bar-inner" id="progressInner" style="width:0%"></div>
@@ -359,7 +223,6 @@
     </div>
   </div>
 
-  <!-- ツールバー（コンパクト） -->
   <div class="toolbar">
     <select id="modeSelect">
       <option value="normal">通常</option>
@@ -387,14 +250,12 @@
   <div id="quizArea"></div>
 </div>
 
-<!-- 固定フッター（次へ/前へ） -->
 <div class="fixed-footer" id="fixedFooter">
   <div class="nav-info" id="navInfo"></div>
   <button id="prevBtn">← 前へ</button>
   <button id="nextBtn" class="next-btn">次へ →</button>
 </div>
 
-<!-- トップに戻るボタン（右下固定・スクロール時のみ表示） -->
 <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップに戻る">⬆</button>
 
 <div id="syncStatus" class="sync-status"></div>
@@ -416,10 +277,9 @@
 const ROUNDS = {
   30: { label: '第30回' }, 31: { label: '第31回' }, 32: { label: '第32回' },
   34: { label: '第34回' }, 35: { label: '第35回' }, 36: { label: '第36回' },
-  extra: { label: '番外編' }, shiryo: { label: '資料問題編' },
+  extra: { label: '人物編' }, shiryo: { label: '資料問題編' },
 };
 
-/* ===== イベント定義（曜日テーマ制） ===== */
 const WEEKLY_EVENTS = {
   0: { id:'sun', emoji:'🌅', name:'日曜：弱点克服の日', desc:'あなたの苦手分野トップ3から集中的に出題します', fields:null, mode:'weakness' },
   1: { id:'mon', emoji:'📚', name:'月曜：キャリア理論の日', desc:'シャイン・ホランド・サビカスなど理論を固めよう', fields:['キャリア理論','キャリアに関する理論'] },
@@ -429,11 +289,7 @@ const WEEKLY_EVENTS = {
   5: { id:'fri', emoji:'📑', name:'金曜：資料問題の日', desc:'S/A/Bランクの資料問題を集中攻略', rounds:['shiryo'] },
   6: { id:'sat', emoji:'🎯', name:'土曜：全分野ミックスの日', desc:'全分野からランダムに10問', fields:null, mode:'random' },
 };
-
-function getTodayEvent() {
-  const day = new Date().getDay();
-  return WEEKLY_EVENTS[day];
-}
+function getTodayEvent() { return WEEKLY_EVENTS[new Date().getDay()]; }
 
 const params = new URLSearchParams(location.search);
 const roundParam = params.get('round') || '32';
@@ -454,7 +310,6 @@ let remaining = 6000;
 let currentUser = null;
 let sessionCorrectStreak = 0;
 
-/* ===== 読み上げ関連 ===== */
 let speakRate = parseFloat(localStorage.getItem('cc_speakRate') || '1.0');
 let autoSpeakExplain = localStorage.getItem('cc_autoSpeakExplain') === 'true';
 let isSpeaking = false;
@@ -474,7 +329,7 @@ function showLevelUp(newLevel) { const data = window.gameLoad ? window.gameLoad(
 function updateHeaderChar() { if (!window.gameLoad) return; const data = window.gameLoad(); document.getElementById('headerStage').textContent = data.characterStage || '🥚'; document.getElementById('headerLevel').textContent = 'Lv.' + (data.level || 1); }
 
 /* =========================================================
-   ★★★ 読み上げ機能 ★★★
+   読み上げ機能
    ========================================================= */
 function stopSpeaking() {
   if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); }
@@ -488,12 +343,8 @@ function stopSpeaking() {
     basicsBtn.textContent = isOpen ? '📖 覚え方を閉じる' : '🧠 覚え方を見る';
   }
   const expBtn = document.getElementById('speakExplainBtn');
-  if (expBtn) {
-    expBtn.classList.remove('speaking');
-    expBtn.textContent = '🔊 解説を読み上げる';
-  }
+  if (expBtn) { expBtn.classList.remove('speaking'); expBtn.textContent = '🔊 解説を読み上げる'; }
 }
-
 function updateSpeakBtnLabel() {
   const btn = document.getElementById('speakBtn');
   if (!btn || btn.classList.contains('speaking')) return;
@@ -501,7 +352,6 @@ function updateSpeakBtnLabel() {
   btn.textContent = isA ? '🔊 解説も読む' : '🔊 問題を読む';
   btn.className = 'speak-btn' + (isA ? ' explain' : '');
 }
-
 function buildSpeechText() {
   const q = list[currentIndex];
   if (!q) return '';
@@ -511,7 +361,6 @@ function buildSpeechText() {
   parts.push(q.t);
   parts.push('選択肢。');
   q.c.forEach((c, i) => { parts.push(`番号${i + 1}。${c}`); });
-
   if (isA) {
     parts.push(`正解は、番号${q.a}。`);
     if (q.exp) { parts.push('解説。'); parts.push(q.exp.replace(/\n+/g, '。')); }
@@ -519,38 +368,21 @@ function buildSpeechText() {
   }
   return parts.join('。');
 }
-
 function speakText(text, source) {
   isSpeaking = true;
   speakingSource = source;
-
-  if (source === 'main') {
-    const btn = document.getElementById('speakBtn');
-    if (btn) { btn.classList.add('speaking'); btn.textContent = '⏹ 停止'; }
-  } else if (source === 'explain') {
-    const expBtn = document.getElementById('speakExplainBtn');
-    if (expBtn) { expBtn.classList.add('speaking'); expBtn.textContent = '⏹ 停止'; }
-  }
-
+  if (source === 'main') { const btn = document.getElementById('speakBtn'); if (btn) { btn.classList.add('speaking'); btn.textContent = '⏹ 停止'; } }
+  else if (source === 'explain') { const expBtn = document.getElementById('speakExplainBtn'); if (expBtn) { expBtn.classList.add('speaking'); expBtn.textContent = '⏹ 停止'; } }
   const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'ja-JP';
-  utter.rate = speakRate;
-  utter.pitch = 1.0;
-  utter.volume = 1.0;
+  utter.lang = 'ja-JP'; utter.rate = speakRate; utter.pitch = 1.0; utter.volume = 1.0;
   utter.onend = () => {
-    isSpeaking = false;
-    speakingSource = null;
+    isSpeaking = false; speakingSource = null;
     if (source === 'main') { const b = document.getElementById('speakBtn'); if (b) { b.classList.remove('speaking'); updateSpeakBtnLabel(); } }
-    else if (source === 'explain') {
-      const expBtn = document.getElementById('speakExplainBtn');
-      if (expBtn) { expBtn.classList.remove('speaking'); expBtn.textContent = '🔊 解説を読み上げる'; }
-    }
+    else if (source === 'explain') { const expBtn = document.getElementById('speakExplainBtn'); if (expBtn) { expBtn.classList.remove('speaking'); expBtn.textContent = '🔊 解説を読み上げる'; } }
   };
   utter.onerror = utter.onend;
   window.speechSynthesis.speak(utter);
 }
-
-/* メイン読み上げボタン（問題＋選択肢、解答後は解説も） */
 function speakQuestion() {
   if (!('speechSynthesis' in window)) { alert('このブラウザは読み上げ機能に対応していません。'); return; }
   if (isSpeaking) { stopSpeaking(); return; }
@@ -558,46 +390,25 @@ function speakQuestion() {
   if (!fullText) return;
   speakText(fullText, 'main');
 }
-
-/* 解説だけ読む（ユーザーが明示的に押した時のみ） */
 function speakExplainOnly() {
   if (!('speechSynthesis' in window)) { alert('このブラウザは読み上げ機能に対応していません。'); return; }
   if (isSpeaking) { stopSpeaking(); return; }
-
   const q = list[currentIndex];
   if (!q) return;
   const isA = answered[currentIndex] !== undefined;
   if (!isA) { alert('まず問題を解いてください'); return; }
-
   const parts = [];
   parts.push(`正解は、番号${q.a}。`);
   if (q.exp) { parts.push('解説。'); parts.push(q.exp.replace(/\n+/g, '。')); }
   if (q.basics) { parts.push('覚えるべき基礎。'); parts.push(q.basics.replace(/\n+/g, '。').replace(/【/g, '').replace(/】/g, '、')); }
-  const fullText = parts.join('。');
-
-  speakText(fullText, 'explain');
+  speakText(parts.join('。'), 'explain');
 }
+function changeSpeakRate(val) { speakRate = parseFloat(val); localStorage.setItem('cc_speakRate', String(speakRate)); if (isSpeaking) { const src = speakingSource; if ('speechSynthesis' in window) window.speechSynthesis.cancel(); isSpeaking = false; setTimeout(() => { if (src === 'explain') speakExplainOnly(); else speakQuestion(); }, 200); } }
+function toggleAutoSpeak(checked) { autoSpeakExplain = !!checked; localStorage.setItem('cc_autoSpeakExplain', String(autoSpeakExplain)); }
 
-function changeSpeakRate(val) {
-  speakRate = parseFloat(val);
-  localStorage.setItem('cc_speakRate', String(speakRate));
-  if (isSpeaking) {
-    const src = speakingSource;
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    isSpeaking = false;
-    setTimeout(() => {
-      if (src === 'explain') speakExplainOnly();
-      else speakQuestion();
-    }, 200);
-  }
-}
-
-function toggleAutoSpeak(checked) {
-  autoSpeakExplain = !!checked;
-  localStorage.setItem('cc_autoSpeakExplain', String(autoSpeakExplain));
-}
-
-/* ===== データ読み込み ===== */
+/* =========================================================
+   データ読み込み
+   ========================================================= */
 function loadData() {
   return new Promise((resolve, reject) => {
     const rounds = isAllRounds ? Object.keys(ROUNDS) : (isEventMode ? Object.keys(ROUNDS) : [roundParam]);
@@ -613,8 +424,7 @@ function loadData() {
       s.onload = () => {
         const arr = window[varName] || [];
         arr.forEach((q, i) => { q._gid = r + '_' + i; q._round = r; });
-        collected.push(...arr);
-        loaded++;
+        collected.push(...arr); loaded++;
         if (loaded === rounds.length) { qData = collected; resolve(); }
       };
       s.onerror = () => reject(new Error(fname + '.js の読み込みに失敗'));
@@ -622,28 +432,15 @@ function loadData() {
     });
   });
 }
-
 function generateGidMap() {
   const master = window.PROGRESS_MASTER;
   if (!master) return;
-  const gidMap = {};
-  const categories = {};
+  const gidMap = {}; const categories = {};
   qData.forEach(q => {
-    const gid = q._gid;
-    const round = q._round;
-    let catId;
-    if (round === 'shiryo') {
-      const match = (q.f || '').match(/資料問題｜(.+)/);
-      const name = match ? match[1] : '不明';
-      const cat = master.shiryoCategories.find(c => c.name === name);
-      catId = cat ? cat.id : 'shiryo_99';
-    } else if (round === 'extra') {
-      const cat = master.extraCategories.find(c => c.name === q.f);
-      catId = cat ? cat.id : 'extra_99';
-    } else {
-      const fieldId = master.fieldMapping[q.f] || 'f09';
-      catId = 'r' + round + '_' + fieldId;
-    }
+    const gid = q._gid; const round = q._round; let catId;
+    if (round === 'shiryo') { const match = (q.f || '').match(/資料問題｜(.+)/); const name = match ? match[1] : '不明'; const cat = master.shiryoCategories.find(c => c.name === name); catId = cat ? cat.id : 'shiryo_99'; }
+    else if (round === 'extra') { const cat = master.extraCategories.find(c => c.name === q.f); catId = cat ? cat.id : 'extra_99'; }
+    else { const fieldId = master.fieldMapping[q.f] || 'f09'; catId = 'r' + round + '_' + fieldId; }
     gidMap[gid] = catId;
     if (!categories[catId]) categories[catId] = { name: catId, rank: '', total: 0 };
     categories[catId].total++;
@@ -670,7 +467,6 @@ function buildList() {
   else if (modeParam === 'random') { arr = shuffle(arr); }
   list = arr;
 }
-
 function buildEventList(all) {
   const ev = getTodayEvent();
   let pool = all.slice();
@@ -684,7 +480,6 @@ function buildEventList(all) {
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, 10).map(x => x.q);
 }
-
 function shuffle(a) { const arr = a.slice(); for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 function recommendList(arr) {
   const wrongCounts = getWrongCounts(); const fieldStats = getStats(); const personStats = getStatsByPerson(); const qHistory = getQHistory();
@@ -747,8 +542,7 @@ function recordStat(q, isCorrect) {
     const data = window.gameLoad();
     const { level } = window.gameCalcLevel(data.totalExp);
     if (data.level !== level) { data.level = level; window.gameSave(data); setTimeout(() => showLevelUp(level), 500); updateHeaderChar(); }
-    const newTitles = window.gameCheckTitles();
-    const newBadges = window.gameCheckBadges();
+    const newTitles = window.gameCheckTitles(); const newBadges = window.gameCheckBadges();
     newTitles.forEach(t => { setTimeout(() => showExpToast(`🏆 称号獲得！ ${t.name}`, 'title'), 800); });
     newBadges.forEach(b => { setTimeout(() => showExpToast(`🎖️ バッジ獲得！ ${b.name}`, 'badge'), 1200); });
     updateHeaderChar();
@@ -788,10 +582,11 @@ function loadProgress() {
 }
 function clearProgress() { localStorage.removeItem(storeKey.progress); }
 
-/* ===== 問題表示 ===== */
+/* =========================================================
+   問題表示
+   ========================================================= */
 function renderQuestion() {
   stopSpeaking();
-
   const quizArea = document.getElementById('quizArea');
   const footer = document.getElementById('fixedFooter');
   const progressStrip = document.getElementById('progressStrip');
@@ -836,16 +631,10 @@ function renderQuestion() {
   const wrongBadge = wrongCount > 0 ? `<span style="font-size:.7rem;color:#c53030;margin-left:6px;">×${wrongCount}</span>` : '';
 
   let banner = '';
-  if (isEventMode) {
-    const ev = getTodayEvent();
-    banner = `<div class="event-banner">${ev.emoji} ${ev.name}<br><span style="font-weight:normal;font-size:.75rem;">${ev.desc}</span></div>`;
-  } else if (modeParam === 'recommend' && currentIndex === 0) {
-    banner = `<div class="recommend-banner">🎯 今日のおすすめ10問です。</div>`;
-  } else if (modeParam === 'reviewToday' && currentIndex === 0) {
-    banner = `<div class="recommend-banner" style="background:#ebf8ff;border-left-color:#3182ce;color:#2c5282;">🔁 今日の復習です。</div>`;
-  } else if (roundParam === 'shiryo' && currentIndex === 0) {
-    banner = `<div class="shiryo-banner">📑 資料問題編です。</div>`;
-  }
+  if (isEventMode) { const ev = getTodayEvent(); banner = `<div class="event-banner">${ev.emoji} ${ev.name}<br><span style="font-weight:normal;font-size:.75rem;">${ev.desc}</span></div>`; }
+  else if (modeParam === 'recommend' && currentIndex === 0) { banner = `<div class="recommend-banner">🎯 今日のおすすめ10問です。</div>`; }
+  else if (modeParam === 'reviewToday' && currentIndex === 0) { banner = `<div class="recommend-banner" style="background:#ebf8ff;border-left-color:#3182ce;color:#2c5282;">🔁 今日の復習です。</div>`; }
+  else if (roundParam === 'shiryo' && currentIndex === 0) { banner = `<div class="shiryo-banner">📑 資料問題編です。</div>`; }
 
   const speakLabel = isA ? '🔊 解説も読む' : '🔊 問題を読む';
   const speakClass = isA ? 'speak-btn explain' : 'speak-btn';
@@ -878,30 +667,18 @@ function renderQuestion() {
       <div class="choices">${ch}</div>${basicsHtml}
     </div>`;
 
-  if (!isA) {
-    document.querySelectorAll('.choice').forEach(b => b.addEventListener('click', () => select(parseInt(b.dataset.c))));
-  }
+  if (!isA) { document.querySelectorAll('.choice').forEach(b => b.addEventListener('click', () => select(parseInt(b.dataset.c)))); }
 
-  /* ===== 覚え方ボタン：押したらパネルを開くだけ（音は出ない） ===== */
   const basicsBtn = document.getElementById('basicsBtn');
   if (basicsBtn) {
     basicsBtn.addEventListener('click', () => {
       const panel = document.getElementById('basicsPanel');
       const isOpen = basicsBtn.dataset.open === '1';
       if (isOpen) {
-        // 閉じる
-        panel.classList.add('basics-hidden');
-        basicsBtn.dataset.open = '0';
-        basicsBtn.classList.remove('opened');
-        basicsBtn.textContent = '🧠 覚え方を見る';
-        // パネル内の読み上げも停止
+        panel.classList.add('basics-hidden'); basicsBtn.dataset.open = '0'; basicsBtn.classList.remove('opened'); basicsBtn.textContent = '🧠 覚え方を見る';
         if (isSpeaking && speakingSource === 'explain') stopSpeaking();
       } else {
-        // 開く（音は出ない）
-        panel.classList.remove('basics-hidden');
-        basicsBtn.dataset.open = '1';
-        basicsBtn.classList.add('opened');
-        basicsBtn.textContent = '📖 覚え方を閉じる';
+        panel.classList.remove('basics-hidden'); basicsBtn.dataset.open = '1'; basicsBtn.classList.add('opened'); basicsBtn.textContent = '📖 覚え方を閉じる';
       }
     });
   }
@@ -915,23 +692,17 @@ function renderQuestion() {
   document.getElementById('navInfo').textContent = `${currentIndex + 1} / ${list.length}問`;
 }
 
-/* ===== 選択肢を選ぶ ===== */
 function select(n) {
   if (answered[currentIndex] !== undefined) return;
   stopSpeaking();
   const q = list[currentIndex];
   answered[currentIndex] = n;
   const isCorrect = (n === q.a);
-  if (isCorrect) { correctCount++; removeWrong(q._gid); }
-  else { addWrong(q._gid); }
+  if (isCorrect) { correctCount++; removeWrong(q._gid); } else { addWrong(q._gid); }
   recordStat(q, isCorrect);
   saveProgress();
   renderQuestion();
-
-  // ★ 自動チェックONの時だけ、自動で読み上げ
-  if (autoSpeakExplain) {
-    setTimeout(() => { speakQuestion(); }, 400);
-  }
+  if (autoSpeakExplain) { setTimeout(() => { speakQuestion(); }, 400); }
 }
 
 function showSummary() {
@@ -964,37 +735,33 @@ function showSummary() {
   document.getElementById('progressStrip').style.display = 'none';
 }
 
+/* =========================================================
+   成績表示（新ロジック：3周分の進捗）
+   ========================================================= */
 let statsTab = 'field';
 function showStats() { renderStatsPanel(); }
+
 function renderStatsPanel() {
   stopSpeaking();
   const area = document.getElementById('quizArea');
   document.getElementById('fixedFooter').style.display = 'none';
   area._backup = area._backup || area.innerHTML;
-  let data = {}, label = '';
-  if (statsTab === 'field') { data = getStats(); label = '分野'; }
-  else if (statsTab === 'level') { data = getStatsByLevel(); label = 'レベル'; }
-  else if (statsTab === 'person') { data = getStatsByPerson(); label = '人物'; }
-  else if (statsTab === 'miss') { data = null; label = 'ミス上位'; }
-  const entries = data ? Object.entries(data).map(([k, v]) => ({ key: k, rate: v.total ? v.correct / v.total : 0, correct: v.correct, total: v.total })) : [];
-  entries.sort((a, b) => a.rate - b.rate);
 
   let bodyHtml = '';
-  if (statsTab === 'miss') {
-    const counts = getWrongCounts();
-    const misses = Object.entries(counts).map(([gid, cnt]) => { const q = qData.find(x => x._gid === gid); return { gid, cnt, q }; }).sort((a, b) => b.cnt - a.cnt).slice(0, 20);
-    if (misses.length === 0) bodyHtml = '<p style="color:#718096;">まだ間違い記録がありません。</p>';
-    else bodyHtml = misses.map(m => { const title = m.q ? m.q.t.substring(0, 60) + (m.q.t.length > 60 ? '…' : '') : m.gid; const field = m.q ? m.q.f : ''; return `<div class="miss-row"><div><div style="font-size:.72rem;color:#718096;">${esc(field)}</div><div style="font-size:.82rem;">${esc(title)}</div></div><div class="miss-count">×${m.cnt}</div></div>`; }).join('');
-  } else if (entries.length === 0) { bodyHtml = '<p style="color:#718096;">まだデータがありません。</p>'; }
-  else { bodyHtml = entries.map(e => { const rate = Math.round(e.rate * 100); let cls = 'bar-fill'; if (rate < 60) cls += ' low'; else if (rate < 80) cls += ' mid'; return `<div class="stat-row"><div class="field-name">${esc(e.key)}</div><div class="bar-bg"><div class="${cls}" style="width:${rate}%"></div></div><div class="rate">${rate}%</div></div><div class="stat-sub">${e.correct} / ${e.total} 問</div>`; }).join(''); }
+  let title = '';
+
+  if (statsTab === 'field') { title = '分野別'; bodyHtml = buildProgressFieldHtml(); }
+  else if (statsTab === 'round') { title = '回別'; bodyHtml = buildProgressRoundHtml(); }
+  else if (statsTab === 'rank') { title = 'ランク別'; bodyHtml = buildProgressRankHtml(); }
+  else if (statsTab === 'miss') { title = 'ミス上位'; bodyHtml = buildMissHtml(); }
 
   area.innerHTML = `
     <div class="stats-panel">
-      <h3>📊 成績（${label}・苦手な順）</h3>
+      <h3>📊 成績（${title}）</h3>
       <div class="stats-tabs">
         <button class="stats-tab ${statsTab==='field'?'active':''}" data-tab="field">分野別</button>
-        <button class="stats-tab ${statsTab==='level'?'active':''}" data-tab="level">レベル別</button>
-        <button class="stats-tab ${statsTab==='person'?'active':''}" data-tab="person">人物別</button>
+        <button class="stats-tab ${statsTab==='round'?'active':''}" data-tab="round">回別</button>
+        <button class="stats-tab ${statsTab==='rank'?'active':''}" data-tab="rank">ランク別</button>
         <button class="stats-tab ${statsTab==='miss'?'active':''}" data-tab="miss">ミス上位</button>
       </div>
       ${bodyHtml}
@@ -1003,13 +770,179 @@ function renderStatsPanel() {
         <button onclick="resetStatsConfirm()" style="padding:10px 20px;border:none;border-radius:8px;background:#c53030;color:#fff;cursor:pointer;font-weight:bold;margin-left:8px;">統計をリセット</button>
       </div>
     </div>`;
-  document.querySelectorAll('.stats-tab').forEach(b => { b.addEventListener('click', () => { statsTab = b.dataset.tab; renderStatsPanel(); }); });
+
+  document.querySelectorAll('.stats-tab').forEach(b => {
+    b.addEventListener('click', () => { statsTab = b.dataset.tab; renderStatsPanel(); });
+  });
 }
 function hideStats() { location.reload(); }
 function resetStatsConfirm() { if (!confirm('統計をリセットしますか？')) return; localStorage.removeItem(STATS_KEY); localStorage.removeItem(BY_LEVEL_KEY); localStorage.removeItem(BY_PERSON_KEY); localStorage.removeItem(HOME_SUMMARY_KEY); alert('リセットしました'); location.reload(); }
 
+/* =========================================================
+   3周進捗の共通計算
+   ========================================================= */
+function calcRoundStats(qHistory) {
+  // 集計キー → { r1, r2, r3, totalSolved, totalCorrect, totalQuestions }
+  const stats = {};
+  const gidMap = window.GID_MAP || {};
+  const categories = window.CATEGORIES || {};
+
+  // 分母（対象問題数）を先に計算
+  qData.forEach(q => {
+    const catId = gidMap[q._gid];
+    if (!catId) return;
+    const key = getStatKey(q, catId, categories);
+    if (!key) return;
+    if (!stats[key]) stats[key] = { r1: 0, r2: 0, r3: 0, totalSolved: 0, totalCorrect: 0, totalQuestions: 0 };
+    stats[key].totalQuestions++;
+  });
+
+  // 実際の解答回数を集計
+  Object.keys(qHistory).forEach(gid => {
+    const h = qHistory[gid];
+    const catId = gidMap[gid];
+    if (!catId) return;
+    const q = qData.find(x => x._gid === gid);
+    if (!q) return;
+    const key = getStatKey(q, catId, categories);
+    if (!key || !stats[key]) return;
+
+    const rounds = Math.min(3, h.total || 0);
+    if (rounds >= 1) stats[key].r1++;
+    if (rounds >= 2) stats[key].r2++;
+    if (rounds >= 3) stats[key].r3++;
+    stats[key].totalSolved += h.total || 0;
+    stats[key].totalCorrect += h.correct || 0;
+  });
+
+  return stats;
+}
+
+// 集計キーを返す関数（タブごとに変える）
+let _currentStatMode = 'field';
+function getStatKey(q, catId, categories) {
+  const cat = categories[catId];
+  if (!cat) return null;
+
+  if (_currentStatMode === 'field') {
+    if (cat.rank !== '過去問') return null;
+    return cat.name.replace(/^第\d+回\s*/, '');
+  } else if (_currentStatMode === 'round') {
+    return q._round;
+  } else if (_currentStatMode === 'rank') {
+    return cat.rank || null;
+  }
+  return null;
+}
+
+function renderProgressBlock(title, badge, s) {
+  const total = s.totalQuestions;
+  const r1Pct = total > 0 ? Math.round(s.r1 / total * 100) : 0;
+  const r2Pct = total > 0 ? Math.round(s.r2 / total * 100) : 0;
+  const r3Pct = total > 0 ? Math.round(s.r3 / total * 100) : 0;
+
+  const accuracy = s.totalSolved > 0 ? Math.round(s.totalCorrect / s.totalSolved * 100) : 0;
+  let accCls = 'acc';
+  if (accuracy < 60) accCls += ' bad';
+  else if (accuracy < 80) accCls += ' warn';
+
+  // バッジ
+  let badgeCls = 'badge';
+  let badgeText = badge;
+  if (r1Pct >= 100 && r2Pct >= 100 && r3Pct >= 100) { badgeCls = 'badge done'; badgeText = '✅ 完了'; }
+  else if (r1Pct === 0) { badgeCls = 'badge todo'; badgeText = '未着手'; }
+
+  return `
+    <div class="progress-block">
+      <div class="progress-block-title">
+        <span>${esc(title)}</span>
+        <span class="${badgeCls}">${badgeText}</span>
+      </div>
+      <div class="round-line">
+        <span class="round-label r1">1周目</span>
+        <div class="round-bar-bg"><div class="round-bar-fill r1" style="width:${r1Pct}%"></div></div>
+        <span class="round-pct">${r1Pct}%</span>
+        <span class="round-count">${s.r1}/${total}問</span>
+      </div>
+      <div class="round-line">
+        <span class="round-label r2">2周目</span>
+        <div class="round-bar-bg"><div class="round-bar-fill r2" style="width:${r2Pct}%"></div></div>
+        <span class="round-pct">${r2Pct}%</span>
+        <span class="round-count">${s.r2}/${total}問</span>
+      </div>
+      <div class="round-line">
+        <span class="round-label r3">3周目</span>
+        <div class="round-bar-bg"><div class="round-bar-fill r3" style="width:${r3Pct}%"></div></div>
+        <span class="round-pct">${r3Pct}%</span>
+        <span class="round-count">${s.r3}/${total}問</span>
+      </div>
+      <div class="progress-summary-line">
+        <span>解いた：<span class="total">${s.r1}/${total}問</span>（1周目）</span>
+        <span>正答率：<span class="${accCls}">${accuracy}%</span>（${s.totalCorrect}/${s.totalSolved}）</span>
+      </div>
+    </div>`;
+}
+
+function buildProgressFieldHtml() {
+  _currentStatMode = 'field';
+  const stats = calcRoundStats(getQHistory());
+  const entries = Object.entries(stats).map(([key, s]) => ({ key, s }));
+
+  // 1周目の進捗が低い順
+  entries.sort((a, b) => {
+    const aR = a.s.totalQuestions > 0 ? a.s.r1 / a.s.totalQuestions : 0;
+    const bR = b.s.totalQuestions > 0 ? b.s.r1 / b.s.totalQuestions : 0;
+    return aR - bR;
+  });
+
+  return entries.map(({ key, s }) => renderProgressBlock(key, '分野', s)).join('');
+}
+
+function buildProgressRoundHtml() {
+  _currentStatMode = 'round';
+  const stats = calcRoundStats(getQHistory());
+  const order = ['30', '31', '32', '34', '35', '36', 'shiryo', 'extra'];
+  const labels = { extra: '人物編', shiryo: '資料問題編' };
+
+  const entries = Object.entries(stats).map(([key, s]) => ({ key, s }));
+  entries.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
+
+  return entries.map(({ key, s }) => {
+    const label = labels[key] || ('第' + key + '回');
+    return renderProgressBlock(label, '回', s);
+  }).join('');
+}
+
+function buildProgressRankHtml() {
+  _currentStatMode = 'rank';
+  const stats = calcRoundStats(getQHistory());
+  const order = ['S', 'A', 'B', '過去問', '番外編'];
+  const labels = { 'S': 'Sランク', 'A': 'Aランク', 'B': 'Bランク', '過去問': '過去問（分野別に集計）', '番外編': '番外編（人物編）' };
+
+  const entries = Object.entries(stats).map(([key, s]) => ({ key, s }));
+  entries.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
+
+  return entries.map(({ key, s }) => {
+    const label = labels[key] || key;
+    return renderProgressBlock(label, 'ランク', s);
+  }).join('');
+}
+
+function buildMissHtml() {
+  const counts = getWrongCounts();
+  const misses = Object.entries(counts).map(([gid, cnt]) => { const q = qData.find(x => x._gid === gid); return { gid, cnt, q }; }).sort((a, b) => b.cnt - a.cnt).slice(0, 20);
+  if (misses.length === 0) return '<p style="color:#718096;">まだ間違い記録がありません。</p>';
+  return misses.map(m => {
+    const title = m.q ? m.q.t.substring(0, 60) + (m.q.t.length > 60 ? '…' : '') : m.gid;
+    const field = m.q ? m.q.f : '';
+    return `<div class="miss-row"><div><div style="font-size:.72rem;color:#718096;">${esc(field)}</div><div style="font-size:.82rem;">${esc(title)}</div></div><div class="miss-count">×${m.cnt}</div></div>`;
+  }).join('');
+}
+
+/* =========================================================
+   タイマー・セレクター
+   ========================================================= */
 function updTimer() { const m = Math.floor(remaining/60), s = remaining%60; document.getElementById('timer').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'); }
-function startTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; document.getElementById('startBtn').textContent = '開始'; } else { document.getElementById('startBtn').textContent = '停止'; timerInterval = setInterval(() => { if (remaining > 0) { remaining--; updTimer(); } else { clearInterval(timerInterval); timerInterval = null; alert('時間終了です！'); } }, 1000); } }
 
 function setupSelectors() {
   const ms = document.getElementById('modeSelect'); ms.value = modeParam;
@@ -1023,6 +956,9 @@ function setupSelectors() {
   fs.addEventListener('change', () => { stopSpeaking(); const p = new URLSearchParams(location.search); if (fs.value) p.set('field', fs.value); else p.delete('field'); p.set('mode', 'normal'); location.search = p.toString(); });
 }
 
+/* =========================================================
+   初期化
+   ========================================================= */
 async function init() {
   let title = isAllRounds ? '全回ミックス' : (ROUNDS[roundParam]?.label || '第' + roundParam + '回');
   if (isEventMode) { const ev = getTodayEvent(); title = ev.emoji + ' ' + ev.name; }

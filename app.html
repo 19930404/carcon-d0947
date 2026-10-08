@@ -151,11 +151,30 @@
   .basics-btn:hover { background:#c05621; }
   .basics-btn.opened { background:#718096; }
   .basics-btn.opened:hover { background:#4a5568; }
-  .basics-btn.speaking {
-    background: linear-gradient(135deg, #e53e3e, #c53030) !important;
+  .basics-hidden { display:none; }
+
+  /* ===== パネル内読み上げボタン ===== */
+  .speak-explain-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: #fff;
+    font-weight: bold;
+    font-size: .85rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform .15s, background .15s;
+  }
+  .speak-explain-btn:hover { background: linear-gradient(135deg, #3182ce, #2c5282); }
+  .speak-explain-btn:active { transform: scale(.98); }
+  .speak-explain-btn.speaking {
+    background: linear-gradient(135deg, #e53e3e, #c53030);
     animation: pulse-speak 1.5s infinite;
   }
-  .basics-hidden { display:none; }
 
   /* ===== 固定フッター（次へ/前へ） ===== */
   .fixed-footer {
@@ -465,9 +484,13 @@ function stopSpeaking() {
   if (btn) { btn.classList.remove('speaking'); updateSpeakBtnLabel(); }
   const basicsBtn = document.getElementById('basicsBtn');
   if (basicsBtn) {
-    basicsBtn.classList.remove('speaking');
     const isOpen = basicsBtn.dataset.open === '1';
     basicsBtn.textContent = isOpen ? '📖 覚え方を閉じる' : '🧠 覚え方を見る';
+  }
+  const expBtn = document.getElementById('speakExplainBtn');
+  if (expBtn) {
+    expBtn.classList.remove('speaking');
+    expBtn.textContent = '🔊 解説を読み上げる';
   }
 }
 
@@ -504,9 +527,9 @@ function speakText(text, source) {
   if (source === 'main') {
     const btn = document.getElementById('speakBtn');
     if (btn) { btn.classList.add('speaking'); btn.textContent = '⏹ 停止'; }
-  } else if (source === 'basics') {
-    const basicsBtn = document.getElementById('basicsBtn');
-    if (basicsBtn) { basicsBtn.classList.add('speaking'); basicsBtn.textContent = '⏹ 読み上げ中…'; }
+  } else if (source === 'explain') {
+    const expBtn = document.getElementById('speakExplainBtn');
+    if (expBtn) { expBtn.classList.add('speaking'); expBtn.textContent = '⏹ 停止'; }
   }
 
   const utter = new SpeechSynthesisUtterance(text);
@@ -518,20 +541,16 @@ function speakText(text, source) {
     isSpeaking = false;
     speakingSource = null;
     if (source === 'main') { const b = document.getElementById('speakBtn'); if (b) { b.classList.remove('speaking'); updateSpeakBtnLabel(); } }
-    else if (source === 'basics') {
-      const basicsBtn = document.getElementById('basicsBtn');
-      if (basicsBtn) {
-        basicsBtn.classList.remove('speaking');
-        const isOpen = basicsBtn.dataset.open === '1';
-        basicsBtn.textContent = isOpen ? '📖 覚え方を閉じる' : '🧠 覚え方を見る';
-      }
+    else if (source === 'explain') {
+      const expBtn = document.getElementById('speakExplainBtn');
+      if (expBtn) { expBtn.classList.remove('speaking'); expBtn.textContent = '🔊 解説を読み上げる'; }
     }
   };
   utter.onerror = utter.onend;
   window.speechSynthesis.speak(utter);
 }
 
-/* メイン読み上げボタン */
+/* メイン読み上げボタン（問題＋選択肢、解答後は解説も） */
 function speakQuestion() {
   if (!('speechSynthesis' in window)) { alert('このブラウザは読み上げ機能に対応していません。'); return; }
   if (isSpeaking) { stopSpeaking(); return; }
@@ -540,23 +559,15 @@ function speakQuestion() {
   speakText(fullText, 'main');
 }
 
-/* 解説だけ読む（強制読み上げ） - 読み上げ中でも必ず開始 */
+/* 解説だけ読む（ユーザーが明示的に押した時のみ） */
 function speakExplainOnly() {
   if (!('speechSynthesis' in window)) { alert('このブラウザは読み上げ機能に対応していません。'); return; }
+  if (isSpeaking) { stopSpeaking(); return; }
 
   const q = list[currentIndex];
   if (!q) return;
   const isA = answered[currentIndex] !== undefined;
   if (!isA) { alert('まず問題を解いてください'); return; }
-
-  // ★ 読み上げ中なら一旦キャンセル（トグルではなく、常に停止→開始）
-  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-  isSpeaking = false;
-  speakingSource = null;
-
-  // 他のボタンの状態もリセット
-  const mainBtn = document.getElementById('speakBtn');
-  if (mainBtn) { mainBtn.classList.remove('speaking'); updateSpeakBtnLabel(); }
 
   const parts = [];
   parts.push(`正解は、番号${q.a}。`);
@@ -564,8 +575,7 @@ function speakExplainOnly() {
   if (q.basics) { parts.push('覚えるべき基礎。'); parts.push(q.basics.replace(/\n+/g, '。').replace(/【/g, '').replace(/】/g, '、')); }
   const fullText = parts.join('。');
 
-  // ★ 必ず読み上げ開始
-  speakText(fullText, 'basics');
+  speakText(fullText, 'explain');
 }
 
 function changeSpeakRate(val) {
@@ -575,7 +585,10 @@ function changeSpeakRate(val) {
     const src = speakingSource;
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     isSpeaking = false;
-    setTimeout(() => { if (src === 'basics') speakExplainOnly(); else speakQuestion(); }, 200);
+    setTimeout(() => {
+      if (src === 'explain') speakExplainOnly();
+      else speakQuestion();
+    }, 200);
   }
 }
 
@@ -816,6 +829,7 @@ function renderQuestion() {
        <div id="basicsPanel" class="basics-hidden">
          ${q.basics ? `<div class="basics"><div class="basics-title">📌 覚えるべき基礎</div>${esc(q.basics)}</div>` : ''}
          ${q.exp ? `<div class="explanation"><div class="ans">正答：${q.a}</div>${esc(q.exp)}</div>` : ''}
+         <button class="speak-explain-btn" id="speakExplainBtn" onclick="speakExplainOnly()">🔊 解説を読み上げる</button>
        </div>` : '';
 
   const wrongCount = getWrongCount(q._gid);
@@ -845,7 +859,7 @@ function renderQuestion() {
         <option value="1.2"${speakRate===1.2?' selected':''}>1.2x</option>
         <option value="1.5"${speakRate===1.5?' selected':''}>1.5x</option>
       </select>
-      <label class="auto-toggle" title="解答後、自動で解説を読み上げる">
+      <label class="auto-toggle" title="解答後、自動で解説を読み上げる（家で勉強する時用）">
         <input type="checkbox" id="autoSpeakChk" ${autoSpeakExplain?'checked':''} onchange="toggleAutoSpeak(this.checked)"> 自動
       </label>
       <span class="speak-hint">🎧 目と耳で学習</span>
@@ -868,33 +882,26 @@ function renderQuestion() {
     document.querySelectorAll('.choice').forEach(b => b.addEventListener('click', () => select(parseInt(b.dataset.c))));
   }
 
-  /* ===== 覚え方ボタン：押したら強制読み上げ ===== */
+  /* ===== 覚え方ボタン：押したらパネルを開くだけ（音は出ない） ===== */
   const basicsBtn = document.getElementById('basicsBtn');
   if (basicsBtn) {
     basicsBtn.addEventListener('click', () => {
       const panel = document.getElementById('basicsPanel');
       const isOpen = basicsBtn.dataset.open === '1';
-
-      // 読み上げ中なら停止（トグル）
-      if (isSpeaking && speakingSource === 'basics') {
-        stopSpeaking();
-        return;
-      }
-
       if (isOpen) {
-        // 開いている → 閉じる
+        // 閉じる
         panel.classList.add('basics-hidden');
         basicsBtn.dataset.open = '0';
         basicsBtn.classList.remove('opened');
         basicsBtn.textContent = '🧠 覚え方を見る';
-        stopSpeaking();
+        // パネル内の読み上げも停止
+        if (isSpeaking && speakingSource === 'explain') stopSpeaking();
       } else {
-        // 閉じている → 開く + 強制読み上げ
+        // 開く（音は出ない）
         panel.classList.remove('basics-hidden');
         basicsBtn.dataset.open = '1';
         basicsBtn.classList.add('opened');
         basicsBtn.textContent = '📖 覚え方を閉じる';
-        speakExplainOnly();
       }
     });
   }
@@ -921,6 +928,7 @@ function select(n) {
   saveProgress();
   renderQuestion();
 
+  // ★ 自動チェックONの時だけ、自動で読み上げ
   if (autoSpeakExplain) {
     setTimeout(() => { speakQuestion(); }, 400);
   }

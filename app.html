@@ -150,6 +150,10 @@
   .basics-btn { display:block; width:100%; margin-top:12px; padding:12px 20px; border:none; border-radius:10px; background:#dd6b20; color:#fff; cursor:pointer; font-weight:bold; font-size:.88rem; font-family:inherit; }
   .basics-btn:hover { background:#c05621; }
   .basics-btn.opened { background:#718096; }
+  .basics-btn.speaking {
+    background: linear-gradient(135deg, #e53e3e, #c53030) !important;
+    animation: pulse-speak 1.5s infinite;
+  }
   .basics-hidden { display:none; }
 
   /* ===== 固定フッター（次へ/前へ） ===== */
@@ -434,6 +438,7 @@ let sessionCorrectStreak = 0;
 let speakRate = parseFloat(localStorage.getItem('cc_speakRate') || '1.0');
 let autoSpeakExplain = localStorage.getItem('cc_autoSpeakExplain') === 'true';
 let isSpeaking = false;
+let speakingSource = null; // 'main' または 'basics'
 
 const WRONG_COUNT_KEY = 'cc_wrongCount';
 const STATS_KEY = 'cc_stats';
@@ -449,15 +454,22 @@ function showLevelUp(newLevel) { const data = window.gameLoad ? window.gameLoad(
 function updateHeaderChar() { if (!window.gameLoad) return; const data = window.gameLoad(); document.getElementById('headerStage').textContent = data.characterStage || '🥚'; document.getElementById('headerLevel').textContent = 'Lv.' + (data.level || 1); }
 
 /* =========================================================
-   ★★★ 読み上げ機能（解説対応・自動ON/OFF） ★★★
+   ★★★ 読み上げ機能 ★★★
    ========================================================= */
 function stopSpeaking() {
   if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); }
   isSpeaking = false;
+  speakingSource = null;
+  // メイン読み上げボタン
   const btn = document.getElementById('speakBtn');
   if (btn) { btn.classList.remove('speaking'); updateSpeakBtnLabel(); }
-  const btn2 = document.getElementById('speakExplainBtn');
-  if (btn2) { btn2.classList.remove('speaking'); }
+  // 解説ボタン
+  const basicsBtn = document.getElementById('basicsBtn');
+  if (basicsBtn) {
+    basicsBtn.classList.remove('speaking');
+    const isOpen = basicsBtn.dataset.open === '1';
+    basicsBtn.textContent = isOpen ? '📖 覚え方を閉じる' : '🧠 覚え方を見る';
+  }
 }
 
 function updateSpeakBtnLabel() {
@@ -480,48 +492,66 @@ function buildSpeechText() {
 
   if (isA) {
     parts.push(`正解は、番号${q.a}。`);
-    if (q.exp) {
-      parts.push('解説。');
-      parts.push(q.exp.replace(/\n+/g, '。'));
-    }
-    if (q.basics) {
-      parts.push('覚えるべき基礎。');
-      parts.push(q.basics.replace(/\n+/g, '。').replace(/【/g, '').replace(/】/g, '、'));
-    }
+    if (q.exp) { parts.push('解説。'); parts.push(q.exp.replace(/\n+/g, '。')); }
+    if (q.basics) { parts.push('覚えるべき基礎。'); parts.push(q.basics.replace(/\n+/g, '。').replace(/【/g, '').replace(/】/g, '、')); }
   }
   return parts.join('。');
 }
 
-function speakQuestion() {
-  if (!('speechSynthesis' in window)) { alert('このブラウザは読み上げ機能に対応していません。'); return; }
-  if (isSpeaking) { stopSpeaking(); return; }
-
-  const fullText = buildSpeechText();
-  if (!fullText) return;
-
+function speakText(text, source) {
   isSpeaking = true;
-  const btn = document.getElementById('speakBtn');
-  if (btn) { btn.classList.add('speaking'); btn.textContent = '⏹ 停止'; }
+  speakingSource = source;
 
-  const utter = new SpeechSynthesisUtterance(fullText);
+  if (source === 'main') {
+    const btn = document.getElementById('speakBtn');
+    if (btn) { btn.classList.add('speaking'); btn.textContent = '⏹ 停止'; }
+  } else if (source === 'basics') {
+    const basicsBtn = document.getElementById('basicsBtn');
+    if (basicsBtn) { basicsBtn.classList.add('speaking'); basicsBtn.textContent = '⏹ 読み上げ中…'; }
+  }
+
+  const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'ja-JP';
   utter.rate = speakRate;
   utter.pitch = 1.0;
   utter.volume = 1.0;
-  utter.onend = () => { isSpeaking = false; const b = document.getElementById('speakBtn'); if (b) { b.classList.remove('speaking'); updateSpeakBtnLabel(); } };
-  utter.onerror = () => { isSpeaking = false; const b = document.getElementById('speakBtn'); if (b) { b.classList.remove('speaking'); updateSpeakBtnLabel(); } };
+  utter.onend = () => {
+    isSpeaking = false;
+    speakingSource = null;
+    if (source === 'main') { const b = document.getElementById('speakBtn'); if (b) { b.classList.remove('speaking'); updateSpeakBtnLabel(); } }
+    else if (source === 'basics') {
+      const basicsBtn = document.getElementById('basicsBtn');
+      if (basicsBtn) {
+        basicsBtn.classList.remove('speaking');
+        const isOpen = basicsBtn.dataset.open === '1';
+        basicsBtn.textContent = isOpen ? '📖 覚え方を閉じる' : '🧠 覚え方を見る';
+      }
+    }
+  };
+  utter.onerror = utter.onend;
   window.speechSynthesis.speak(utter);
 }
 
-/* 解説だけ読む */
-function speakExplainOnly() {
+/* メイン読み上げボタン */
+function speakQuestion() {
   if (!('speechSynthesis' in window)) { alert('このブラウザは読み上げ機能に対応していません。'); return; }
   if (isSpeaking) { stopSpeaking(); return; }
+  const fullText = buildSpeechText();
+  if (!fullText) return;
+  speakText(fullText, 'main');
+}
+
+/* 解説だけ読む（強制読み上げ） */
+function speakExplainOnly() {
+  if (!('speechSynthesis' in window)) { alert('このブラウザは読み上げ機能に対応していません。'); return; }
 
   const q = list[currentIndex];
   if (!q) return;
   const isA = answered[currentIndex] !== undefined;
   if (!isA) { alert('まず問題を解いてください'); return; }
+
+  // 読み上げ中なら停止（再度押した時のトグル動作）
+  if (isSpeaking) { stopSpeaking(); return; }
 
   const parts = [];
   parts.push(`正解は、番号${q.a}。`);
@@ -529,22 +559,13 @@ function speakExplainOnly() {
   if (q.basics) { parts.push('覚えるべき基礎。'); parts.push(q.basics.replace(/\n+/g, '。').replace(/【/g, '').replace(/】/g, '、')); }
   const fullText = parts.join('。');
 
-  isSpeaking = true;
-  const btn = document.getElementById('speakExplainBtn');
-  if (btn) { btn.classList.add('speaking'); btn.textContent = '⏹ 停止'; }
-
-  const utter = new SpeechSynthesisUtterance(fullText);
-  utter.lang = 'ja-JP';
-  utter.rate = speakRate;
-  utter.onend = () => { isSpeaking = false; const b = document.getElementById('speakExplainBtn'); if (b) { b.classList.remove('speaking'); b.textContent = '🔊 解説だけ読む'; } };
-  utter.onerror = () => { isSpeaking = false; const b = document.getElementById('speakExplainBtn'); if (b) { b.classList.remove('speaking'); b.textContent = '🔊 解説だけ読む'; } };
-  window.speechSynthesis.speak(utter);
+  speakText(fullText, 'basics');
 }
 
 function changeSpeakRate(val) {
   speakRate = parseFloat(val);
   localStorage.setItem('cc_speakRate', String(speakRate));
-  if (isSpeaking) { stopSpeaking(); setTimeout(() => speakQuestion(), 200); }
+  if (isSpeaking) { const src = speakingSource; stopSpeaking(); setTimeout(() => { if (src === 'basics') speakExplainOnly(); else speakQuestion(); }, 200); }
 }
 
 function toggleAutoSpeak(checked) {
@@ -614,19 +635,13 @@ function generateGidMap() {
   localStorage.setItem('cc_categories', JSON.stringify(categories));
 }
 
-/* ===== リスト構築（イベントモード対応） ===== */
 function buildList() {
   let arr = qData.slice();
   if (fieldParam) arr = arr.filter(q => q.f === fieldParam);
   if (levelParam) arr = arr.filter(q => q.level === levelParam);
-
-  if (isEventMode) {
-    arr = buildEventList(qData);
-  } else if (modeParam === 'review') {
-    const counts = getWrongCounts();
-    arr = arr.filter(q => counts[q._gid] > 0);
-    arr.sort((a, b) => (counts[b._gid] || 0) - (counts[a._gid] || 0));
-  } else if (modeParam === 'recommend') { arr = recommendList(arr); }
+  if (isEventMode) { arr = buildEventList(qData); }
+  else if (modeParam === 'review') { const counts = getWrongCounts(); arr = arr.filter(q => counts[q._gid] > 0); arr.sort((a, b) => (counts[b._gid] || 0) - (counts[a._gid] || 0)); }
+  else if (modeParam === 'recommend') { arr = recommendList(arr); }
   else if (modeParam === 'reviewToday') { arr = reviewTodayList(arr); }
   else if (modeParam === 'random') { arr = shuffle(arr); }
   list = arr;
@@ -637,10 +652,7 @@ function buildEventList(all) {
   let pool = all.slice();
   if (ev.fields && ev.fields.length > 0) { pool = pool.filter(q => ev.fields.some(f => (q.f || '').includes(f) || f.includes(q.f))); }
   if (ev.rounds) { pool = pool.filter(q => ev.rounds.includes(q._round)); }
-  if (ev.mode === 'weakness') {
-    const stats = getStats();
-    pool.sort((a, b) => { const aS = stats[a.f] || { correct: 0, total: 0 }; const bS = stats[b.f] || { correct: 0, total: 0 }; const aR = aS.total > 0 ? aS.correct / aS.total : 0.5; const bR = bS.total > 0 ? bS.correct / bS.total : 0.5; return aR - bR; });
-  }
+  if (ev.mode === 'weakness') { const stats = getStats(); pool.sort((a, b) => { const aS = stats[a.f] || { correct: 0, total: 0 }; const bS = stats[b.f] || { correct: 0, total: 0 }; const aR = aS.total > 0 ? aS.correct / aS.total : 0.5; const bR = bS.total > 0 ? bS.correct / bS.total : 0.5; return aR - bR; }); }
   if (pool.length < 10) pool = all.slice();
   const wrongCounts = getWrongCounts();
   const seed = hashString(new Date().toDateString() + '_' + ev.id);
@@ -651,15 +663,10 @@ function buildEventList(all) {
 
 function shuffle(a) { const arr = a.slice(); for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 function recommendList(arr) {
-  const wrongCounts = getWrongCounts();
-  const fieldStats = getStats();
-  const personStats = getStatsByPerson();
-  const qHistory = getQHistory();
-  const seed = hashString(new Date().toDateString());
-  const today = new Date().toDateString();
+  const wrongCounts = getWrongCounts(); const fieldStats = getStats(); const personStats = getStatsByPerson(); const qHistory = getQHistory();
+  const seed = hashString(new Date().toDateString()); const today = new Date().toDateString();
   const scored = arr.map(q => {
-    const wc = wrongCounts[q._gid] || 0;
-    const fs = fieldStats[q.f]; const fieldRate = fs && fs.total ? (fs.correct / fs.total) * 100 : 50;
+    const wc = wrongCounts[q._gid] || 0; const fs = fieldStats[q.f]; const fieldRate = fs && fs.total ? (fs.correct / fs.total) * 100 : 50;
     const ps = q.person ? personStats[q.person] : null; const personRate = ps && ps.total ? (ps.correct / ps.total) * 100 : 50;
     const h = qHistory[q._gid]; const unattempted = (!h || h.total === 0) ? 30 : 0;
     let spacingBonus = 0;
@@ -671,8 +678,7 @@ function recommendList(arr) {
   return scored.slice(0, 10).map(x => x.q);
 }
 function reviewTodayList(arr) {
-  const qHistory = getQHistory();
-  const today = new Date().toDateString();
+  const qHistory = getQHistory(); const today = new Date().toDateString();
   const targets = arr.filter(q => { const h = qHistory[q._gid]; if (!h || !h.lastDate) return false; const days = daysBetween(h.lastDate, today); return days >= 1 && days <= 14; });
   const scored = targets.map(q => { const h = qHistory[q._gid]; const days = daysBetween(h.lastDate, today); let bonus = days === 1 ? 20 : days <= 3 ? 40 : days <= 7 ? 60 : 40; const rate = h.total ? h.correct / h.total : 0; return { q, score: bonus + (1 - rate) * 30 + Math.random() * 5 }; });
   scored.sort((a, b) => b.score - a.score);
@@ -682,7 +688,6 @@ function hashString(str) { let h = 0; for (let i = 0; i < str.length; i++) { h =
 function seededRandom(n) { const x = Math.sin(n) * 10000; return x - Math.floor(x); }
 function daysBetween(d1, d2) { return Math.floor(Math.abs(new Date(d2) - new Date(d1)) / (1000 * 60 * 60 * 24)); }
 
-/* ===== ローカル保存 ===== */
 function getWrongCounts() { try { return JSON.parse(localStorage.getItem(WRONG_COUNT_KEY) || '{}'); } catch { return {}; } }
 function getWrong() { return Object.keys(getWrongCounts()); }
 function addWrong(gid) { const w = getWrongCounts(); w[gid] = (w[gid] || 0) + 1; localStorage.setItem(WRONG_COUNT_KEY, JSON.stringify(w)); }
@@ -696,7 +701,6 @@ function getStatsByPerson() { return loadJson(BY_PERSON_KEY); }
 function loadJson(key) { try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch { return {}; } }
 function bump(obj, key, isCorrect) { if (!key) return; if (!obj[key]) obj[key] = { correct: 0, total: 0 }; obj[key].total++; if (isCorrect) obj[key].correct++; }
 
-/* ===== 統計記録 + ゲーム要素 ===== */
 function recordStat(q, isCorrect) {
   const s = getStats(); bump(s, q.f, isCorrect); localStorage.setItem(STATS_KEY, JSON.stringify(s));
   const lv = getStatsByLevel(); bump(lv, q.level, isCorrect); localStorage.setItem(BY_LEVEL_KEY, JSON.stringify(lv));
@@ -852,13 +856,39 @@ function renderQuestion() {
   if (!isA) {
     document.querySelectorAll('.choice').forEach(b => b.addEventListener('click', () => select(parseInt(b.dataset.c))));
   }
+
+  /* ===== 覚え方ボタン：押したら強制読み上げ ===== */
   const basicsBtn = document.getElementById('basicsBtn');
   if (basicsBtn) {
     basicsBtn.addEventListener('click', () => {
       const panel = document.getElementById('basicsPanel');
-      const open = basicsBtn.dataset.open === '1';
-      if (open) { panel.classList.add('basics-hidden'); basicsBtn.dataset.open = '0'; basicsBtn.classList.remove('opened'); basicsBtn.textContent = '🧠 覚え方を見る'; }
-      else { panel.classList.remove('basics-hidden'); basicsBtn.dataset.open = '1'; basicsBtn.classList.add('opened'); basicsBtn.textContent = '📖 覚え方を閉じる'; }
+      const isOpen = basicsBtn.dataset.open === '1';
+
+      if (isOpen) {
+        // すでに開いている場合
+        // 読み上げ中なら停止、そうでなければ閉じる
+        if (isSpeaking && speakingSource === 'basics') {
+          stopSpeaking();
+          // パネルは開いたまま（ユーザーが目で読めるように）
+          basicsBtn.textContent = '📖 覚え方を閉じる';
+          return;
+        }
+        // 読み上げ中でなければ閉じる
+        panel.classList.add('basics-hidden');
+        basicsBtn.dataset.open = '0';
+        basicsBtn.classList.remove('opened');
+        basicsBtn.textContent = '🧠 覚え方を見る';
+        stopSpeaking();
+      } else {
+        // 閉じている場合：開く + 強制読み上げ
+        panel.classList.remove('basics-hidden');
+        basicsBtn.dataset.open = '1';
+        basicsBtn.classList.add('opened');
+        basicsBtn.textContent = '📖 覚え方を閉じる';
+        // 既存の読み上げを停止してから、解説を読み上げ開始
+        if (isSpeaking) { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); isSpeaking = false; }
+        speakExplainOnly();
+      }
     });
   }
 
@@ -884,13 +914,12 @@ function select(n) {
   saveProgress();
   renderQuestion();
 
-  // ★ 自動読み上げがONなら、解答後に自動で解説を読む
+  // 自動読み上げがONなら、解答後に自動で解説を読む
   if (autoSpeakExplain) {
     setTimeout(() => { speakQuestion(); }, 400);
   }
 }
 
-/* ===== サマリー ===== */
 function showSummary() {
   stopSpeaking();
   const total = list.length;
@@ -921,7 +950,6 @@ function showSummary() {
   document.getElementById('progressStrip').style.display = 'none';
 }
 
-/* ===== 統計表示 ===== */
 let statsTab = 'field';
 function showStats() { renderStatsPanel(); }
 function renderStatsPanel() {
@@ -966,11 +994,9 @@ function renderStatsPanel() {
 function hideStats() { location.reload(); }
 function resetStatsConfirm() { if (!confirm('統計をリセットしますか？')) return; localStorage.removeItem(STATS_KEY); localStorage.removeItem(BY_LEVEL_KEY); localStorage.removeItem(BY_PERSON_KEY); localStorage.removeItem(HOME_SUMMARY_KEY); alert('リセットしました'); location.reload(); }
 
-/* ===== タイマー ===== */
 function updTimer() { const m = Math.floor(remaining/60), s = remaining%60; document.getElementById('timer').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'); }
 function startTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; document.getElementById('startBtn').textContent = '開始'; } else { document.getElementById('startBtn').textContent = '停止'; timerInterval = setInterval(() => { if (remaining > 0) { remaining--; updTimer(); } else { clearInterval(timerInterval); timerInterval = null; alert('時間終了です！'); } }, 1000); } }
 
-/* ===== セレクター ===== */
 function setupSelectors() {
   const ms = document.getElementById('modeSelect'); ms.value = modeParam;
   ms.addEventListener('change', () => { stopSpeaking(); const p = new URLSearchParams(location.search); p.set('mode', ms.value); if (ms.value === 'event') { p.set('round', 'all'); } location.search = p.toString(); });
@@ -983,7 +1009,6 @@ function setupSelectors() {
   fs.addEventListener('change', () => { stopSpeaking(); const p = new URLSearchParams(location.search); if (fs.value) p.set('field', fs.value); else p.delete('field'); p.set('mode', 'normal'); location.search = p.toString(); });
 }
 
-/* ===== 初期化 ===== */
 async function init() {
   let title = isAllRounds ? '全回ミックス' : (ROUNDS[roundParam]?.label || '第' + roundParam + '回');
   if (isEventMode) { const ev = getTodayEvent(); title = ev.emoji + ' ' + ev.name; }
@@ -1012,7 +1037,6 @@ async function init() {
   if (viewParam === 'stats') showStats();
 }
 
-/* ===== トップに戻るボタンの表示制御 ===== */
 window.addEventListener('scroll', () => {
   const btn = document.getElementById('scrollTopBtn');
   if (!btn) return;
@@ -1020,11 +1044,9 @@ window.addEventListener('scroll', () => {
   else { btn.classList.remove('show'); }
 });
 
-/* ===== ページを離れるときに読み上げ停止 ===== */
 window.addEventListener('beforeunload', () => { stopSpeaking(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden) stopSpeaking(); });
 
-/* ★★★ Firebase 認証：ポーリング方式 ★★★ */
 (function waitForFirebase() {
   let tries = 0;
   const iv = setInterval(() => {

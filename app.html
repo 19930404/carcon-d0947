@@ -52,6 +52,61 @@
 
   .q-text { font-size:.92rem; margin-bottom:14px; white-space:pre-wrap; }
 
+  /* ===== 読み上げボタン ===== */
+  .speak-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #ebf8ff, #bee3f8);
+    border-radius: 10px;
+    border: 1px solid #90cdf4;
+  }
+  .speak-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: #fff;
+    font-weight: bold;
+    font-size: .82rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform .15s, background .15s;
+    flex-shrink: 0;
+  }
+  .speak-btn:hover { background: linear-gradient(135deg, #3182ce, #2c5282); }
+  .speak-btn:active { transform: scale(.95); }
+  .speak-btn.speaking {
+    background: linear-gradient(135deg, #e53e3e, #c53030);
+    animation: pulse-speak 1.5s infinite;
+  }
+  @keyframes pulse-speak {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .7; }
+  }
+  .speak-rate {
+    padding: 6px 8px;
+    border: 1px solid #90cdf4;
+    border-radius: 6px;
+    font-size: .75rem;
+    font-family: inherit;
+    background: #fff;
+    color: #2c5282;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .speak-hint {
+    font-size: .68rem;
+    color: #2c5282;
+    flex: 1;
+    text-align: right;
+  }
+
   /* ===== 選択肢（タップしやすく） ===== */
   .choices { display:flex; flex-direction:column; gap:8px; }
   .choice { display:flex; align-items:flex-start; gap:10px; padding:14px 14px; border:2px solid #e2e8f0; border-radius:10px; cursor:pointer; background:#fff; text-align:left; font-size:.88rem; width:100%; font-family:inherit; line-height:1.5; min-height:56px; }
@@ -226,6 +281,9 @@
       height: 44px;
       font-size: 1.2rem;
     }
+    .speak-bar { padding: 6px 10px; gap: 6px; }
+    .speak-btn { padding: 6px 10px; font-size: .78rem; }
+    .speak-hint { display: none; }
   }
 </style>
 </head>
@@ -348,6 +406,10 @@ let remaining = 6000;
 let currentUser = null;
 let sessionCorrectStreak = 0;
 
+/* ===== 読み上げ関連 ===== */
+let speakRate = 1.0;
+let isSpeaking = false;
+
 const WRONG_COUNT_KEY = 'cc_wrongCount';
 const STATS_KEY = 'cc_stats';
 const BY_LEVEL_KEY = 'cc_stats_byLevel';
@@ -360,6 +422,92 @@ function showSyncStatus(msg, isError) { const el = document.getElementById('sync
 function showExpToast(msg, type) { const el = document.getElementById('expToast'); el.textContent = msg; el.className = 'exp-toast show' + (type ? ' ' + type : ''); setTimeout(() => { el.className = 'exp-toast'; }, 2000); }
 function showLevelUp(newLevel) { const data = window.gameLoad ? window.gameLoad() : {}; const overlay = document.getElementById('levelupOverlay'); document.getElementById('lvChar').textContent = data.characterStage || '🐣'; document.getElementById('lvNum').textContent = 'Lv.' + newLevel; overlay.classList.add('show'); setTimeout(() => overlay.classList.remove('show'), 2500); }
 function updateHeaderChar() { if (!window.gameLoad) return; const data = window.gameLoad(); document.getElementById('headerStage').textContent = data.characterStage || '🥚'; document.getElementById('headerLevel').textContent = 'Lv.' + (data.level || 1); }
+
+/* =========================================================
+   ★★★ 読み上げ機能 ★★★
+   ========================================================= */
+function stopSpeaking() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  isSpeaking = false;
+  const btn = document.getElementById('speakBtn');
+  if (btn) {
+    btn.classList.remove('speaking');
+    btn.textContent = '🔊 読み上げ';
+  }
+}
+
+function speakQuestion() {
+  if (!('speechSynthesis' in window)) {
+    alert('このブラウザは読み上げ機能に対応していません。');
+    return;
+  }
+
+  // すでに読み上げ中なら停止
+  if (isSpeaking) {
+    stopSpeaking();
+    return;
+  }
+
+  const q = list[currentIndex];
+  if (!q) return;
+
+  // 読み上げるテキストを組み立て
+  const parts = [];
+  parts.push(`問題${currentIndex + 1}。`);
+  parts.push(q.t);
+  parts.push('選択肢。');
+  q.c.forEach((c, i) => {
+    parts.push(`番号${i + 1}。${c}`);
+  });
+
+  const fullText = parts.join('。');
+
+  // ボタンを「停止」に変更
+  isSpeaking = true;
+  const btn = document.getElementById('speakBtn');
+  if (btn) {
+    btn.classList.add('speaking');
+    btn.textContent = '⏹ 停止';
+  }
+
+  // SpeechSynthesisUtterance
+  const utter = new SpeechSynthesisUtterance(fullText);
+  utter.lang = 'ja-JP';
+  utter.rate = speakRate;
+  utter.pitch = 1.0;
+  utter.volume = 1.0;
+
+  // 終了時の処理
+  utter.onend = () => {
+    isSpeaking = false;
+    const btn = document.getElementById('speakBtn');
+    if (btn) {
+      btn.classList.remove('speaking');
+      btn.textContent = '🔊 読み上げ';
+    }
+  };
+  utter.onerror = () => {
+    isSpeaking = false;
+    const btn = document.getElementById('speakBtn');
+    if (btn) {
+      btn.classList.remove('speaking');
+      btn.textContent = '🔊 読み上げ';
+    }
+  };
+
+  window.speechSynthesis.speak(utter);
+}
+
+function changeSpeakRate(val) {
+  speakRate = parseFloat(val);
+  // 読み上げ中なら再開（新しい速度で）
+  if (isSpeaking) {
+    stopSpeaking();
+    setTimeout(() => speakQuestion(), 200);
+  }
+}
 
 /* ===== データ読み込み ===== */
 function loadData() {
@@ -588,6 +736,9 @@ function clearProgress() { localStorage.removeItem(storeKey.progress); }
 
 /* ===== 問題表示 ===== */
 function renderQuestion() {
+  // 問題切り替え時に読み上げを停止
+  stopSpeaking();
+
   const quizArea = document.getElementById('quizArea');
   const footer = document.getElementById('fixedFooter');
   const progressStrip = document.getElementById('progressStrip');
@@ -642,8 +793,22 @@ function renderQuestion() {
     banner = `<div class="shiryo-banner">📑 資料問題編です。</div>`;
   }
 
+  // 読み上げバーHTML
+  const speakBar = `
+    <div class="speak-bar">
+      <button class="speak-btn" id="speakBtn" onclick="speakQuestion()">🔊 読み上げ</button>
+      <select class="speak-rate" id="speakRateSelect" onchange="changeSpeakRate(this.value)" title="読み上げ速度">
+        <option value="0.8"${speakRate===0.8?' selected':''}>0.8x</option>
+        <option value="1.0"${speakRate===1.0?' selected':''}>1.0x</option>
+        <option value="1.2"${speakRate===1.2?' selected':''}>1.2x</option>
+        <option value="1.5"${speakRate===1.5?' selected':''}>1.5x</option>
+      </select>
+      <span class="speak-hint">🎧 目と耳で学習</span>
+    </div>`;
+
   quizArea.innerHTML = `
     ${banner}
+    ${speakBar}
     <div class="question">
       <div class="q-header">
         <div><span class="q-num">問${currentIndex+1}</span>
@@ -685,6 +850,8 @@ function renderQuestion() {
 /* ===== 選択肢を選ぶ ===== */
 function select(n) {
   if (answered[currentIndex] !== undefined) return;
+  // 読み上げ停止
+  stopSpeaking();
   const q = list[currentIndex];
   answered[currentIndex] = n;
   const isCorrect = (n === q.a);
@@ -697,6 +864,7 @@ function select(n) {
 
 /* ===== サマリー ===== */
 function showSummary() {
+  stopSpeaking();
   const total = list.length;
   const rate = total ? Math.round(correctCount / total * 100) : 0;
   const wrong = getWrong().length;
@@ -729,6 +897,7 @@ function showSummary() {
 let statsTab = 'field';
 function showStats() { renderStatsPanel(); }
 function renderStatsPanel() {
+  stopSpeaking();
   const area = document.getElementById('quizArea');
   document.getElementById('fixedFooter').style.display = 'none';
   area._backup = area._backup || area.innerHTML;
@@ -776,14 +945,14 @@ function startTimer() { if (timerInterval) { clearInterval(timerInterval); timer
 /* ===== セレクター ===== */
 function setupSelectors() {
   const ms = document.getElementById('modeSelect'); ms.value = modeParam;
-  ms.addEventListener('change', () => { const p = new URLSearchParams(location.search); p.set('mode', ms.value); if (ms.value === 'event') { p.set('round', 'all'); } location.search = p.toString(); });
+  ms.addEventListener('change', () => { stopSpeaking(); const p = new URLSearchParams(location.search); p.set('mode', ms.value); if (ms.value === 'event') { p.set('round', 'all'); } location.search = p.toString(); });
   const ls = document.getElementById('levelSelect'); ls.value = levelParam;
-  ls.addEventListener('change', () => { const p = new URLSearchParams(location.search); if (ls.value) p.set('level', ls.value); else p.delete('level'); p.set('mode', 'normal'); location.search = p.toString(); });
+  ls.addEventListener('change', () => { stopSpeaking(); const p = new URLSearchParams(location.search); if (ls.value) p.set('level', ls.value); else p.delete('level'); p.set('mode', 'normal'); location.search = p.toString(); });
   const fs = document.getElementById('fieldSelect');
   const fields = [...new Set(qData.map(q => q.f))];
   fields.forEach(f => { const o = document.createElement('option'); o.value = f; o.textContent = f; fs.appendChild(o); });
   fs.value = fieldParam;
-  fs.addEventListener('change', () => { const p = new URLSearchParams(location.search); if (fs.value) p.set('field', fs.value); else p.delete('field'); p.set('mode', 'normal'); location.search = p.toString(); });
+  fs.addEventListener('change', () => { stopSpeaking(); const p = new URLSearchParams(location.search); if (fs.value) p.set('field', fs.value); else p.delete('field'); p.set('mode', 'normal'); location.search = p.toString(); });
 }
 
 /* ===== 初期化 ===== */
@@ -803,14 +972,15 @@ async function init() {
   updateHeaderChar();
 
   // 固定フッターボタンのイベント登録（1回だけ）
-  document.getElementById('prevBtn').addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; saveProgress(); renderQuestion(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+  document.getElementById('prevBtn').addEventListener('click', () => { stopSpeaking(); if (currentIndex > 0) { currentIndex--; saveProgress(); renderQuestion(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
   document.getElementById('nextBtn').addEventListener('click', () => {
+    stopSpeaking();
     if (currentIndex < list.length - 1) { currentIndex++; saveProgress(); renderQuestion(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
     else showSummary();
   });
 
   document.getElementById('statsBtn').addEventListener('click', showStats);
-  document.getElementById('resetBtn').addEventListener('click', () => { if (!confirm('進捗をリセットしますか？')) return; currentIndex = 0; correctCount = 0; answered = {}; remaining = 6000; clearProgress(); updTimer(); renderQuestion(); });
+  document.getElementById('resetBtn').addEventListener('click', () => { stopSpeaking(); if (!confirm('進捗をリセットしますか？')) return; currentIndex = 0; correctCount = 0; answered = {}; remaining = 6000; clearProgress(); updTimer(); renderQuestion(); });
 
   if (viewParam === 'stats') showStats();
 }
@@ -819,12 +989,13 @@ async function init() {
 window.addEventListener('scroll', () => {
   const btn = document.getElementById('scrollTopBtn');
   if (!btn) return;
-  if (window.scrollY > 300) {
-    btn.classList.add('show');
-  } else {
-    btn.classList.remove('show');
-  }
+  if (window.scrollY > 300) { btn.classList.add('show'); }
+  else { btn.classList.remove('show'); }
 });
+
+/* ===== ページを離れるときに読み上げ停止 ===== */
+window.addEventListener('beforeunload', () => { stopSpeaking(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopSpeaking(); });
 
 /* ★★★ Firebase 認証：ポーリング方式 ★★★ */
 (function waitForFirebase() {

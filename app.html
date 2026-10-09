@@ -275,9 +275,15 @@
 <script type="module" src="firebaseconfig.js?v=4"></script>
 <script>
 const ROUNDS = {
-  30: { label: '第30回' }, 31: { label: '第31回' }, 32: { label: '第32回' },
-  34: { label: '第34回' }, 35: { label: '第35回' }, 36: { label: '第36回' },
-  extra: { label: '人物編' }, shiryo: { label: '資料問題編' },
+  30: { label: '第30回' },
+  31: { label: '第31回' },
+  32: { label: '第32回' },
+  33: { label: '第33回' },
+  34: { label: '第34回' },
+  35: { label: '第35回' },
+  36: { label: '第36回' },
+  extra: { label: '人物編' },
+  shiryo: { label: '資料問題編' },
 };
 
 const WEEKLY_EVENTS = {
@@ -782,12 +788,10 @@ function resetStatsConfirm() { if (!confirm('統計をリセットしますか�
    3周進捗の共通計算
    ========================================================= */
 function calcRoundStats(qHistory) {
-  // 集計キー → { r1, r2, r3, totalSolved, totalCorrect, totalQuestions }
   const stats = {};
   const gidMap = window.GID_MAP || {};
   const categories = window.CATEGORIES || {};
 
-  // 分母（対象問題数）を先に計算
   qData.forEach(q => {
     const catId = gidMap[q._gid];
     if (!catId) return;
@@ -797,7 +801,6 @@ function calcRoundStats(qHistory) {
     stats[key].totalQuestions++;
   });
 
-  // 実際の解答回数を集計
   Object.keys(qHistory).forEach(gid => {
     const h = qHistory[gid];
     const catId = gidMap[gid];
@@ -818,7 +821,6 @@ function calcRoundStats(qHistory) {
   return stats;
 }
 
-// 集計キーを返す関数（タブごとに変える）
 let _currentStatMode = 'field';
 function getStatKey(q, catId, categories) {
   const cat = categories[catId];
@@ -846,7 +848,6 @@ function renderProgressBlock(title, badge, s) {
   if (accuracy < 60) accCls += ' bad';
   else if (accuracy < 80) accCls += ' warn';
 
-  // バッジ
   let badgeCls = 'badge';
   let badgeText = badge;
   if (r1Pct >= 100 && r2Pct >= 100 && r3Pct >= 100) { badgeCls = 'badge done'; badgeText = '✅ 完了'; }
@@ -888,7 +889,6 @@ function buildProgressFieldHtml() {
   const stats = calcRoundStats(getQHistory());
   const entries = Object.entries(stats).map(([key, s]) => ({ key, s }));
 
-  // 1周目の進捗が低い順
   entries.sort((a, b) => {
     const aR = a.s.totalQuestions > 0 ? a.s.r1 / a.s.totalQuestions : 0;
     const bR = b.s.totalQuestions > 0 ? b.s.r1 / b.s.totalQuestions : 0;
@@ -901,7 +901,7 @@ function buildProgressFieldHtml() {
 function buildProgressRoundHtml() {
   _currentStatMode = 'round';
   const stats = calcRoundStats(getQHistory());
-  const order = ['30', '31', '32', '34', '35', '36', 'shiryo', 'extra'];
+  const order = ['30', '31', '32', '33', '34', '35', '36', 'shiryo', 'extra'];
   const labels = { extra: '人物編', shiryo: '資料問題編' };
 
   const entries = Object.entries(stats).map(([key, s]) => ({ key, s }));

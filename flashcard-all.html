@@ -11,53 +11,62 @@
     min-height:100vh; color:#1a202c; padding:12px; padding-bottom:60px; }
   .container { max-width:600px; margin:0 auto; }
 
-  /* ヘッダー */
   header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:8px; }
   header h1 { color:#fff; font-size:1rem; font-weight:bold; flex:1; text-align:center; }
   .home-btn { display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; background:rgba(255,255,255,.2); color:#fff; text-decoration:none; font-size:1.2rem; flex-shrink:0; }
   .home-btn:hover { background:rgba(255,255,255,.35); }
   .spacer { width:40px; flex-shrink:0; }
 
-  /* 進捗 */
   .progress-info { display:flex; justify-content:space-between; align-items:center; color:#bee3f8; font-size:.78rem; font-weight:bold; margin-bottom:8px; padding:0 4px; }
   .progress-bar-outer { height:6px; background:rgba(255,255,255,.2); border-radius:3px; overflow:hidden; margin-bottom:12px; }
   .progress-bar-inner { height:100%; background:linear-gradient(90deg, #48bb78, #38a169); transition:width .3s; }
 
-  /* カテゴリタブ */
   .cat-tabs { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
   .cat-tab { flex:1; min-width:70px; padding:8px 10px; border:none; border-radius:8px; background:rgba(255,255,255,.12); color:#fff; font-weight:bold; font-size:.75rem; cursor:pointer; font-family:inherit; transition:.15s; display:flex; flex-direction:column; align-items:center; gap:2px; }
   .cat-tab.active { background:#fff; color:#2b6cb0; }
   .cat-tab .cnt { font-size:.62rem; opacity:.8; font-weight:normal; }
   .cat-tab.active .cnt { color:#718096; }
 
-  /* モードタブ */
   .mode-tabs { display:flex; gap:4px; margin-bottom:12px; flex-wrap:wrap; }
   .mode-tab { flex:1; min-width:60px; padding:6px 8px; border:none; border-radius:8px; background:rgba(255,255,255,.08); color:#fff; font-weight:bold; font-size:.72rem; cursor:pointer; font-family:inherit; transition:.15s; }
   .mode-tab.active { background:#48bb78; color:#fff; }
 
-  /* 統計 */
   .stats-mini { display:flex; gap:8px; margin-bottom:12px; font-size:.72rem; color:#fff; }
   .stats-mini > div { flex:1; background:rgba(255,255,255,.1); border-radius:8px; padding:6px 8px; text-align:center; }
   .stats-mini .num { display:block; font-weight:bold; font-size:1rem; color:#bee3f8; }
 
-  /* カード */
   .card-area { perspective:1200px; margin-bottom:16px; }
   .card { width:100%; min-height:400px; position:relative; transform-style:preserve-3d; transition:transform .5s; cursor:pointer; }
   .card.flipped { transform:rotateY(180deg); }
   .card-face { position:absolute; inset:0; backface-visibility:hidden; background:#fff; border-radius:20px; padding:24px 20px; box-shadow:0 12px 32px rgba(0,0,0,.25); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:400px; }
-  .card-back { transform:rotateY(180deg); background:linear-gradient(135deg, #fffaf0, #feebc8); align-items:flex-start; justify-content:flex-start; text-align:left; overflow-y:auto; padding:20px; }
+  .card-back { transform:rotateY(180deg); background:linear-gradient(135deg, #fffaf0, #feebc8); align-items:stretch; justify-content:flex-start; text-align:left; overflow-y:auto; padding:20px; }
   .card-index { position:absolute; top:12px; right:16px; font-size:.68rem; color:#a0aec0; font-weight:bold; }
   .card-cat-badge { position:absolute; top:12px; left:16px; font-size:.65rem; padding:3px 10px; border-radius:8px; font-weight:bold; }
   .badge-person { background:#bee3f8; color:#2c5282; }
   .badge-term { background:#c6f6d5; color:#22543d; }
   .badge-shiryo { background:#e9d8fd; color:#44337a; }
+  .badge-num { background:#fed7d7; color:#742a2a; }
 
   .card-front-text { font-size:1.5rem; font-weight:bold; color:#2b6cb0; margin-bottom:8px; line-height:1.3; padding:0 8px; }
   .card-front-sub { font-size:.8rem; color:#718096; margin-top:4px; line-height:1.5; padding:0 12px; }
   .card-front-hint { font-size:.75rem; color:#a0aec0; margin-top:16px; }
 
+  /* ===== 答えドン ===== */
+  .card-back-answer {
+    font-size:2.2rem;
+    font-weight:bold;
+    color:#2b6cb0;
+    text-align:center;
+    padding:20px 12px;
+    border-bottom:3px solid #bee3f8;
+    margin-bottom:16px;
+    line-height:1.3;
+    word-break:break-word;
+  }
+  .card-back-answer.small { font-size:1.4rem; }
+  .card-back-answer.tiny { font-size:1.1rem; }
+
   .card-back-title { font-size:.72rem; color:#c05621; font-weight:bold; margin-bottom:8px; letter-spacing:.05em; }
-  .card-back-main { font-size:1.05rem; font-weight:bold; color:#2d3748; margin-bottom:14px; line-height:1.6; padding:10px 12px; background:#fff; border-radius:8px; border-left:4px solid #4299e1; }
   .card-back-section { width:100%; padding:10px 12px; margin-bottom:8px; border-radius:8px; font-size:.82rem; line-height:1.7; white-space:pre-wrap; }
   .card-back-section .section-label { font-weight:bold; font-size:.7rem; display:block; margin-bottom:4px; letter-spacing:.05em; }
   .sec-num { background:#fff5f5; border-left:3px solid #e53e3e; color:#742a2a; }
@@ -71,7 +80,6 @@
   .sec-taisei { background:#f0fff4; border-left:3px solid #38a169; color:#22543d; }
   .sec-taisei .section-label { color:#276749; }
 
-  /* 判定 */
   .judge-btns { display:flex; gap:10px; margin-bottom:12px; }
   .judge-btn { flex:1; padding:16px 20px; border:none; border-radius:12px; color:#fff; font-weight:bold; font-size:.95rem; cursor:pointer; font-family:inherit; transition:transform .15s; min-height:60px; }
   .judge-btn:active { transform:scale(.96); }
@@ -79,12 +87,10 @@
   .judge-btn.yes { background:linear-gradient(135deg, #48bb78, #38a169); }
   .judge-btn:disabled { opacity:.4; cursor:not-allowed; }
 
-  /* ナビ */
   .nav-btns { display:flex; gap:8px; }
   .nav-btn { flex:1; padding:10px 16px; border:none; border-radius:8px; background:rgba(255,255,255,.15); color:#fff; font-weight:bold; font-size:.82rem; cursor:pointer; font-family:inherit; }
   .nav-btn:disabled { opacity:.3; cursor:not-allowed; }
 
-  /* 完了・空 */
   .complete { background:#fff; border-radius:20px; padding:32px 24px; text-align:center; box-shadow:0 12px 32px rgba(0,0,0,.25); }
   .complete-emoji { font-size:4rem; margin-bottom:12px; }
   .complete h2 { color:#2b6cb0; margin-bottom:8px; }
@@ -98,7 +104,9 @@
 
   @media (max-width: 400px) {
     .card-front-text { font-size:1.3rem; }
-    .card-back-main { font-size:.95rem; }
+    .card-back-answer { font-size:1.8rem; }
+    .card-back-answer.small { font-size:1.2rem; }
+    .card-back-answer.tiny { font-size:1rem; }
   }
 </style>
 </head>
@@ -119,12 +127,13 @@
 <script src="data36.js?v=10"></script>
 <script src="data35.js?v=10"></script>
 <script src="data34.js?v=10"></script>
+<script src="data33.js?v=10"></script>
 <script src="data31.js?v=10"></script>
 <script src="data30.js?v=10"></script>
 <script src="datashiryo.js?v=10"></script>
 <script>
 /* =========================================================
-   全種類カード - 生成ロジック（v2：精度重視）
+   全種類カード - 生成ロジック（v3：答えドン＋自動分解）
    ========================================================= */
 const CARD_STORE_KEY = 'cc_flashAllProgress';
 const SESSION_SIZE = 10;
@@ -158,6 +167,7 @@ function getAllQuestions() {
   if (window.qData36) all.push(...window.qData36);
   if (window.qData35) all.push(...window.qData35);
   if (window.qData34) all.push(...window.qData34);
+  if (window.qData33) all.push(...window.qData33);
   if (window.qData31) all.push(...window.qData31);
   if (window.qData30) all.push(...window.qData30);
   if (window.qDataShiryo) all.push(...window.qDataShiryo);
@@ -172,39 +182,72 @@ function extractSection(basics, label) {
   return m ? m[1].trim() : '';
 }
 
-/* ===== 【定義】の解析 =====
-   パターンA: 【定義】シャイン（Schein, E. H.）＝キャリア・アンカー。
-   パターンB: 【定義】キャリア・アンカー＝シャインが提唱。
-   パターンC: 【定義】その他
-========================================================= */
+/* ===== 【定義】の解析 ===== */
 function parseDefinition(basics) {
   if (!basics) return { person: '', term: '', full: '', raw: '' };
   const m = basics.match(/【定義】([\s\S]+?)(?=【|$)/);
   if (!m) return { person: '', term: '', full: '', raw: '' };
   const raw = m[1].trim();
   const firstLine = raw.split('\n')[0].trim();
-
-  // 「A＝B」の形を探す
   const eqMatch = firstLine.match(/^(.+?)＝(.+?)。?$/);
   if (eqMatch) {
     let left = eqMatch[1].trim();
     let right = eqMatch[2].trim().replace(/。$/, '');
-    // 左から人物名を抽出（（）や（半角括弧）を除去）
     const personMatch = left.match(/^([^（(]+)/);
     const person = personMatch ? personMatch[1].trim() : '';
-    return {
-      person: person,
-      term: right,
-      full: firstLine,
-      raw: raw
-    };
+    return { person: person, term: right, full: firstLine, raw: raw };
   }
-
-  // 「A。B。」のように分かれている場合
   return { person: '', term: '', full: firstLine, raw: raw };
 }
 
-/* ===== カード生成（v2） ===== */
+/* ===== 【数字】を「＝」「→」で分解 =====
+   例：「仕事優先型＝1973年約44%→2018年約23%に低下／余暇・仕事両立型と余暇優先型＝上昇。」
+   → [{q:"仕事優先型は？", a:"1973年約44%→2018年約23%に低下"},
+       {q:"余暇・仕事両立型と余暇優先型は？", a:"上昇"}]
+========================================================= */
+function splitNumbers(numsText) {
+  if (!numsText) return [];
+  const items = [];
+  // ／ や ／ や / や ・ で分割（複数数字の区切り）
+  const parts = numsText.split(/[／\/]\s*/);
+  parts.forEach(part => {
+    // 「A＝B」の形を抽出（複数ある場合は全部）
+    const eqs = part.split(/\s*[・、]\s*(?=[^＝]*＝)/);
+    eqs.forEach(eq => {
+      const m = eq.match(/^(.+?)＝(.+?)$/);
+      if (m) {
+        let q = m[1].trim().replace(/^[・、\s]+/, '');
+        let a = m[2].trim().replace(/^[・、\s]+/, '').replace(/。$/, '');
+        if (q && a) items.push({ q: q, a: a });
+      }
+    });
+  });
+  return items;
+}
+
+/* ===== 【数字】から「〇〇は？」形式の答えを生成 ===== */
+function buildNumberCards(numsText) {
+  const cards = [];
+  const items = splitNumbers(numsText);
+  items.forEach((item, idx) => {
+    // 表：「〇〇は？」
+    let front = item.q;
+    if (!front.endsWith('？') && !front.endsWith('?')) front += 'は？';
+    cards.push({
+      id: 'num_' + idx + '_' + item.q,
+      cat: 'num',
+      catLabel: '🔢 数字',
+      front: front,
+      frontSub: '',
+      answer: item.a,   // ← 答えドン
+      exp: '',
+      raw: '',
+    });
+  });
+  return cards;
+}
+
+/* ===== カード生成（v3） ===== */
 function buildCards() {
   const all = getAllQuestions();
   const cards = [];
@@ -234,7 +277,7 @@ function buildCards() {
         catLabel: '👤 人物',
         front: person,
         frontSub: '提唱した理論は？',
-        main: main,
+        answer: main,
         raw: def.raw || basics,
         goro: goro,
         taio: taio,
@@ -252,7 +295,7 @@ function buildCards() {
         catLabel: '📖 用語',
         front: def.term,
         frontSub: '誰が提唱？ どんな意味？',
-        main: (def.person ? def.person + ' が提唱' : ''),
+        answer: (def.person ? def.person + ' が提唱' : ''),
         raw: def.raw || basics,
         goro: goro,
         taio: taio,
@@ -261,17 +304,25 @@ function buildCards() {
       });
     }
 
-    // ===== ③ 資料カード（数字メイン） =====
+    // ===== ③ 数字カード（自動分解） =====
     if (nums) {
-      // 資料名を取得
+      const numCards = buildNumberCards(nums);
+      numCards.forEach(nc => {
+        if (!cards.find(c => c.id === nc.id)) {
+          nc.raw = basics;  // 解説として元のbasicsを保持
+          cards.push(nc);
+        }
+      });
+    }
+
+    // ===== ④ 資料カード（数字メイン） =====
+    if (nums) {
       const f = q.f || '';
       let shiryoName = f.replace('資料問題｜', '').trim();
       if (!shiryoName) shiryoName = '（資料問題）';
 
-      // 同じ資料名の問題を1枚にまとめる（初出のみ）
       if (!seenShiryo.has(shiryoName)) {
         seenShiryo.add(shiryoName);
-        // 同じ資料名の全問題から数字を集める
         const sameShiryo = all.filter(x => (x.f || '').replace('資料問題｜', '').trim() === shiryoName);
         const allNums = [];
         const allRiyu = [];
@@ -294,7 +345,7 @@ function buildCards() {
           catLabel: '📑 資料',
           front: shiryoName,
           frontSub: 'この資料で問われる数字は？',
-          main: '',
+          answer: '',
           nums: allNums.join('\n'),
           riyu: allRiyu.join('\n'),
           goro: allGoro.join('\n'),
@@ -356,6 +407,15 @@ function buildSession(cards, mode) {
   return pool.slice(0, SESSION_SIZE);
 }
 
+/* ===== 答えのサイズを自動調整 ===== */
+function answerSizeClass(answer) {
+  if (!answer) return '';
+  const len = String(answer).length;
+  if (len <= 8) return '';
+  if (len <= 20) return 'small';
+  return 'tiny';
+}
+
 /* ===== レンダリング ===== */
 function render() {
   const app = document.getElementById('app');
@@ -365,7 +425,7 @@ function render() {
 
   // トップ画面
   if (session.length === 0) {
-    const counts = { all: allCards.length, person: 0, term: 0, shiryo: 0 };
+    const counts = { all: allCards.length, person: 0, term: 0, shiryo: 0, num: 0 };
     allCards.forEach(c => { if (counts[c.cat] !== undefined) counts[c.cat]++; });
     const filtered = filterByCat(allCards, currentCat);
     const mastered = filtered.filter(c => (progress[c.id]?.level || 0) >= 5).length;
@@ -380,6 +440,9 @@ function render() {
         </button>
         <button class="cat-tab ${currentCat==='term'?'active':''}" data-cat="term">
           <span>📖 用語</span><span class="cnt">${counts.term}枚</span>
+        </button>
+        <button class="cat-tab ${currentCat==='num'?'active':''}" data-cat="num">
+          <span>🔢 数字</span><span class="cnt">${counts.num}枚</span>
         </button>
         <button class="cat-tab ${currentCat==='shiryo'?'active':''}" data-cat="shiryo">
           <span>📑 資料</span><span class="cnt">${counts.shiryo}枚</span>
@@ -419,15 +482,21 @@ function render() {
   const card = session[currentIdx];
   const badgeClass = 'badge-' + card.cat;
 
-  const mainHtml = card.main ? `<div class="card-back-main">${escapeHtml(card.main)}</div>` : '';
+  // ===== 答えドン =====
+  const answerHtml = card.answer
+    ? `<div class="card-back-answer ${answerSizeClass(card.answer)}">${escapeHtml(card.answer)}</div>`
+    : '';
+
+  // 数字カード以外は main も表示
+  const mainHtml = (!card.answer && card.main) ? `<div class="card-back-answer ${answerSizeClass(card.main)}">${escapeHtml(card.main)}</div>` : '';
+
   const numHtml = card.nums ? `<div class="card-back-section sec-num"><span class="section-label">📊 数字</span>${escapeHtml(card.nums)}</div>` : '';
   const riyuHtml = card.riyu ? `<div class="card-back-section sec-riyu"><span class="section-label">🤔 なぜ？</span>${escapeHtml(card.riyu)}</div>` : '';
   const goroHtml = card.goro ? `<div class="card-back-section sec-goro"><span class="section-label">📝 語呂</span>${escapeHtml(card.goro)}</div>` : '';
   const taioHtml = card.taio ? `<div class="card-back-section sec-taio"><span class="section-label">⚖️ 対比</span>${escapeHtml(card.taio)}</div>` : '';
   const taiseiHtml = card.taisei ? `<div class="card-back-section sec-taisei"><span class="section-label">📚 体制化</span>${escapeHtml(card.taisei)}</div>` : '';
   const rikaiHtml = card.rikai ? `<div class="card-back-section sec-riyu"><span class="section-label">💡 理解</span>${escapeHtml(card.rikai)}</div>` : '';
-  // raw（basics全体）は「その他」として表示
-  const rawHtml = (!card.main && card.raw) ? `<div class="card-back-section sec-riyu"><span class="section-label">📖 定義</span>${escapeHtml(card.raw)}</div>` : '';
+  const rawHtml = (!card.answer && !card.main && card.raw) ? `<div class="card-back-section sec-riyu"><span class="section-label">📖 解説</span>${escapeHtml(card.raw)}</div>` : '';
 
   app.innerHTML = `
     <div class="progress-info">
@@ -451,6 +520,7 @@ function render() {
           <span class="card-cat-badge ${badgeClass}">${card.catLabel}</span>
           <span class="card-index">${currentIdx + 1}</span>
           <div class="card-back-title">💡 答え</div>
+          ${answerHtml}
           ${mainHtml}
           ${rawHtml}
           ${numHtml}
@@ -479,7 +549,7 @@ function render() {
 }
 
 function catLabel(cat) {
-  const map = { all: '全部', person: '👤 人物', term: '📖 用語', shiryo: '📑 資料' };
+  const map = { all: '全部', person: '👤 人物', term: '📖 用語', num: '🔢 数字', shiryo: '📑 資料' };
   return map[cat] || cat;
 }
 
